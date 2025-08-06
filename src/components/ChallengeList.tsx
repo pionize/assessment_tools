@@ -8,6 +8,7 @@ import { Button, Card, Badge } from './ui';
 
 function ChallengeList() {
   const [localLoading, setLocalLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const { assessmentId } = useParams();
   const navigate = useNavigate();
   const { state, dispatch } = useAssessment();
@@ -18,6 +19,30 @@ function ChallengeList() {
         setLocalLoading(true);
         const challenges = await apiService.getChallenges(assessmentId);
         dispatch({ type: 'SET_CHALLENGES', payload: challenges });
+        
+        // Start assessment timer if not already started and assessment has time limit
+        console.log('Assessment timer check:', {
+          hasTimeLimit: !!state.assessment?.timeLimit,
+          startTime: state.assessmentStartTime,
+          timerActive: state.assessmentTimerActive
+        });
+        
+        if (state.assessment?.timeLimit) {
+          if (!state.assessmentStartTime) {
+            console.log('Starting new assessment timer with time limit:', state.assessment.timeLimit);
+            dispatch({ 
+              type: 'START_ASSESSMENT_TIMER', 
+              payload: { timeLimit: state.assessment.timeLimit } 
+            });
+          } else if (!state.assessmentTimerActive) {
+            // Resume timer if we have a start time but timer isn't active
+            console.log('Resuming assessment timer');
+            dispatch({ 
+              type: 'START_ASSESSMENT_TIMER', 
+              payload: { timeLimit: state.assessment.timeLimit } 
+            });
+          }
+        }
       } catch (error) {
         dispatch({ type: 'SET_ERROR', payload: error.message });
       } finally {
@@ -28,7 +53,7 @@ function ChallengeList() {
     if (assessmentId) {
       loadChallenges();
     }
-  }, [assessmentId, dispatch]);
+  }, [assessmentId, dispatch, state.assessment?.timeLimit, state.assessmentTimerActive, state.assessmentStartTime]);
 
   const handleTakeChallenge = (challengeId) => {
     navigate(`/assessment/${assessmentId}/challenge/${challengeId}`);
@@ -61,6 +86,90 @@ function ChallengeList() {
     isCompleted(challenge.id)
   ).length;
 
+  // Update current time every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleAutoSubmitAssessment = async () => {
+    const confirmed = confirm('⏰ Time\'s up! Your assessment will be automatically submitted now.');
+    if (confirmed) {
+      try {
+        await apiService.submitAssessment({
+          assessmentId,
+          candidateName: state.candidate.name,
+          candidateEmail: state.candidate.email,
+          submissions: state.submissions
+        });
+        
+        sessionStorage.clearSession();
+        dispatch({ type: 'RESET_ASSESSMENT' });
+        
+        alert('⏰ Assessment automatically submitted due to time limit. Thank you for your participation.');
+        
+        setTimeout(() => {
+          navigate(`/assessment/${assessmentId}`);
+        }, 1000);
+      } catch (error) {
+        alert('Error auto-submitting assessment: ' + error.message);
+      }
+    }
+  };
+
+  const formatAssessmentTime = (seconds) => {
+    if (seconds === null || seconds === undefined) return '--:--:--';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const formatElapsedTime = (seconds) => {
+    if (seconds === null || seconds === undefined) return '00:00:00';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Calculate real-time remaining time
+  const calculateRemainingTime = () => {
+    if (!state.candidate?.startedAt || !state.candidate?.timeLimit) {
+      return null;
+    }
+    
+    const startTime = new Date(state.candidate.startedAt);
+    const timeLimitMs = state.candidate.timeLimit * 60 * 1000; // Convert minutes to milliseconds
+    const elapsed = currentTime.getTime() - startTime.getTime();
+    const remaining = Math.max(0, timeLimitMs - elapsed);
+    
+    return Math.floor(remaining / 1000); // Return seconds
+  };
+
+  const calculateElapsedTime = () => {
+    if (!state.candidate?.startedAt) {
+      return 0;
+    }
+    
+    const startTime = new Date(state.candidate.startedAt);
+    const elapsed = currentTime.getTime() - startTime.getTime();
+    return Math.floor(elapsed / 1000); // Return seconds
+  };
+
+  const remainingTimeSeconds = calculateRemainingTime();
+  const elapsedTimeSeconds = calculateElapsedTime();
+
+  // Auto-submit when time is up
+  useEffect(() => {
+    if (remainingTimeSeconds !== null && remainingTimeSeconds <= 0) {
+      handleAutoSubmitAssessment();
+    }
+  }, [remainingTimeSeconds]);
+
   if (!state.candidate) {
     navigate(`/assessment/${assessmentId}`);
     return null;
@@ -91,6 +200,15 @@ function ChallengeList() {
                 <p className="text-gray-600 font-medium mt-1">
                   Welcome, {state.candidate.name}
                 </p>
+                {/* Assessment Time Remaining Counter */}
+                {(state.candidate?.timeLimit && remainingTimeSeconds !== null) && (
+                  <div className="flex items-center mt-2 text-sm text-gray-500">
+                    <Clock className="w-4 h-4 mr-2" />
+                    <span className="font-mono">
+                      Time Remaining: {formatAssessmentTime(remainingTimeSeconds)}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex items-center">
@@ -223,16 +341,6 @@ function ChallengeList() {
                       >
                         {challenge.type.replace('-', ' ')}
                       </Badge>
-                      
-                      {challenge.timeLimit && (
-                        <Badge
-                          variant="default"
-                          icon={<Clock className="w-4 h-4" />}
-                          size="md"
-                        >
-                          {challenge.timeLimit} min
-                        </Badge>
-                      )}
                     </div>
 
                     <h3 className="text-2xl font-bold text-gray-800 mb-3">

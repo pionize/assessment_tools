@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, XCircle, HelpCircle, ArrowLeft, Send } from 'lucide-react';
 import { Button, Card, Badge } from './ui';
+import { useAssessment } from '../contexts/AssessmentContext';
 
 function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) {
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(challenge.timeLimit ? challenge.timeLimit * 60 : null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  
+  const { state, dispatch } = useAssessment();
 
   // Load saved answers if any
   useEffect(() => {
@@ -18,27 +20,35 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
     }
   }, [savedAnswers]);
 
-  // Timer effect
+  // Update elapsed time if assessment is active
   useEffect(() => {
-    if (timeLeft === null || timeLeft <= 0 || showResults) return;
+    let interval;
+    if (state.assessmentTimerActive && state.assessmentStartTime) {
+      interval = setInterval(() => {
+        const now = new Date();
+        const startTime = new Date(state.assessmentStartTime);
+        const elapsedSeconds = Math.floor((now - startTime) / 1000);
+        
+        dispatch({ 
+          type: 'UPDATE_ASSESSMENT_ELAPSED_TIME', 
+          payload: elapsedSeconds 
+        });
+      }, 1000);
+    }
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          handleAutoSubmit();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [state.assessmentTimerActive, state.assessmentStartTime, dispatch]);
 
-    return () => clearInterval(timer);
-  }, [timeLeft, showResults]);
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
+  const formatElapsedTime = (seconds) => {
+    if (seconds === null || seconds === undefined) return '00:00:00';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handleAnswerChange = (questionId, optionId) => {
@@ -56,11 +66,6 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
     return getAnsweredCount() === challenge.questions.length;
   };
 
-  const handleAutoSubmit = async () => {
-    if (!isSubmitting) {
-      await handleSubmit(true);
-    }
-  };
 
   const handleSubmit = async (autoSubmit = false) => {
     if (isSubmitting) return;
@@ -80,7 +85,6 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
         challengeId: challenge.id,
         type: 'multiple-choice',
         answers: answers,
-        timeSpent: challenge.timeLimit ? (challenge.timeLimit * 60 - (timeLeft || 0)) : 0,
         timestamp: new Date().toISOString(),
         autoSubmit
       };
@@ -145,16 +149,6 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
             </div>
 
             <div className="flex items-center space-x-4">
-              {timeLeft !== null && !showResults && (
-                <Badge
-                  variant={timeLeft < 300 ? 'danger' : 'info'}
-                  icon={<Clock className="w-4 h-4" />}
-                  className="font-mono font-semibold"
-                >
-                  {formatTime(timeLeft)}
-                </Badge>
-              )}
-
               {!showResults && (
                 <div className="text-sm text-gray-600">
                   {getAnsweredCount()}/{challenge.questions.length} answered
@@ -170,6 +164,16 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
         <Card className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{challenge.title}</h1>
           <p className="text-gray-600 text-lg mb-6">{challenge.description}</p>
+          
+          {/* Assessment Elapsed Time Counter */}
+          {state.assessmentStartTime && (
+            <div className="flex items-center mb-4 text-sm text-gray-500">
+              <Clock className="w-4 h-4 mr-2" />
+              <span className="font-mono">
+                Assessment elapsed: {formatElapsedTime(state.assessmentElapsedTime)}
+              </span>
+            </div>
+          )}
           
           {challenge.instructions && (
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">

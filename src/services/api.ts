@@ -46,6 +46,7 @@ export interface Assessment {
   title: string;
   description: string;
   challenges: string[]; // Array of challenge IDs
+  timeLimit?: number; // Total assessment time limit in minutes
 }
 
 // --- MOCK DATA ---
@@ -56,6 +57,7 @@ const mockAssessments: Record<string, Assessment> = {
     title: 'Frontend Developer Assessment',
     description: 'Complete this assessment for the frontend developer position.',
     challenges: ['challenge-1', 'challenge-2', 'challenge-3', 'challenge-4'],
+    timeLimit: 180, // 3 hours total assessment time
   },
 };
 
@@ -145,6 +147,8 @@ interface AuthResponse {
     email: string;
     assessmentId: string;
     token: string; // Mock token
+    timeLimit: number; // Assessment time limit in minutes
+    startedAt?: string; // ISO timestamp when assessment started
 }
 
 export const apiService = {
@@ -219,13 +223,31 @@ export const apiService = {
       throw new Error('Name, email, and assessment ID are required');
     }
     
-    if (!mockAssessments[assessmentId]) {
+    const assessment = mockAssessments[assessmentId];
+    if (!assessment) {
       throw new Error('Assessment not found');
     }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       throw new Error('Invalid email format');
+    }
+    
+    // Check if user has existing session (mock localStorage check)
+    const existingSession = localStorage.getItem(`assessment_${assessmentId}_${email}`);
+    let startedAt = null;
+    
+    if (existingSession) {
+      const sessionData = JSON.parse(existingSession);
+      startedAt = sessionData.startedAt;
+    } else {
+      // First time login - set start time
+      startedAt = new Date().toISOString();
+      localStorage.setItem(`assessment_${assessmentId}_${email}`, JSON.stringify({
+        startedAt,
+        name,
+        email
+      }));
     }
     
     return {
@@ -235,6 +257,8 @@ export const apiService = {
       email,
       assessmentId,
       token: `token-${Date.now()}`,
+      timeLimit: assessment.timeLimit || 180,
+      startedAt
     };
   }
 };

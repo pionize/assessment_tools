@@ -4,7 +4,6 @@ import {
   ArrowLeft, 
   Clock, 
   Send, 
-  Save, 
   AlertCircle,
   CheckCircle,
   FileText,
@@ -24,8 +23,7 @@ function ChallengeDetail() {
   const [answer, setAnswer] = useState('');
   const [files, setFiles] = useState({});
   const [selectedLanguage, setSelectedLanguage] = useState('javascript');
-  const [timeRemaining, setTimeRemaining] = useState(null);
-  const [timerActive, setTimerActive] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const { assessmentId, challengeId } = useParams();
   const navigate = useNavigate();
@@ -55,12 +53,6 @@ function ChallengeDetail() {
           }
         }
 
-        // Start timer if challenge has time limit
-        if (challengeData.timeLimit && !state.completedChallenges.has(challengeId)) {
-          const timeLimit = challengeData.timeLimit * 60; // Convert to seconds
-          setTimeRemaining(timeLimit);
-          setTimerActive(true);
-        }
 
         dispatch({ type: 'SET_CURRENT_CHALLENGE', payload: challengeData });
       } catch (error) {
@@ -76,58 +68,39 @@ function ChallengeDetail() {
     }
   }, [challengeId, assessmentId, navigate, dispatch, state.submissions, state.completedChallenges]);
 
-  // Timer effect
+  // Update current time every second for real-time timer
   useEffect(() => {
-    let interval;
-    if (timerActive && timeRemaining > 0) {
-      interval = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            setTimerActive(false);
-            handleAutoSubmit();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Calculate real-time remaining time
+  const calculateRemainingTime = () => {
+    if (!state.candidate?.startedAt || !state.candidate?.timeLimit) {
+      return null;
     }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [timerActive, timeRemaining]);
-
-  const handleAutoSubmit = async () => {
-    await handleSubmit(true);
+    
+    const startTime = new Date(state.candidate.startedAt);
+    const timeLimitMs = state.candidate.timeLimit * 60 * 1000; // Convert minutes to milliseconds
+    const elapsed = currentTime.getTime() - startTime.getTime();
+    const remaining = Math.max(0, timeLimitMs - elapsed);
+    
+    return Math.floor(remaining / 1000); // Return seconds
   };
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
+  const formatAssessmentTime = (seconds) => {
+    if (seconds === null || seconds === undefined) return '--:--:--';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleSaveDraft = () => {
-    const submission = challenge.type === 'code' 
-      ? { files, language: selectedLanguage, type: 'code' }
-      : { answer, type: 'open-ended' };
+  const remainingTimeSeconds = calculateRemainingTime();
 
-    dispatch({
-      type: 'UPDATE_SUBMISSION',
-      payload: { challengeId, submission }
-    });
-
-    // Show success message
-    const toast = document.createElement('div');
-    toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg z-50';
-    toast.textContent = 'Draft saved!';
-    document.body.appendChild(toast);
-    setTimeout(() => {
-      document.body.removeChild(toast);
-    }, 2000);
-  };
 
   const handleSubmit = async (isAutoSubmit = false) => {
     if (!isAutoSubmit) {
@@ -143,8 +116,7 @@ function ChallengeDetail() {
         assessmentId,
         candidateName: state.candidate.name,
         candidateEmail: state.candidate.email,
-        timestamp: new Date().toISOString(),
-        timeSpent: challenge.timeLimit ? (challenge.timeLimit * 60) - timeRemaining : null
+        timestamp: new Date().toISOString()
       };
 
       if (challenge.type === 'code') {
@@ -168,8 +140,6 @@ function ChallengeDetail() {
         type: 'COMPLETE_CHALLENGE',
         payload: { challengeId }
       });
-
-      setTimerActive(false);
 
       alert(isAutoSubmit ? 'Time\'s up! Your challenge has been auto-submitted.' : 'Challenge submitted successfully!');
       navigate(`/assessment/${assessmentId}/challenges`);
@@ -282,44 +252,33 @@ function ChallengeDetail() {
                       </Badge>
                     )}
                   </div>
+                  
+                  {/* Assessment Time Remaining Counter */}
+                  {(state.candidate?.timeLimit && remainingTimeSeconds !== null) && (
+                    <div className="flex items-center mt-3 text-sm text-gray-500">
+                      <Clock className="w-4 h-4 mr-2" />
+                      <span className="font-mono">
+                        Time Remaining: {formatAssessmentTime(remainingTimeSeconds)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              {timeRemaining !== null && timerActive && (
-                <Badge
-                  variant={timeRemaining < 300 ? 'danger' : 'info'}
-                  size="lg"
-                  icon={<Clock className="w-5 h-5" />}
-                  className={`font-mono font-bold ${timeRemaining < 300 && 'animate-pulse'}`}
-                >
-                  {formatTime(timeRemaining)}
-                </Badge>
-              )}
-
               {!isCompleted && (
-                <div className="flex space-x-3">
-                  <Button
-                    onClick={handleSaveDraft}
-                    variant="secondary"
-                    icon={<Save className="w-5 h-5" />}
-                  >
-                    Save Draft
-                  </Button>
-
-                  <Button
-                    onClick={() => handleSubmit(false)}
-                    disabled={submitting}
-                    icon={submitting ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    ) : (
-                      <Send className="w-5 h-5" />
-                    )}
-                  >
-                    {submitting ? 'Submitting...' : 'Submit Challenge'}
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => handleSubmit(false)}
+                  disabled={submitting}
+                  icon={submitting ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Challenge'}
+                </Button>
               )}
             </div>
           </div>

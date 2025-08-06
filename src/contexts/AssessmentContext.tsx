@@ -12,8 +12,6 @@ const initialState = {
   error: null,
   submissions: {},
   completedChallenges: new Set(),
-  timeRemaining: null,
-  timerActive: false
 };
 
 // This function runs only once to initialize the state
