@@ -4,6 +4,7 @@ import { User, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
 import { sessionStorage } from '../utils/sessionStorage';
+import { Button, Card } from './ui';
 
 function Login() {
   const [name, setName] = useState('');
@@ -87,36 +88,36 @@ function Login() {
             <span className="font-medium">Error</span>
           </div>
           <p className="text-gray-700">{state.error}</p>
-          <button 
+          <Button 
             onClick={() => window.location.reload()} 
-            className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            className="mt-4 w-full"
           >
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decoration */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
+      {/* Background decoration - subtle */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-gray-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-gray-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gray-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
       </div>
       
-      <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full p-8 border border-white/20">
+      <Card className="relative shadow-2xl max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-lg">
             <User className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent mb-3">
             Developer Assessment
           </h1>
           {state.assessment && (
-            <div className="text-center mb-6 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+            <div className="text-center mb-6 p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl border border-blue-100">
               <h2 className="text-lg font-semibold text-gray-800">
                 {state.assessment.title}
               </h2>
@@ -176,26 +177,25 @@ function Login() {
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !name.trim() || !email.trim()}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center transform hover:-translate-y-0.5"
-          >
-            {isSubmitting ? (
+            className="w-full"
+            size="lg"
+            icon={isSubmitting ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
             ) : (
-              <>
-                <span>Start Assessment</span>
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </>
+              <ArrowRight className="w-5 h-5" />
             )}
-          </button>
+          >
+            {isSubmitting ? 'Starting...' : 'Start Assessment'}
+          </Button>
         </form>
 
         <div className="mt-6 text-center text-xs text-gray-500">
           Assessment ID: {assessmentId}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

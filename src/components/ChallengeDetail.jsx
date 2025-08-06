@@ -8,11 +8,14 @@ import {
   AlertCircle,
   CheckCircle,
   FileText,
-  Code
+  Code,
+  HelpCircle
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
 import CodeEditor from './CodeEditor';
+import MultipleChoiceChallenge from './MultipleChoiceChallenge';
+import { Button, Card, Badge } from './ui';
 
 function ChallengeDetail() {
   const [challenge, setChallenge] = useState(null);
@@ -179,6 +182,36 @@ function ChallengeDetail() {
     }
   };
 
+  const handleMultipleChoiceSubmit = async (submissionData) => {
+    try {
+      const response = await apiService.submitChallenge({
+        ...submissionData,
+        assessmentId,
+        candidateName: state.candidate.name,
+        candidateEmail: state.candidate.email
+      });
+      
+      // Update state
+      dispatch({
+        type: 'UPDATE_SUBMISSION',
+        payload: { challengeId, submission: submissionData }
+      });
+
+      dispatch({
+        type: 'COMPLETE_CHALLENGE',
+        payload: { challengeId }
+      });
+
+    } catch (error) {
+      console.error('Error submitting challenge:', error);
+      throw error;
+    }
+  };
+
+  const handleBackToList = () => {
+    navigate(`/assessment/${assessmentId}/challenges`);
+  };
+
   const isCompleted = state.completedChallenges.has(challengeId);
 
   if (loading) {
@@ -195,14 +228,25 @@ function ChallengeDetail() {
         <div className="text-center">
           <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Challenge not found</h2>
-          <button 
+          <Button 
             onClick={() => navigate(`/assessment/${assessmentId}/challenges`)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             Back to Challenges
-          </button>
+          </Button>
         </div>
       </div>
+    );
+  }
+
+  // Render MultipleChoiceChallenge for multiple-choice type
+  if (challenge.type === 'multiple-choice') {
+    return (
+      <MultipleChoiceChallenge
+        challenge={challenge}
+        onSubmit={handleMultipleChoiceSubmit}
+        onBack={handleBackToList}
+        savedAnswers={state.submissions[challengeId]}
+      />
     );
   }
 
@@ -213,34 +257,29 @@ function ChallengeDetail() {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
-              <button
+              <Button
                 onClick={() => navigate(`/assessment/${assessmentId}/challenges`)}
-                className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors bg-gray-100 hover:bg-indigo-50 px-4 py-2 rounded-xl font-medium"
+                variant="secondary"
+                icon={<ArrowLeft className="w-5 h-5" />}
               >
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                <span>Back to Challenges</span>
-              </button>
+                Back to Challenges
+              </Button>
               
               <div className="flex items-center space-x-4">
-                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+                <div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
                   {challenge.type === 'code' ? <Code className="w-6 h-6 text-white" /> : <FileText className="w-6 h-6 text-white" />}
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{challenge.title}</h1>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent">{challenge.title}</h1>
                   <div className="flex items-center mt-2 space-x-4">
-                    <div className={`flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                      challenge.type === 'code' 
-                        ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200' 
-                        : 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200'
-                    }`}>
-                      <span className="capitalize">{challenge.type.replace('-', ' ')}</span>
-                    </div>
+                    <Badge variant={challenge.type}>
+                      {challenge.type.replace('-', ' ')}
+                    </Badge>
                     
                     {isCompleted && (
-                      <div className="flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold border border-green-200">
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                        <span>Completed</span>
-                      </div>
+                      <Badge variant="success" icon={<CheckCircle className="w-4 h-4" />}>
+                        Completed
+                      </Badge>
                     )}
                   </div>
                 </div>
@@ -249,38 +288,37 @@ function ChallengeDetail() {
 
             <div className="flex items-center space-x-4">
               {timeRemaining !== null && timerActive && (
-                <div className={`flex items-center px-4 py-3 rounded-xl font-mono font-bold text-lg shadow-lg ${
-                  timeRemaining < 300 
-                    ? 'bg-gradient-to-r from-red-100 to-orange-100 text-red-700 border-2 border-red-200 animate-pulse' 
-                    : 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200'
-                }`}>
-                  <Clock className="w-5 h-5 mr-3" />
-                  <span>{formatTime(timeRemaining)}</span>
-                </div>
+                <Badge
+                  variant={timeRemaining < 300 ? 'danger' : 'info'}
+                  size="lg"
+                  icon={<Clock className="w-5 h-5" />}
+                  className={`font-mono font-bold ${timeRemaining < 300 && 'animate-pulse'}`}
+                >
+                  {formatTime(timeRemaining)}
+                </Badge>
               )}
 
               {!isCompleted && (
                 <div className="flex space-x-3">
-                  <button
+                  <Button
                     onClick={handleSaveDraft}
-                    className="flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                    variant="secondary"
+                    icon={<Save className="w-5 h-5" />}
                   >
-                    <Save className="w-5 h-5 mr-2" />
                     Save Draft
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     onClick={() => handleSubmit(false)}
                     disabled={submitting}
-                    className="flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 transform hover:-translate-y-0.5"
-                  >
-                    {submitting ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    icon={submitting ? (
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     ) : (
-                      <Send className="w-5 h-5 mr-2" />
+                      <Send className="w-5 h-5" />
                     )}
-                    Submit Challenge
-                  </button>
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Challenge'}
+                  </Button>
                 </div>
               )}
             </div>
@@ -291,8 +329,8 @@ function ChallengeDetail() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-220px)]">
           {/* Instructions Panel */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-6">
+          <Card padding="none" className="overflow-hidden">
+            <div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] p-6">
               <h2 className="text-2xl font-bold text-white flex items-center">
                 <FileText className="w-6 h-6 mr-3" />
                 Instructions
@@ -305,11 +343,11 @@ function ChallengeDetail() {
                 </pre>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Answer Panel */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden flex flex-col">
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-6">
+          <Card padding="none" className="overflow-hidden flex flex-col">
+            <div className="bg-gradient-to-r from-[#00487a] to-[#002957] p-6">
               <h2 className="text-2xl font-bold text-white flex items-center">
                 {challenge.type === 'code' ? <Code className="w-6 h-6 mr-3" /> : <FileText className="w-6 h-6 mr-3" />}
                 Your Solution
@@ -336,11 +374,11 @@ function ChallengeDetail() {
                 />
               )}
             </div>
-          </div>
+          </Card>
         </div>
 
         {isCompleted && (
-          <div className="mt-8 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 border-2 border-green-200 rounded-2xl p-6 shadow-lg">
+          <Card variant="success" className="mt-8">
             <div className="flex items-center">
               <div className="bg-green-500 rounded-full p-2 mr-4">
                 <CheckCircle className="w-6 h-6 text-white" />
@@ -354,7 +392,7 @@ function ChallengeDetail() {
                 </span>
               </div>
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>

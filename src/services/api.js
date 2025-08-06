@@ -8,7 +8,7 @@ const mockAssessments = {
     id: 'assessment-123',
     title: 'Frontend Developer Assessment',
     description: 'Complete assessment for frontend developer position',
-    challenges: ['challenge-1', 'challenge-2', 'challenge-3']
+    challenges: ['challenge-1', 'challenge-2', 'challenge-3', 'challenge-4']
   }
 };
 
@@ -80,6 +80,76 @@ Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
   },
   'challenge-3': {
     id: 'challenge-3',
+    title: 'JavaScript Fundamentals Quiz',
+    type: 'multiple-choice',
+    description: 'Test your knowledge of JavaScript fundamentals and modern ES6+ features.',
+    instructions: 'Answer the following multiple-choice questions about JavaScript. Each question has only one correct answer.',
+    timeLimit: 25,
+    questions: [
+      {
+        id: 'Q1',
+        question: 'What is the output of the following code?\n\n```javascript\nconsole.log(typeof null);\n```',
+        options: [
+          { id: 'A', text: '"null"' },
+          { id: 'B', text: '"object"' },
+          { id: 'C', text: '"undefined"' },
+          { id: 'D', text: '"boolean"' }
+        ],
+        correctAnswer: 'B',
+        explanation: 'In JavaScript, `typeof null` returns "object". This is a well-known quirk in the language that exists for historical reasons.'
+      },
+      {
+        id: 'Q2',
+        question: 'Which of the following is NOT a valid way to declare a variable in modern JavaScript?',
+        options: [
+          { id: 'A', text: 'let myVar = 10;' },
+          { id: 'B', text: 'const myVar = 10;' },
+          { id: 'C', text: 'var myVar = 10;' },
+          { id: 'D', text: 'variable myVar = 10;' }
+        ],
+        correctAnswer: 'D',
+        explanation: '"variable" is not a valid JavaScript keyword for declaring variables. Use let, const, or var instead.'
+      },
+      {
+        id: 'Q3',
+        question: 'What does the spread operator (...) do when used with arrays?',
+        options: [
+          { id: 'A', text: 'Creates a shallow copy of the array' },
+          { id: 'B', text: 'Expands array elements individually' },
+          { id: 'C', text: 'Can be used for array concatenation' },
+          { id: 'D', text: 'All of the above' }
+        ],
+        correctAnswer: 'D',
+        explanation: 'The spread operator can create shallow copies, expand elements individually, and is commonly used in concatenation operations.'
+      },
+      {
+        id: 'Q4',
+        question: 'Which method is used to add elements to the end of an array?',
+        options: [
+          { id: 'A', text: 'append()' },
+          { id: 'B', text: 'add()' },
+          { id: 'C', text: 'push()' },
+          { id: 'D', text: 'insert()' }
+        ],
+        correctAnswer: 'C',
+        explanation: 'The push() method adds one or more elements to the end of an array and returns the new length of the array.'
+      },
+      {
+        id: 'Q5',
+        question: 'What is the difference between == and === in JavaScript?',
+        options: [
+          { id: 'A', text: 'No difference, they work exactly the same' },
+          { id: 'B', text: '== compares values with type coercion, === compares values and types strictly' },
+          { id: 'C', text: '== is for numbers only, === is for strings only' },
+          { id: 'D', text: '=== is deprecated and should not be used' }
+        ],
+        correctAnswer: 'B',
+        explanation: '== performs type coercion and compares values, while === compares both value and type without any coercion (strict equality).'
+      }
+    ]
+  },
+  'challenge-4': {
+    id: 'challenge-4',
     title: 'System Design Question',
     type: 'open-ended',
     description: 'Design a simple system architecture.',
