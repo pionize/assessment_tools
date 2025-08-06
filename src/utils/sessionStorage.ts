@@ -1,5 +1,32 @@
 // Session storage utilities for candidate session management
 
+// Define interfaces for our data structures
+interface Candidate {
+  assessmentId: string;
+  [key: string]: string;
+}
+
+interface Assessment {
+  [key: string]: string;
+}
+
+interface Challenge {
+  id: string;
+  [key: string]: string;
+}
+
+interface Submissions {
+  [challengeId: string]: string;
+}
+
+interface AppState {
+  candidate: Candidate | null;
+  assessment: Assessment | null;
+  submissions: Submissions;
+  completedChallenges: Set<string>;
+  currentChallenge: Challenge | null;
+}
+
 const SESSION_KEYS = {
   CANDIDATE: 'candidate_session',
   ASSESSMENT: 'assessment_data',
@@ -10,7 +37,7 @@ const SESSION_KEYS = {
 
 export const sessionStorage = {
   // Save candidate session
-  saveCandidate(candidate) {
+  saveCandidate(candidate: Candidate): void {
     try {
       localStorage.setItem(SESSION_KEYS.CANDIDATE, JSON.stringify(candidate));
     } catch (error) {
@@ -19,7 +46,7 @@ export const sessionStorage = {
   },
 
   // Get candidate session
-  getCandidate() {
+  getCandidate(): Candidate | null {
     try {
       const candidate = localStorage.getItem(SESSION_KEYS.CANDIDATE);
       return candidate ? JSON.parse(candidate) : null;
@@ -30,7 +57,7 @@ export const sessionStorage = {
   },
 
   // Save assessment data
-  saveAssessment(assessment) {
+  saveAssessment(assessment: Assessment): void {
     try {
       localStorage.setItem(SESSION_KEYS.ASSESSMENT, JSON.stringify(assessment));
     } catch (error) {
@@ -39,7 +66,7 @@ export const sessionStorage = {
   },
 
   // Get assessment data
-  getAssessment() {
+  getAssessment(): Assessment | null {
     try {
       const assessment = localStorage.getItem(SESSION_KEYS.ASSESSMENT);
       return assessment ? JSON.parse(assessment) : null;
@@ -50,7 +77,7 @@ export const sessionStorage = {
   },
 
   // Save challenge submissions
-  saveSubmissions(submissions) {
+  saveSubmissions(submissions: Submissions): void {
     try {
       localStorage.setItem(SESSION_KEYS.SUBMISSIONS, JSON.stringify(submissions));
     } catch (error) {
@@ -59,7 +86,7 @@ export const sessionStorage = {
   },
 
   // Get challenge submissions
-  getSubmissions() {
+  getSubmissions(): Submissions {
     try {
       const submissions = localStorage.getItem(SESSION_KEYS.SUBMISSIONS);
       return submissions ? JSON.parse(submissions) : {};
@@ -70,7 +97,7 @@ export const sessionStorage = {
   },
 
   // Save completed challenges
-  saveCompletedChallenges(completedChallenges) {
+  saveCompletedChallenges(completedChallenges: Set<string>): void {
     try {
       const completedArray = Array.from(completedChallenges);
       localStorage.setItem(SESSION_KEYS.COMPLETED, JSON.stringify(completedArray));
@@ -80,7 +107,7 @@ export const sessionStorage = {
   },
 
   // Get completed challenges
-  getCompletedChallenges() {
+  getCompletedChallenges(): Set<string> {
     try {
       const completed = localStorage.getItem(SESSION_KEYS.COMPLETED);
       return completed ? new Set(JSON.parse(completed)) : new Set();
@@ -91,7 +118,7 @@ export const sessionStorage = {
   },
 
   // Save current challenge
-  saveCurrentChallenge(challenge) {
+  saveCurrentChallenge(challenge: Challenge): void {
     try {
       localStorage.setItem(SESSION_KEYS.CURRENT_CHALLENGE, JSON.stringify(challenge));
     } catch (error) {
@@ -100,7 +127,7 @@ export const sessionStorage = {
   },
 
   // Get current challenge
-  getCurrentChallenge() {
+  getCurrentChallenge(): Challenge | null {
     try {
       const challenge = localStorage.getItem(SESSION_KEYS.CURRENT_CHALLENGE);
       return challenge ? JSON.parse(challenge) : null;
@@ -111,7 +138,7 @@ export const sessionStorage = {
   },
 
   // Clear all session data
-  clearSession() {
+  clearSession(): void {
     try {
       Object.values(SESSION_KEYS).forEach(key => {
         localStorage.removeItem(key);
@@ -123,7 +150,7 @@ export const sessionStorage = {
   },
 
   // Clear only candidate session (for logout)
-  clearCandidateSession() {
+  clearCandidateSession(): void {
     try {
       localStorage.removeItem(SESSION_KEYS.CANDIDATE);
       localStorage.removeItem(SESSION_KEYS.SUBMISSIONS);
@@ -136,13 +163,13 @@ export const sessionStorage = {
   },
 
   // Check if session exists for assessment
-  hasSessionForAssessment(assessmentId) {
+  hasSessionForAssessment(assessmentId: string): boolean {
     const candidate = this.getCandidate();
-    return candidate && candidate.assessmentId === assessmentId;
+    return !!(candidate && candidate.assessmentId === assessmentId);
   },
 
   // Save entire app state
-  saveAppState(state) {
+  saveAppState(state: Partial<AppState>): void {
     try {
       if (state.candidate) {
         this.saveCandidate(state.candidate);
@@ -165,7 +192,7 @@ export const sessionStorage = {
   },
 
   // Load entire app state
-  loadAppState() {
+  loadAppState(): AppState {
     try {
       return {
         candidate: this.getCandidate(),
