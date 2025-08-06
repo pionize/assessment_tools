@@ -151,6 +151,17 @@ interface AuthResponse {
     startedAt?: string; // ISO timestamp when assessment started
 }
 
+interface AssessmentSession {
+    assessmentId: string;
+    candidateId: string;
+    name: string;
+    email: string;
+    timeLimit: number;
+    startedAt: string;
+    remainingTimeSeconds: number;
+    isExpired: boolean;
+}
+
 export const apiService = {
   async getAssessment(assessmentId: string): Promise<Assessment> {
     await delay(500);
@@ -233,32 +244,89 @@ export const apiService = {
       throw new Error('Invalid email format');
     }
     
-    // Check if user has existing session (mock localStorage check)
-    const existingSession = localStorage.getItem(`assessment_${assessmentId}_${email}`);
+    // Check if user has existing session (mock backend session storage)
+    const sessionKey = `assessment_${assessmentId}_${email}`;
+    const existingSession = localStorage.getItem(sessionKey);
     let startedAt = null;
+    let candidateId = `candidate-${email.replace('@', '_').replace('.', '_')}`;
     
     if (existingSession) {
       const sessionData = JSON.parse(existingSession);
       startedAt = sessionData.startedAt;
+      candidateId = sessionData.candidateId;
+      
+      // Validate session hasn't expired
+      const timeLimit = assessment.timeLimit || 180;
+      const timeLimitMs = timeLimit * 60 * 1000;
+      const elapsed = new Date().getTime() - new Date(startedAt).getTime();
+      
+      if (elapsed >= timeLimitMs) {
+        throw new Error('Assessment session has expired');
+      }
     } else {
-      // First time login - set start time
+      // First time login - set start time and save to "backend"
       startedAt = new Date().toISOString();
-      localStorage.setItem(`assessment_${assessmentId}_${email}`, JSON.stringify({
+      localStorage.setItem(sessionKey, JSON.stringify({
+        candidateId,
         startedAt,
         name,
-        email
+        email,
+        assessmentId,
+        timeLimit: assessment.timeLimit || 180
       }));
     }
     
     return {
       success: true,
-      candidateId: `candidate-${Date.now()}`,
+      candidateId,
       name,
       email,
       assessmentId,
-      token: `token-${Date.now()}`,
+      token: `token-${candidateId}-${Date.now()}`,
       timeLimit: assessment.timeLimit || 180,
       startedAt
+    };
+  },
+
+  async getAssessmentSession(assessmentId: string, email: string): Promise<AssessmentSession> {
+    await delay(200);
+    
+    if (!assessmentId || !email) {
+      throw new Error('Assessment ID and email are required');
+    }
+    
+    const assessment = mockAssessments[assessmentId];
+    if (!assessment) {
+      throw new Error('Assessment not found');
+    }
+    
+    // Get session from "backend" (localStorage mock)
+    const sessionKey = `assessment_${assessmentId}_${email}`;
+    const sessionData = localStorage.getItem(sessionKey);
+    
+    if (!sessionData) {
+      throw new Error('No active assessment session found. Please login first.');
+    }
+    
+    const session = JSON.parse(sessionData);
+    const timeLimit = session.timeLimit || assessment.timeLimit || 180;
+    const timeLimitMs = timeLimit * 60 * 1000;
+    const startTime = new Date(session.startedAt);
+    const currentTime = new Date();
+    const elapsed = currentTime.getTime() - startTime.getTime();
+    const remaining = Math.max(0, timeLimitMs - elapsed);
+    const remainingTimeSeconds = Math.floor(remaining / 1000);
+    const isExpired = remaining <= 0;
+    
+    return {
+      assessmentId,
+      candidateId: session.candidateId,
+      name: session.name,
+      email: session.email,
+      timeLimit,
+      startedAt: session.startedAt,
+      remainingTimeSeconds,
+      isExpired
     };
   }
 };

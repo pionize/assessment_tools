@@ -77,14 +77,33 @@ function ChallengeDetail() {
     return () => clearInterval(interval);
   }, []);
 
-  // Calculate real-time remaining time
+  // Load session data from backend and calculate real-time remaining time
+  const [sessionData, setSessionData] = useState(null);
+
+  useEffect(() => {
+    const loadSession = async () => {
+      if (!state.candidate?.email) return;
+      
+      try {
+        const session = await apiService.getAssessmentSession(assessmentId, state.candidate.email);
+        setSessionData(session);
+      } catch (error) {
+        console.error('Error loading session in ChallengeDetail:', error);
+      }
+    };
+
+    if (assessmentId && state.candidate?.email) {
+      loadSession();
+    }
+  }, [assessmentId, state.candidate?.email]);
+
   const calculateRemainingTime = () => {
-    if (!state.candidate?.startedAt || !state.candidate?.timeLimit) {
+    if (!sessionData?.startedAt || !sessionData?.timeLimit) {
       return null;
     }
     
-    const startTime = new Date(state.candidate.startedAt);
-    const timeLimitMs = state.candidate.timeLimit * 60 * 1000; // Convert minutes to milliseconds
+    const startTime = new Date(sessionData.startedAt);
+    const timeLimitMs = sessionData.timeLimit * 60 * 1000; // Convert minutes to milliseconds
     const elapsed = currentTime.getTime() - startTime.getTime();
     const remaining = Math.max(0, timeLimitMs - elapsed);
     
@@ -254,7 +273,7 @@ function ChallengeDetail() {
                   </div>
                   
                   {/* Assessment Time Remaining Counter */}
-                  {(state.candidate?.timeLimit && remainingTimeSeconds !== null) && (
+                  {(sessionData?.timeLimit && remainingTimeSeconds !== null) && (
                     <div className="flex items-center mt-3 text-sm text-gray-500">
                       <Clock className="w-4 h-4 mr-2" />
                       <span className="font-mono">

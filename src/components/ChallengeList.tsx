@@ -9,9 +9,51 @@ import { Button, Card, Badge } from './ui';
 function ChallengeList() {
   const [localLoading, setLocalLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [sessionData, setSessionData] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const { assessmentId } = useParams();
   const navigate = useNavigate();
   const { state, dispatch } = useAssessment();
+
+  // Load assessment session from backend
+  useEffect(() => {
+    const loadAssessmentSession = async () => {
+      if (!state.candidate?.email) {
+        setSessionLoading(false);
+        return;
+      }
+
+      try {
+        setSessionLoading(true);
+        const session = await apiService.getAssessmentSession(assessmentId, state.candidate.email);
+        
+        console.log('Assessment session loaded:', session);
+        setSessionData(session);
+        
+        // Check if session is expired
+        if (session.isExpired) {
+          alert('⏰ Your assessment session has expired. Please contact the administrator.');
+          dispatch({ type: 'RESET_ASSESSMENT' });
+          navigate(`/assessment/${assessmentId}`);
+          return;
+        }
+        
+      } catch (error) {
+        console.error('Error loading assessment session:', error);
+        // If no session found, redirect to login
+        if (error.message.includes('No active assessment session')) {
+          dispatch({ type: 'RESET_ASSESSMENT' });
+          navigate(`/assessment/${assessmentId}`);
+        }
+      } finally {
+        setSessionLoading(false);
+      }
+    };
+
+    if (assessmentId && state.candidate) {
+      loadAssessmentSession();
+    }
+  }, [assessmentId, state.candidate?.email, navigate, dispatch]);
 
   useEffect(() => {
     const loadChallenges = async () => {
@@ -19,30 +61,6 @@ function ChallengeList() {
         setLocalLoading(true);
         const challenges = await apiService.getChallenges(assessmentId);
         dispatch({ type: 'SET_CHALLENGES', payload: challenges });
-        
-        // Start assessment timer if not already started and assessment has time limit
-        console.log('Assessment timer check:', {
-          hasTimeLimit: !!state.assessment?.timeLimit,
-          startTime: state.assessmentStartTime,
-          timerActive: state.assessmentTimerActive
-        });
-        
-        if (state.assessment?.timeLimit) {
-          if (!state.assessmentStartTime) {
-            console.log('Starting new assessment timer with time limit:', state.assessment.timeLimit);
-            dispatch({ 
-              type: 'START_ASSESSMENT_TIMER', 
-              payload: { timeLimit: state.assessment.timeLimit } 
-            });
-          } else if (!state.assessmentTimerActive) {
-            // Resume timer if we have a start time but timer isn't active
-            console.log('Resuming assessment timer');
-            dispatch({ 
-              type: 'START_ASSESSMENT_TIMER', 
-              payload: { timeLimit: state.assessment.timeLimit } 
-            });
-          }
-        }
       } catch (error) {
         dispatch({ type: 'SET_ERROR', payload: error.message });
       } finally {
@@ -53,7 +71,7 @@ function ChallengeList() {
     if (assessmentId) {
       loadChallenges();
     }
-  }, [assessmentId, dispatch, state.assessment?.timeLimit, state.assessmentTimerActive, state.assessmentStartTime]);
+  }, [assessmentId, dispatch]);
 
   const handleTakeChallenge = (challengeId) => {
     navigate(`/assessment/${assessmentId}/challenge/${challengeId}`);
@@ -76,7 +94,6 @@ function ChallengeList() {
         return <FileText className="w-5 h-5" />;
     }
   };
-
 
   const isCompleted = (challengeId) => {
     return state.completedChallenges.has(challengeId);
@@ -136,14 +153,14 @@ function ChallengeList() {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Calculate real-time remaining time
+  // Calculate real-time remaining time from backend session
   const calculateRemainingTime = () => {
-    if (!state.candidate?.startedAt || !state.candidate?.timeLimit) {
+    if (!sessionData?.startedAt || !sessionData?.timeLimit) {
       return null;
     }
     
-    const startTime = new Date(state.candidate.startedAt);
-    const timeLimitMs = state.candidate.timeLimit * 60 * 1000; // Convert minutes to milliseconds
+    const startTime = new Date(sessionData.startedAt);
+    const timeLimitMs = sessionData.timeLimit * 60 * 1000; // Convert minutes to milliseconds
     const elapsed = currentTime.getTime() - startTime.getTime();
     const remaining = Math.max(0, timeLimitMs - elapsed);
     
@@ -151,17 +168,24 @@ function ChallengeList() {
   };
 
   const calculateElapsedTime = () => {
-    if (!state.candidate?.startedAt) {
+    if (!sessionData?.startedAt) {
       return 0;
     }
     
-    const startTime = new Date(state.candidate.startedAt);
+    const startTime = new Date(sessionData.startedAt);
     const elapsed = currentTime.getTime() - startTime.getTime();
     return Math.floor(elapsed / 1000); // Return seconds
   };
 
   const remainingTimeSeconds = calculateRemainingTime();
   const elapsedTimeSeconds = calculateElapsedTime();
+  
+  console.log('Timer calculation:', {
+    sessionData,
+    remainingTimeSeconds,
+    elapsedTimeSeconds,
+    currentTime: currentTime.toISOString()
+  });
 
   // Auto-submit when time is up
   useEffect(() => {
@@ -175,10 +199,15 @@ function ChallengeList() {
     return null;
   }
 
-  if (localLoading) {
+  if (localLoading || sessionLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">
+            {sessionLoading ? 'Validating session...' : 'Loading challenges...'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -201,7 +230,7 @@ function ChallengeList() {
                   Welcome, {state.candidate.name}
                 </p>
                 {/* Assessment Time Remaining Counter */}
-                {(state.candidate?.timeLimit && remainingTimeSeconds !== null) && (
+                {(sessionData?.timeLimit && remainingTimeSeconds !== null) && (
                   <div className="flex items-center mt-2 text-sm text-gray-500">
                     <Clock className="w-4 h-4 mr-2" />
                     <span className="font-mono">
@@ -211,7 +240,14 @@ function ChallengeList() {
                 )}
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              {/* Show session info for debugging */}
+              {sessionData && (
+                <div className="text-right mr-6 text-xs text-gray-400">
+                  <div>Session: {sessionData.candidateId}</div>
+                  <div>Started: {new Date(sessionData.startedAt).toLocaleTimeString()}</div>
+                </div>
+              )}
               <div className="hidden md:flex items-center bg-gradient-to-r from-blue-50 to-sky-50 px-4 py-2 rounded-full border border-blue-100">
                 <User className="w-4 h-4 mr-2 text-blue-600" />
                 <span className="text-sm text-gray-700 font-medium">{state.candidate.email}</span>
@@ -295,7 +331,6 @@ function ChallengeList() {
             </div>
           </div>
         </Card>
-
 
         {/* Challenges List */}
         <div className="space-y-6">
