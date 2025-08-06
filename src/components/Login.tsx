@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { User, Mail, ArrowRight, AlertCircle, Clock } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
-import { sessionStorage } from '../utils/sessionStorage';
 import { Button, Card } from './ui';
 
 function Login() {
@@ -48,6 +47,12 @@ function Login() {
     e.preventDefault();
     setLocalError('');
     setIsSubmitting(true);
+
+    if (!assessmentId) {
+      setLocalError('Assessment ID is required');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await apiService.authenticate(name, email, assessmentId);

@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Clock, CheckCircle, XCircle, HelpCircle, ArrowLeft, Send } from 'lucide-react';
-import { Button, Card, Badge } from './ui';
-import { useAssessment } from '../contexts/AssessmentContext';
+import { useState, useEffect } from 'react';
+import { CheckCircle, XCircle, HelpCircle, ArrowLeft, Send } from 'lucide-react';
+import { Button, Card } from './ui';
 
 function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) {
   const [answers, setAnswers] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
   
-  const { state, dispatch } = useAssessment();
+  // Assessment context not used in this component
 
   // Load saved answers if any
   useEffect(() => {
@@ -20,36 +19,9 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
     }
   }, [savedAnswers]);
 
-  // Update elapsed time if assessment is active
-  useEffect(() => {
-    let interval;
-    if (state.assessmentTimerActive && state.assessmentStartTime) {
-      interval = setInterval(() => {
-        const now = new Date();
-        const startTime = new Date(state.assessmentStartTime);
-        const elapsedSeconds = Math.floor((now - startTime) / 1000);
-        
-        dispatch({ 
-          type: 'UPDATE_ASSESSMENT_ELAPSED_TIME', 
-          payload: elapsedSeconds 
-        });
-      }, 1000);
-    }
+  // Note: Assessment timer functionality removed as it's not part of the current state structure
 
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [state.assessmentTimerActive, state.assessmentStartTime, dispatch]);
-
-  const formatElapsedTime = (seconds) => {
-    if (seconds === null || seconds === undefined) return '00:00:00';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+  // formatElapsedTime function removed as it's not used
 
   const handleAnswerChange = (questionId, optionId) => {
     setAnswers(prev => ({
@@ -165,15 +137,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{challenge.title}</h1>
           <p className="text-gray-600 text-lg mb-6">{challenge.description}</p>
           
-          {/* Assessment Elapsed Time Counter */}
-          {state.assessmentStartTime && (
-            <div className="flex items-center mb-4 text-sm text-gray-500">
-              <Clock className="w-4 h-4 mr-2" />
-              <span className="font-mono">
-                Assessment elapsed: {formatElapsedTime(state.assessmentElapsedTime)}
-              </span>
-            </div>
-          )}
+          {/* Assessment time display removed as not part of current state */}
           
           {challenge.instructions && (
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { 
   File, 
@@ -69,7 +69,7 @@ function CodeEditor({
     if (!selectedFile && Object.keys(files).length > 0) {
       setSelectedFile(Object.keys(files)[0]);
     }
-  }, [files, selectedLanguage]);
+  }, [files, selectedLanguage, selectedFile]);
 
   const toggleFolder = (path) => {
     const newExpanded = new Set(expandedFolders);
@@ -81,7 +81,7 @@ function CodeEditor({
     setExpandedFolders(newExpanded);
   };
 
-  const handleEditorDidMount = (editor, monaco) => {
+  const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
   };
 

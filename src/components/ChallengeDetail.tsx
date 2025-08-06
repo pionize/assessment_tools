@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -7,17 +7,17 @@ import {
   AlertCircle,
   CheckCircle,
   FileText,
-  Code,
-  HelpCircle
+  Code
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
+import type { Challenge, AssessmentSession } from '../contexts/context';
 import CodeEditor from './CodeEditor';
 import MultipleChoiceChallenge from './MultipleChoiceChallenge';
 import { Button, Card, Badge } from './ui';
 
 function ChallengeDetail() {
-  const [challenge, setChallenge] = useState(null);
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [answer, setAnswer] = useState('');
@@ -31,6 +31,8 @@ function ChallengeDetail() {
 
   useEffect(() => {
     const loadChallenge = async () => {
+      if (!challengeId) return;
+      
       try {
         setLoading(true);
         const challengeData = await apiService.getChallengeDetails(challengeId);
@@ -78,11 +80,11 @@ function ChallengeDetail() {
   }, []);
 
   // Load session data from backend and calculate real-time remaining time
-  const [sessionData, setSessionData] = useState(null);
+  const [sessionData, setSessionData] = useState<AssessmentSession | null>(null);
 
   useEffect(() => {
     const loadSession = async () => {
-      if (!state.candidate?.email) return;
+      if (!state.candidate?.email || !assessmentId) return;
       
       try {
         const session = await apiService.getAssessmentSession(assessmentId, state.candidate.email);
@@ -127,10 +129,12 @@ function ChallengeDetail() {
       if (!confirmed) return;
     }
 
+    if (!challengeId || !assessmentId || !state.candidate || !challenge) return;
+
     setSubmitting(true);
 
     try {
-      const submissionData = {
+      const baseSubmission = {
         challengeId,
         assessmentId,
         candidateName: state.candidate.name,
@@ -138,21 +142,23 @@ function ChallengeDetail() {
         timestamp: new Date().toISOString()
       };
 
+      let submission: Record<string, unknown> = { ...baseSubmission };
+
       if (challenge.type === 'code') {
-        submissionData.files = files;
-        submissionData.language = selectedLanguage;
-        submissionData.type = 'code';
+        submission.files = files;
+        submission.language = selectedLanguage;
+        submission.type = 'code';
       } else {
-        submissionData.answer = answer;
-        submissionData.type = 'open-ended';
+        submission.answer = answer;
+        submission.type = 'open-ended';
       }
 
-      const response = await apiService.submitChallenge(submissionData);
+      await apiService.submitChallenge({ challengeId, submission });
       
       // Update state
       dispatch({
         type: 'UPDATE_SUBMISSION',
-        payload: { challengeId, submission: submissionData }
+        payload: { challengeId, submission }
       });
 
       dispatch({
@@ -172,8 +178,10 @@ function ChallengeDetail() {
   };
 
   const handleMultipleChoiceSubmit = async (submissionData) => {
+    if (!state.candidate) return;
+    
     try {
-      const response = await apiService.submitChallenge({
+      await apiService.submitChallenge({
         ...submissionData,
         assessmentId,
         candidateName: state.candidate.name,
@@ -201,7 +209,7 @@ function ChallengeDetail() {
     navigate(`/assessment/${assessmentId}/challenges`);
   };
 
-  const isCompleted = state.completedChallenges.has(challengeId);
+  const isCompleted = challengeId ? state.completedChallenges.has(challengeId) : false;
 
   if (loading) {
     return (
@@ -234,7 +242,7 @@ function ChallengeDetail() {
         challenge={challenge}
         onSubmit={handleMultipleChoiceSubmit}
         onBack={handleBackToList}
-        savedAnswers={state.submissions[challengeId]}
+        savedAnswers={challengeId ? state.submissions[challengeId] : undefined}
       />
     );
   }

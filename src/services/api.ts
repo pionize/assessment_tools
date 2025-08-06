@@ -200,7 +200,7 @@ export const apiService = {
     return challenge;
   },
 
-  async submitChallenge(data: { challengeId: string; submission: any }): Promise<SubmissionResponse> {
+  async submitChallenge(data: { challengeId: string; submission: Record<string, unknown> }): Promise<SubmissionResponse> {
     await delay(800);
     console.log('Submitting challenge:', data);
     
@@ -247,7 +247,7 @@ export const apiService = {
     // Check if user has existing session (mock backend session storage)
     const sessionKey = `assessment_${assessmentId}_${email}`;
     const existingSession = localStorage.getItem(sessionKey);
-    let startedAt = null;
+    let startedAt: string;
     let candidateId = `candidate-${email.replace('@', '_').replace('.', '_')}`;
     
     if (existingSession) {

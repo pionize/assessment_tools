@@ -1,27 +1,16 @@
 // Session storage utilities for candidate session management
 
-// Define interfaces for our data structures
-interface Candidate {
-  assessmentId: string;
-  [key: string]: string;
-}
-
-interface Assessment {
-  [key: string]: string;
-}
-
-interface Challenge {
-  id: string;
-  [key: string]: string;
-}
+// Import types from context to ensure consistency
+import type { Candidate, Assessment, Challenge } from '../contexts/context';
 
 interface Submissions {
-  [challengeId: string]: string;
+  [challengeId: string]: any;
 }
 
 interface AppState {
   candidate: Candidate | null;
   assessment: Assessment | null;
+  challenges?: Challenge[];
   submissions: Submissions;
   completedChallenges: Set<string>;
   currentChallenge: Challenge | null;

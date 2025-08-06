@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Clock, Code, FileText, CheckCircle, Play, LogOut, User, HelpCircle } from 'lucide-react';
+import { Clock, Code, FileText, CheckCircle, Play, User, HelpCircle } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
+import type { AssessmentSession } from '../contexts/context';
 import { sessionStorage } from '../utils/sessionStorage';
 import { Button, Card, Badge } from './ui';
 
 function ChallengeList() {
   const [localLoading, setLocalLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [sessionData, setSessionData] = useState(null);
+  const [sessionData, setSessionData] = useState<AssessmentSession | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
   const { assessmentId } = useParams();
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ function ChallengeList() {
         setSessionLoading(false);
         return;
       }
+
+      if (!assessmentId) return;
 
       try {
         setSessionLoading(true);
@@ -53,10 +56,12 @@ function ChallengeList() {
     if (assessmentId && state.candidate) {
       loadAssessmentSession();
     }
-  }, [assessmentId, state.candidate?.email, navigate, dispatch]);
+  }, [assessmentId, state.candidate, navigate, dispatch]);
 
   useEffect(() => {
     const loadChallenges = async () => {
+      if (!assessmentId) return;
+
       try {
         setLocalLoading(true);
         const challenges = await apiService.getChallenges(assessmentId);
@@ -77,10 +82,6 @@ function ChallengeList() {
     navigate(`/assessment/${assessmentId}/challenge/${challengeId}`);
   };
 
-  const handleLogout = () => {
-    dispatch({ type: 'RESET_ASSESSMENT' });
-    navigate(`/assessment/${assessmentId}`);
-  };
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -112,15 +113,14 @@ function ChallengeList() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleAutoSubmitAssessment = async () => {
+  const handleAutoSubmitAssessment = useCallback(async () => {
     const confirmed = confirm('⏰ Time\'s up! Your assessment will be automatically submitted now.');
-    if (confirmed) {
+    if (confirmed && assessmentId && state.candidate) {
       try {
         await apiService.submitAssessment({
           assessmentId,
           candidateName: state.candidate.name,
-          candidateEmail: state.candidate.email,
-          submissions: state.submissions
+          candidateEmail: state.candidate.email
         });
         
         sessionStorage.clearSession();
@@ -135,7 +135,7 @@ function ChallengeList() {
         alert('Error auto-submitting assessment: ' + error.message);
       }
     }
-  };
+  }, [assessmentId, state.candidate, state.submissions, dispatch, navigate]);
 
   const formatAssessmentTime = (seconds) => {
     if (seconds === null || seconds === undefined) return '--:--:--';
@@ -145,13 +145,6 @@ function ChallengeList() {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const formatElapsedTime = (seconds) => {
-    if (seconds === null || seconds === undefined) return '00:00:00';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   // Calculate real-time remaining time from backend session
   const calculateRemainingTime = () => {
@@ -192,7 +185,7 @@ function ChallengeList() {
     if (remainingTimeSeconds !== null && remainingTimeSeconds <= 0) {
       handleAutoSubmitAssessment();
     }
-  }, [remainingTimeSeconds]);
+  }, [remainingTimeSeconds, handleAutoSubmitAssessment]);
 
   if (!state.candidate) {
     navigate(`/assessment/${assessmentId}`);
@@ -299,14 +292,13 @@ function ChallengeList() {
               <Button
                 onClick={async () => {
                   const confirmed = confirm('Are you sure you want to submit your assessment? This action cannot be undone.');
-                  if (!confirmed) return;
+                  if (!confirmed || !assessmentId || !state.candidate) return;
                   
                   try {
                     await apiService.submitAssessment({
                       assessmentId,
                       candidateName: state.candidate.name,
-                      candidateEmail: state.candidate.email,
-                      submissions: state.submissions
+                      candidateEmail: state.candidate.email
                     });
                     
                     // Clear session after successful submission
