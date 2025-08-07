@@ -21,8 +21,12 @@ function CodeEditor({
   const [selectedFile, setSelectedFile] = useState('');
   const [fileStructure, setFileStructure] = useState({});
   const [showAddFile, setShowAddFile] = useState(false);
+  const [showAddFolder, setShowAddFolder] = useState(false);
   const [newFileName, setNewFileName] = useState('');
+  const [newFolderName, setNewFolderName] = useState('');
   const [newFileParent, setNewFileParent] = useState('');
+  const [newFolderParent, setNewFolderParent] = useState('');
+  const [contextMenu, setContextMenu] = useState(null);
   const editorRef = useRef(null);
 
   // Language options
@@ -126,6 +130,44 @@ function CodeEditor({
     setShowAddFile(false);
   };
 
+  const addFolder = () => {
+    if (!newFolderName.trim()) return;
+    
+    const fullPath = newFolderParent ? `${newFolderParent}/${newFolderName}` : newFolderName;
+    
+    // Check if folder already exists
+    const existingFolderFiles = Object.keys(files).filter(filePath => 
+      filePath.startsWith(fullPath + '/')
+    );
+    
+    if (existingFolderFiles.length > 0) {
+      alert('Folder already exists!');
+      return;
+    }
+
+    // Create a placeholder file to represent the folder
+    const placeholderFile = `${fullPath}/.gitkeep`;
+    const updatedFiles = {
+      ...files,
+      [placeholderFile]: {
+        content: '# This file keeps the folder in the file tree\n',
+        language: 'markdown'
+      }
+    };
+    
+    if (onFilesChange) {
+      onFilesChange(updatedFiles);
+    }
+    
+    // Auto-expand the new folder
+    setExpandedFolders(prev => new Set([...prev, fullPath]));
+    
+    setNewFolderName('');
+    setNewFolderParent('');
+    setShowAddFolder(false);
+    setContextMenu(null);
+  };
+
   const deleteFile = (filePath) => {
     if (confirm(`Are you sure you want to delete ${filePath}?`)) {
       const updatedFiles = { ...files };
@@ -187,8 +229,55 @@ function CodeEditor({
     return extensionMap[ext] || selectedLanguage;
   };
 
+  const handleContextMenu = (e, folderPath) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      folderPath
+    });
+  };
+
+  const handleAddFileToFolder = (folderPath) => {
+    setNewFileParent(folderPath);
+    setShowAddFile(true);
+    setContextMenu(null);
+  };
+
+  const handleAddFolderToFolder = (folderPath) => {
+    setNewFolderParent(folderPath);
+    setShowAddFolder(true);
+    setContextMenu(null);
+  };
+
+  const deleteFolder = (folderPath) => {
+    if (confirm(`Are you sure you want to delete the folder "${folderPath}" and all its contents?`)) {
+      const updatedFiles = { ...files };
+      
+      // Delete all files in the folder
+      Object.keys(updatedFiles).forEach(filePath => {
+        if (filePath.startsWith(folderPath + '/')) {
+          delete updatedFiles[filePath];
+        }
+      });
+      
+      if (onFilesChange) {
+        onFilesChange(updatedFiles);
+      }
+      
+      // If selected file was in deleted folder, clear selection
+      if (selectedFile.startsWith(folderPath + '/')) {
+        const remainingFiles = Object.keys(updatedFiles).filter(f => !f.endsWith('/.gitkeep'));
+        setSelectedFile(remainingFiles.length > 0 ? remainingFiles[0] : '');
+      }
+    }
+  };
+
   const renderFileTree = (structure, basePath = '') => {
-    return Object.keys(structure).map(name => {
+    return Object.keys(structure)
+      .filter(name => name !== '.gitkeep') // Hide .gitkeep files
+      .map(name => {
       const item = structure[name];
       const fullPath = basePath ? `${basePath}/${name}` : name;
       
@@ -197,12 +286,47 @@ function CodeEditor({
         return (
           <div key={fullPath}>
             <div 
-              className="flex items-center py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm"
+              className="flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group"
               onClick={() => toggleFolder(fullPath)}
+              onContextMenu={(e) => handleContextMenu(e, fullPath)}
             >
-              {isExpanded ? <ChevronDown className="w-4 h-4 mr-1" /> : <ChevronRight className="w-4 h-4 mr-1" />}
-              <Folder className="w-4 h-4 mr-2 text-blue-500" />
-              <span className="text-gray-700">{name}</span>
+              <div className="flex items-center">
+                {isExpanded ? <ChevronDown className="w-4 h-4 mr-1" /> : <ChevronRight className="w-4 h-4 mr-1" />}
+                <Folder className="w-4 h-4 mr-2 text-blue-500" />
+                <span className="text-gray-700">{name}</span>
+              </div>
+              <div className="opacity-0 group-hover:opacity-100 flex">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddFileToFolder(fullPath);
+                  }}
+                  className="p-1 hover:bg-gray-200 rounded mr-1"
+                  title="Add file"
+                >
+                  <File className="w-3 h-3 text-gray-600" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddFolderToFolder(fullPath);
+                  }}
+                  className="p-1 hover:bg-gray-200 rounded mr-1"
+                  title="Add folder"
+                >
+                  <Folder className="w-3 h-3 text-gray-600" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteFolder(fullPath);
+                  }}
+                  className="p-1 hover:bg-gray-200 rounded"
+                  title="Delete folder"
+                >
+                  <Trash2 className="w-3 h-3 text-red-600" />
+                </button>
+              </div>
             </div>
             {isExpanded && (
               <div className="ml-4">
@@ -248,13 +372,22 @@ function CodeEditor({
         <div className="p-3 border-b bg-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-700">Files</span>
-            <button
-              onClick={() => setShowAddFile(true)}
-              className="p-1 hover:bg-gray-200 rounded"
-              title="Add file"
-            >
-              <Plus className="w-4 h-4 text-gray-600" />
-            </button>
+            <div className="flex space-x-1">
+              <button
+                onClick={() => setShowAddFile(true)}
+                className="p-1 hover:bg-gray-200 rounded"
+                title="Add file"
+              >
+                <File className="w-4 h-4 text-gray-600" />
+              </button>
+              <button
+                onClick={() => setShowAddFolder(true)}
+                className="p-1 hover:bg-gray-200 rounded"
+                title="Add folder"
+              >
+                <Folder className="w-4 h-4 text-gray-600" />
+              </button>
+            </div>
           </div>
           
           {/* Language Selector */}
@@ -288,6 +421,11 @@ function CodeEditor({
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-4 rounded-lg w-80">
               <h3 className="text-lg font-medium mb-3">Add New File</h3>
+              {newFileParent && (
+                <div className="text-sm text-gray-600 mb-2">
+                  Creating in: <span className="font-medium">{newFileParent}/</span>
+                </div>
+              )}
               <input
                 type="text"
                 placeholder="filename.js"
@@ -298,7 +436,11 @@ function CodeEditor({
               />
               <div className="flex justify-end space-x-2">
                 <button
-                  onClick={() => setShowAddFile(false)}
+                  onClick={() => {
+                    setShowAddFile(false);
+                    setNewFileParent('');
+                    setNewFileName('');
+                  }}
                   className="px-3 py-1 text-gray-600 hover:text-gray-800"
                 >
                   Cancel
@@ -307,11 +449,95 @@ function CodeEditor({
                   onClick={addFile}
                   className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  Add
+                  Add File
                 </button>
               </div>
             </div>
           </div>
+        )}
+
+        {/* Add Folder Modal */}
+        {showAddFolder && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-4 rounded-lg w-80">
+              <h3 className="text-lg font-medium mb-3">Add New Folder</h3>
+              {newFolderParent && (
+                <div className="text-sm text-gray-600 mb-2">
+                  Creating in: <span className="font-medium">{newFolderParent}/</span>
+                </div>
+              )}
+              <input
+                type="text"
+                placeholder="folder-name"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
+                autoFocus
+              />
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => {
+                    setShowAddFolder(false);
+                    setNewFolderParent('');
+                    setNewFolderName('');
+                  }}
+                  className="px-3 py-1 text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={addFolder}
+                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  Add Folder
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Context Menu */}
+        {contextMenu && (
+          <>
+            <div 
+              className="fixed inset-0 z-40" 
+              onClick={() => setContextMenu(null)}
+            />
+            <div 
+              className="fixed bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50"
+              style={{
+                left: contextMenu.x,
+                top: contextMenu.y,
+                minWidth: '150px'
+              }}
+            >
+              <button
+                onClick={() => handleAddFileToFolder(contextMenu.folderPath)}
+                className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+              >
+                <File className="w-4 h-4 mr-2" />
+                Add File
+              </button>
+              <button
+                onClick={() => handleAddFolderToFolder(contextMenu.folderPath)}
+                className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+              >
+                <Folder className="w-4 h-4 mr-2" />
+                Add Folder
+              </button>
+              <hr className="my-1" />
+              <button
+                onClick={() => {
+                  deleteFolder(contextMenu.folderPath);
+                  setContextMenu(null);
+                }}
+                className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center text-red-600 hover:bg-red-50"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete Folder
+              </button>
+            </div>
+          </>
         )}
       </div>
 
