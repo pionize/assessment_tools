@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Clock, CheckCircle, XCircle, HelpCircle, ArrowLeft, Send } from 'lucide-react';
-import { Button, Card, Badge } from './ui';
+import { useState, useEffect } from 'react';
+import { CheckCircle, XCircle, HelpCircle, ArrowLeft, Send } from 'lucide-react';
+import { Button, Card } from './ui';
 
 function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) {
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(challenge.timeLimit ? challenge.timeLimit * 60 : null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  
+  // Assessment context not used in this component
 
   // Load saved answers if any
   useEffect(() => {
@@ -18,28 +19,9 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
     }
   }, [savedAnswers]);
 
-  // Timer effect
-  useEffect(() => {
-    if (timeLeft === null || timeLeft <= 0 || showResults) return;
+  // Note: Assessment timer functionality removed as it's not part of the current state structure
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          handleAutoSubmit();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft, showResults]);
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  // formatElapsedTime function removed as it's not used
 
   const handleAnswerChange = (questionId, optionId) => {
     setAnswers(prev => ({
@@ -56,11 +38,6 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
     return getAnsweredCount() === challenge.questions.length;
   };
 
-  const handleAutoSubmit = async () => {
-    if (!isSubmitting) {
-      await handleSubmit(true);
-    }
-  };
 
   const handleSubmit = async (autoSubmit = false) => {
     if (isSubmitting) return;
@@ -80,7 +57,6 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
         challengeId: challenge.id,
         type: 'multiple-choice',
         answers: answers,
-        timeSpent: challenge.timeLimit ? (challenge.timeLimit * 60 - (timeLeft || 0)) : 0,
         timestamp: new Date().toISOString(),
         autoSubmit
       };
@@ -139,22 +115,12 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
               <div className="h-6 w-px bg-gray-300"></div>
               
               <div className="flex items-center space-x-2">
-                <HelpCircle className="w-5 h-5 text-purple-600" />
+                <HelpCircle className="w-5 h-5 text-blue-600" />
                 <span className="font-semibold text-gray-800">Multiple Choice</span>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              {timeLeft !== null && !showResults && (
-                <Badge
-                  variant={timeLeft < 300 ? 'danger' : 'info'}
-                  icon={<Clock className="w-4 h-4" />}
-                  className="font-mono font-semibold"
-                >
-                  {formatTime(timeLeft)}
-                </Badge>
-              )}
-
               {!showResults && (
                 <div className="text-sm text-gray-600">
                   {getAnsweredCount()}/{challenge.questions.length} answered
@@ -171,10 +137,12 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{challenge.title}</h1>
           <p className="text-gray-600 text-lg mb-6">{challenge.description}</p>
           
+          {/* Assessment time display removed as not part of current state */}
+          
           {challenge.instructions && (
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
-              <h3 className="font-semibold text-purple-800 mb-2">Instructions</h3>
-              <p className="text-purple-700">{challenge.instructions}</p>
+            <div className="bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-200 rounded-xl p-6">
+              <h3 className="font-semibold text-blue-800 mb-2">Instructions</h3>
+              <p className="text-blue-700">{challenge.instructions}</p>
             </div>
           )}
         </Card>
@@ -227,7 +195,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
           {challenge.questions.map((question, index) => (
             <Card key={question.id}>
               <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                <div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                   {index + 1}
                 </div>
                 <div className="flex-1">
@@ -254,8 +222,8 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
                                     ? 'bg-gray-100 border-gray-300 text-gray-700'
                                     : 'bg-gray-50 border-gray-200 text-gray-600'
                               : isSelected
-                                ? 'bg-purple-100 border-purple-300 text-purple-800'
-                                : 'bg-gray-50 border-gray-200 hover:border-purple-300 hover:bg-purple-50'
+                                ? 'bg-blue-100 border-blue-300 text-blue-800'
+                                : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                           }`}
                         >
                           <input
@@ -275,7 +243,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
                                   ? 'border-red-500 bg-red-500'
                                   : 'border-gray-400'
                               : isSelected
-                                ? 'border-purple-500 bg-purple-500'
+                                ? 'border-blue-500 bg-blue-500'
                                 : 'border-gray-400'
                           }`}>
                             {((showResults && isCorrect) || (!showResults && isSelected)) && (

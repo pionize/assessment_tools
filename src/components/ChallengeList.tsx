@@ -1,19 +1,67 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Clock, Code, FileText, CheckCircle, Play, LogOut, User, HelpCircle } from 'lucide-react';
+import { Clock, Code, FileText, CheckCircle, Play, User, HelpCircle } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
+import type { AssessmentSession } from '../contexts/context';
 import { sessionStorage } from '../utils/sessionStorage';
 import { Button, Card, Badge } from './ui';
 
 function ChallengeList() {
   const [localLoading, setLocalLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [sessionData, setSessionData] = useState<AssessmentSession | null>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const { assessmentId } = useParams();
   const navigate = useNavigate();
   const { state, dispatch } = useAssessment();
 
+  // Load assessment session from backend
+  useEffect(() => {
+    const loadAssessmentSession = async () => {
+      if (!state.candidate?.email) {
+        setSessionLoading(false);
+        return;
+      }
+
+      if (!assessmentId) return;
+
+      try {
+        setSessionLoading(true);
+        const session = await apiService.getAssessmentSession(assessmentId, state.candidate.email);
+        
+        console.log('Assessment session loaded:', session);
+        setSessionData(session);
+        
+        // Check if session is expired
+        if (session.isExpired) {
+          alert('⏰ Your assessment session has expired. Please contact the administrator.');
+          dispatch({ type: 'RESET_ASSESSMENT' });
+          navigate(`/assessment/${assessmentId}`);
+          return;
+        }
+        
+      } catch (error) {
+        console.error('Error loading assessment session:', error);
+        // If no session found, redirect to login
+        if (error.message.includes('No active assessment session')) {
+          dispatch({ type: 'RESET_ASSESSMENT' });
+          navigate(`/assessment/${assessmentId}`);
+        }
+      } finally {
+        setSessionLoading(false);
+      }
+    };
+
+    if (assessmentId && state.candidate) {
+      loadAssessmentSession();
+    }
+  }, [assessmentId, state.candidate, navigate, dispatch]);
+
   useEffect(() => {
     const loadChallenges = async () => {
+      if (!assessmentId) return;
+
       try {
         setLocalLoading(true);
         const challenges = await apiService.getChallenges(assessmentId);
@@ -34,10 +82,6 @@ function ChallengeList() {
     navigate(`/assessment/${assessmentId}/challenge/${challengeId}`);
   };
 
-  const handleLogout = () => {
-    dispatch({ type: 'RESET_ASSESSMENT' });
-    navigate(`/assessment/${assessmentId}`);
-  };
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -52,7 +96,6 @@ function ChallengeList() {
     }
   };
 
-
   const isCompleted = (challengeId) => {
     return state.completedChallenges.has(challengeId);
   };
@@ -61,15 +104,103 @@ function ChallengeList() {
     isCompleted(challenge.id)
   ).length;
 
+  // Update current time every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleAutoSubmitAssessment = useCallback(async () => {
+    const confirmed = confirm('⏰ Time\'s up! Your assessment will be automatically submitted now.');
+    if (confirmed && assessmentId && state.candidate) {
+      try {
+        await apiService.submitAssessment({
+          assessmentId,
+          candidateName: state.candidate.name,
+          candidateEmail: state.candidate.email
+        });
+        
+        sessionStorage.clearSession();
+        dispatch({ type: 'RESET_ASSESSMENT' });
+        
+        alert('⏰ Assessment automatically submitted due to time limit. Thank you for your participation.');
+        
+        setTimeout(() => {
+          navigate(`/assessment/${assessmentId}`);
+        }, 1000);
+      } catch (error) {
+        alert('Error auto-submitting assessment: ' + error.message);
+      }
+    }
+  }, [assessmentId, state.candidate, state.submissions, dispatch, navigate]);
+
+  const formatAssessmentTime = (seconds) => {
+    if (seconds === null || seconds === undefined) return '--:--:--';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+
+  // Calculate real-time remaining time from backend session
+  const calculateRemainingTime = () => {
+    if (!sessionData?.startedAt || !sessionData?.timeLimit) {
+      return null;
+    }
+    
+    const startTime = new Date(sessionData.startedAt);
+    const timeLimitMs = sessionData.timeLimit * 60 * 1000; // Convert minutes to milliseconds
+    const elapsed = currentTime.getTime() - startTime.getTime();
+    const remaining = Math.max(0, timeLimitMs - elapsed);
+    
+    return Math.floor(remaining / 1000); // Return seconds
+  };
+
+  const calculateElapsedTime = () => {
+    if (!sessionData?.startedAt) {
+      return 0;
+    }
+    
+    const startTime = new Date(sessionData.startedAt);
+    const elapsed = currentTime.getTime() - startTime.getTime();
+    return Math.floor(elapsed / 1000); // Return seconds
+  };
+
+  const remainingTimeSeconds = calculateRemainingTime();
+  const elapsedTimeSeconds = calculateElapsedTime();
+  
+  console.log('Timer calculation:', {
+    sessionData,
+    remainingTimeSeconds,
+    elapsedTimeSeconds,
+    currentTime: currentTime.toISOString()
+  });
+
+  // Auto-submit when time is up
+  useEffect(() => {
+    if (remainingTimeSeconds !== null && remainingTimeSeconds <= 0) {
+      handleAutoSubmitAssessment();
+    }
+  }, [remainingTimeSeconds, handleAutoSubmitAssessment]);
+
   if (!state.candidate) {
     navigate(`/assessment/${assessmentId}`);
     return null;
   }
 
-  if (localLoading) {
+  if (localLoading || sessionLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">
+            {sessionLoading ? 'Validating session...' : 'Loading challenges...'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -91,9 +222,25 @@ function ChallengeList() {
                 <p className="text-gray-600 font-medium mt-1">
                   Welcome, {state.candidate.name}
                 </p>
+                {/* Assessment Time Remaining Counter */}
+                {(sessionData?.timeLimit && remainingTimeSeconds !== null) && (
+                  <div className="flex items-center mt-2 text-sm text-gray-500">
+                    <Clock className="w-4 h-4 mr-2" />
+                    <span className="font-mono">
+                      Time Remaining: {formatAssessmentTime(remainingTimeSeconds)}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              {/* Show session info for debugging */}
+              {sessionData && (
+                <div className="text-right mr-6 text-xs text-gray-400">
+                  <div>Session: {sessionData.candidateId}</div>
+                  <div>Started: {new Date(sessionData.startedAt).toLocaleTimeString()}</div>
+                </div>
+              )}
               <div className="hidden md:flex items-center bg-gradient-to-r from-blue-50 to-sky-50 px-4 py-2 rounded-full border border-blue-100">
                 <User className="w-4 h-4 mr-2 text-blue-600" />
                 <span className="text-sm text-gray-700 font-medium">{state.candidate.email}</span>
@@ -145,14 +292,13 @@ function ChallengeList() {
               <Button
                 onClick={async () => {
                   const confirmed = confirm('Are you sure you want to submit your assessment? This action cannot be undone.');
-                  if (!confirmed) return;
+                  if (!confirmed || !assessmentId || !state.candidate) return;
                   
                   try {
                     await apiService.submitAssessment({
                       assessmentId,
                       candidateName: state.candidate.name,
-                      candidateEmail: state.candidate.email,
-                      submissions: state.submissions
+                      candidateEmail: state.candidate.email
                     });
                     
                     // Clear session after successful submission
@@ -177,7 +323,6 @@ function ChallengeList() {
             </div>
           </div>
         </Card>
-
 
         {/* Challenges List */}
         <div className="space-y-6">
@@ -223,16 +368,6 @@ function ChallengeList() {
                       >
                         {challenge.type.replace('-', ' ')}
                       </Badge>
-                      
-                      {challenge.timeLimit && (
-                        <Badge
-                          variant="default"
-                          icon={<Clock className="w-4 h-4" />}
-                          size="md"
-                        >
-                          {challenge.timeLimit} min
-                        </Badge>
-                      )}
                     </div>
 
                     <h3 className="text-2xl font-bold text-gray-800 mb-3">

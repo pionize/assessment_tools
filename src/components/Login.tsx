@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { User, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { User, Mail, ArrowRight, AlertCircle, Clock } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAssessment } from '../contexts/AssessmentContext';
-import { sessionStorage } from '../utils/sessionStorage';
 import { Button, Card } from './ui';
 
 function Login() {
@@ -49,6 +48,12 @@ function Login() {
     setLocalError('');
     setIsSubmitting(true);
 
+    if (!assessmentId) {
+      setLocalError('Assessment ID is required');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await apiService.authenticate(name, email, assessmentId);
       
@@ -59,7 +64,9 @@ function Login() {
           name, 
           email, 
           assessmentId,
-          token: response.token 
+          token: response.token,
+          timeLimit: response.timeLimit,
+          startedAt: response.startedAt
         } 
       });
 
@@ -124,6 +131,14 @@ function Login() {
               <p className="text-gray-600 text-sm mt-1">
                 {state.assessment.description}
               </p>
+              {state.assessment.timeLimit && (
+                <div className="flex items-center justify-center mt-3 text-sm text-blue-700">
+                  <Clock className="w-4 h-4 mr-2" />
+                  <span className="font-medium">
+                    Time limit: {state.assessment.timeLimit} minutes
+                  </span>
+                </div>
+              )}
             </div>
           )}
           <p className="text-gray-600">

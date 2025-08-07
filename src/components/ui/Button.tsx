@@ -1,13 +1,25 @@
 import React from 'react';
 
-const Button = ({ 
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  className?: string;
+  type?: 'button' | 'submit' | 'reset';
+  icon?: React.ReactElement | null;
+  [key: string]: any;
+}
+
+const Button: React.FC<ButtonProps> = ({ 
   children, 
   onClick, 
   variant = 'primary', 
   size = 'md', 
   disabled = false, 
   className = '', 
-  type = 'button',
+  type = 'button' as 'button' | 'submit' | 'reset',
   icon = null,
   ...props 
 }) => {

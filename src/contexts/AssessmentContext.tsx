@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import React, { useContext, useReducer, useEffect } from 'react';
 import { sessionStorage } from '../utils/sessionStorage';
+import { AssessmentContext } from './context';
+import type { AssessmentState, AssessmentAction } from './context';
 
-const AssessmentContext = createContext();
-
-const initialState = {
+const initialState: AssessmentState = {
   candidate: null,
   assessment: null,
   challenges: [],
@@ -12,12 +13,10 @@ const initialState = {
   error: null,
   submissions: {},
   completedChallenges: new Set(),
-  timeRemaining: null,
-  timerActive: false
 };
 
 // This function runs only once to initialize the state
-const init = (initialState) => {
+const init = (initialState: AssessmentState): AssessmentState => {
   const loadedState = sessionStorage.loadAppState();
   if (loadedState && loadedState.candidate) {
     return { ...initialState, ...loadedState, loading: false };
@@ -25,7 +24,7 @@ const init = (initialState) => {
   return { ...initialState, loading: false }; // Ensure loading is false if no session
 };
 
-function assessmentReducer(state, action) {
+function assessmentReducer(state: AssessmentState, action: AssessmentAction): AssessmentState {
   switch (action.type) {
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
@@ -49,13 +48,14 @@ function assessmentReducer(state, action) {
           [action.payload.challengeId]: action.payload.submission
         }
       };
-    case 'COMPLETE_CHALLENGE':
+    case 'COMPLETE_CHALLENGE': {
       const newCompleted = new Set(state.completedChallenges);
       newCompleted.add(action.payload.challengeId);
       return {
         ...state,
         completedChallenges: newCompleted
       };
+    }
     case 'RESET_ASSESSMENT':
       sessionStorage.clearSession(); // Clear storage on reset
       return { ...initialState, loading: false }; // Return a clean state
@@ -64,15 +64,13 @@ function assessmentReducer(state, action) {
   }
 }
 
-export function AssessmentProvider({ children }) {
+export function AssessmentProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(assessmentReducer, initialState, init);
 
   // This effect synchronizes state changes back to session storage
   useEffect(() => {
     // We don't save loading/error states
-    const stateToSave = { ...state };
-    delete stateToSave.loading;
-    delete stateToSave.error;
+    const { loading, error, ...stateToSave } = state;
     sessionStorage.saveAppState(stateToSave);
   }, [state]);
 

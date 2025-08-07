@@ -1,6 +1,15 @@
 import React from 'react';
 
-const Badge = ({ 
+interface BadgeProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'code' | 'open-ended' | 'multiple-choice';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  icon?: React.ReactElement | null;
+  [key: string]: any;
+}
+
+const Badge: React.FC<BadgeProps> = ({ 
   children, 
   variant = 'default', 
   size = 'md',
