@@ -23,7 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "useUnknownInCatchVariables": false,
-    "noImplicitAny": false
+    "noImplicitAny": true
   },
   "include": ["src"]
 }

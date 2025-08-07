@@ -3,8 +3,10 @@
 // Import types from context to ensure consistency
 import type { Candidate, Assessment, Challenge } from '../contexts/context';
 
+type SubmissionValue = string | string[] | { answer: string } | null;
+
 interface Submissions {
-  [challengeId: string]: any;
+  [challengeId: string]: SubmissionValue;
 }
 
 interface AppState {
