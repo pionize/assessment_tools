@@ -1,12 +1,11 @@
 import React from 'react';
 
-interface BadgeProps {
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'code' | 'open-ended' | 'multiple-choice';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   icon?: React.ReactElement | null;
-  [key: string]: any;
 }
 
 const Badge: React.FC<BadgeProps> = ({ 

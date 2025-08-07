@@ -1,15 +1,10 @@
 import React from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  className?: string;
-  type?: 'button' | 'submit' | 'reset';
   icon?: React.ReactElement | null;
-  [key: string]: any;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
