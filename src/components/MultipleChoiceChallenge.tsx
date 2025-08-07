@@ -2,8 +2,15 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, HelpCircle, ArrowLeft, Send } from 'lucide-react';
 import { Button, Card } from './ui';
 
-function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) {
-  const [answers, setAnswers] = useState({});
+interface MultipleChoiceChallengeProps {
+  challenge: any;
+  onSubmit: (submissionData: any) => Promise<void>;
+  onBack: () => void;
+  savedAnswers?: any;
+}
+
+function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }: MultipleChoiceChallengeProps) {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
   
@@ -23,7 +30,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
 
   // formatElapsedTime function removed as it's not used
 
-  const handleAnswerChange = (questionId, optionId) => {
+  const handleAnswerChange = (questionId: string, optionId: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: optionId
@@ -75,7 +82,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
     if (!showResults) return null;
 
     let correctCount = 0;
-    const results = challenge.questions.map(question => {
+    const results = challenge.questions.map((question: any) => {
       const selectedAnswer = answers[question.id];
       const isCorrect = selectedAnswer === question.correctAnswer;
       if (isCorrect) correctCount++;
@@ -192,7 +199,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
 
         {/* Questions */}
         <div className="space-y-6">
-          {challenge.questions.map((question, index) => (
+          {challenge.questions.map((question: any, index: number) => (
             <Card key={question.id}>
               <div className="flex items-start space-x-4 mb-6">
                 <div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
@@ -204,7 +211,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
                   </h3>
                   
                   <div className="space-y-3">
-                    {question.options.map((option) => {
+                    {question.options.map((option: any) => {
                       const isSelected = answers[question.id] === option.id;
                       const isCorrect = option.id === question.correctAnswer;
                       const isWrong = showResults && isSelected && !isCorrect;

@@ -64,21 +64,272 @@ const mockAssessments: Record<string, Assessment> = {
 const mockChallenges: Record<string, Challenge> = {
   'challenge-1': {
     id: 'challenge-1',
-    title: 'React Component Implementation',
+    title: 'Full-Stack React Application',
     type: 'code',
-    description: 'Create a reusable React component that displays a list of users with search functionality.',
-    instructions: `# React Component Challenge...`, // Content truncated for brevity
+    description: 'Create a complete React application with components, utilities, and tests organized in folders.',
+    instructions: `# Full-Stack React Challenge
+
+Build a React application with the following requirements:
+
+## Project Structure
+Organize your code with proper folder structure:
+- Components in \`src/components/\`
+- Utilities in \`src/utils/\`
+- Tests in \`src/tests/\`
+- Configuration in \`config/\`
+
+## Requirements
+1. Create a UserList component that displays users
+2. Add a search utility function
+3. Create unit tests for your components
+4. Add configuration files for different environments
+
+## Features to Implement
+- User listing with search functionality
+- Responsive design
+- Error handling
+- Unit tests with good coverage
+
+Use the provided folder structure and create additional files as needed.`,
     language: 'javascript',
-    timeLimit: 60,
+    timeLimit: 90,
     files: {
-      'UserList.jsx': {
-        content: '// Implement your UserList component here',
+      'src/App.jsx': {
+        content: `import React from 'react';
+import UserList from './components/UserList';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>User Management System</h1>
+      </header>
+      <main>
+        {/* TODO: Add UserList component here */}
+      </main>
+    </div>
+  );
+}
+
+export default App;`,
         language: 'javascript',
       },
-      'App.jsx': {
-        content: "import UserList from './UserList';",
+      'src/components/UserList.jsx': {
+        content: `import React, { useState, useEffect } from 'react';
+import { searchUsers } from '../utils/searchUtils';
+
+const UserList = () => {
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  // TODO: Implement component logic
+  // 1. Load users data
+  // 2. Handle search functionality
+  // 3. Display users in a responsive layout
+
+  return (
+    <div className="user-list">
+      <h2>User List</h2>
+      {/* TODO: Add search input and user display */}
+    </div>
+  );
+};
+
+export default UserList;`,
         language: 'javascript',
       },
+      'src/utils/searchUtils.js': {
+        content: `/**
+ * Utility functions for searching and filtering users
+ */
+
+/**
+ * Search users by name, email, or other fields
+ * @param {Array} users - Array of user objects
+ * @param {string} searchTerm - Search term to filter by
+ * @returns {Array} Filtered array of users
+ */
+export const searchUsers = (users, searchTerm) => {
+  // TODO: Implement search functionality
+  // Should be case-insensitive and search multiple fields
+  return users;
+};
+
+/**
+ * Sort users by specified field
+ * @param {Array} users - Array of user objects
+ * @param {string} field - Field to sort by (name, email, etc.)
+ * @param {string} direction - 'asc' or 'desc'
+ * @returns {Array} Sorted array of users
+ */
+export const sortUsers = (users, field, direction = 'asc') => {
+  // TODO: Implement sorting functionality
+  return users;
+};`,
+        language: 'javascript',
+      },
+      'src/tests/UserList.test.jsx': {
+        content: `import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import UserList from '../components/UserList';
+
+// TODO: Add comprehensive tests for UserList component
+
+describe('UserList Component', () => {
+  test('renders user list title', () => {
+    render(<UserList />);
+    expect(screen.getByText('User List')).toBeInTheDocument();
+  });
+
+  test('should display users when provided', () => {
+    // TODO: Test user display functionality
+  });
+
+  test('should filter users based on search term', () => {
+    // TODO: Test search functionality
+  });
+
+  test('should handle empty user list gracefully', () => {
+    // TODO: Test edge cases
+  });
+});`,
+        language: 'javascript',
+      },
+      'src/tests/searchUtils.test.js': {
+        content: `import { searchUsers, sortUsers } from '../utils/searchUtils';
+
+const mockUsers = [
+  { id: 1, name: 'John Doe', email: 'john@example.com' },
+  { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+  { id: 3, name: 'Bob Johnson', email: 'bob@example.com' }
+];
+
+describe('searchUsers', () => {
+  test('should return all users when search term is empty', () => {
+    // TODO: Implement test
+  });
+
+  test('should filter users by name', () => {
+    // TODO: Implement test
+  });
+
+  test('should filter users by email', () => {
+    // TODO: Implement test
+  });
+
+  test('should be case insensitive', () => {
+    // TODO: Implement test
+  });
+});
+
+describe('sortUsers', () => {
+  test('should sort users by name ascending', () => {
+    // TODO: Implement test
+  });
+
+  test('should sort users by name descending', () => {
+    // TODO: Implement test
+  });
+});`,
+        language: 'javascript',
+      },
+      'config/development.json': {
+        content: `{
+  "apiUrl": "http://localhost:3001",
+  "debugMode": true,
+  "logLevel": "debug",
+  "features": {
+    "userSearch": true,
+    "userSorting": true,
+    "userPagination": false
+  },
+  "ui": {
+    "theme": "light",
+    "itemsPerPage": 10
+  }
+}`,
+        language: 'json',
+      },
+      'config/production.json': {
+        content: `{
+  "apiUrl": "https://api.yourapp.com",
+  "debugMode": false,
+  "logLevel": "error",
+  "features": {
+    "userSearch": true,
+    "userSorting": true,
+    "userPagination": true
+  },
+  "ui": {
+    "theme": "light",
+    "itemsPerPage": 20
+  }
+}`,
+        language: 'json',
+      },
+      'package.json': {
+        content: `{
+  "name": "user-management-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  }
+}`,
+        language: 'json',
+      },
+      'README.md': {
+        content: `# User Management Application
+
+## Overview
+This is a React application for managing users with search and sorting capabilities.
+
+## Project Structure
+\`\`\`
+src/
+├── components/
+│   └── UserList.jsx
+├── utils/
+│   └── searchUtils.js
+├── tests/
+│   ├── UserList.test.jsx
+│   └── searchUtils.test.js
+└── App.jsx
+config/
+├── development.json
+└── production.json
+\`\`\`
+
+## Getting Started
+1. Install dependencies: \`npm install\`
+2. Start development server: \`npm start\`
+3. Run tests: \`npm test\`
+
+## Features
+- [x] User listing
+- [ ] Search functionality (TODO)
+- [ ] Sorting capabilities (TODO)
+- [ ] Responsive design (TODO)
+- [ ] Unit tests (TODO)
+
+## Development Notes
+Complete the TODOs in the components and utility functions to implement all required features.`,
+        language: 'markdown',
+      }
     },
   },
   'challenge-2': {
@@ -132,6 +383,39 @@ interface SubmissionResponse {
     submissionId: string;
     timestamp: string;
     message: string;
+}
+
+// Updated to match API contract
+export interface CodeSubmission {
+    challengeId: string;
+    type: 'code';
+    assessmentId: string;
+    candidateName: string;
+    candidateEmail: string;
+    files: Record<string, string>; // file path -> file content as string (matches API contract)
+    language: string;
+    timestamp: string;
+}
+
+export interface OpenEndedSubmission {
+    challengeId: string;
+    type: 'open-ended';
+    assessmentId: string;
+    candidateName: string;
+    candidateEmail: string;
+    answer: string;
+    timestamp: string;
+}
+
+export interface MultipleChoiceSubmission {
+    challengeId: string;
+    type: 'multiple-choice';
+    assessmentId: string;
+    candidateName: string;
+    candidateEmail: string;
+    answers: Record<string, string>; // questionId -> selectedOptionId
+    timestamp: string;
+    autoSubmit?: boolean;
 }
 
 interface AssessmentSubmissionResponse extends SubmissionResponse {
@@ -200,9 +484,48 @@ export const apiService = {
     return challenge;
   },
 
-  async submitChallenge(data: { challengeId: string; submission: Record<string, unknown> }): Promise<SubmissionResponse> {
+  async submitChallenge(submission: CodeSubmission | OpenEndedSubmission | MultipleChoiceSubmission): Promise<SubmissionResponse> {
     await delay(800);
-    console.log('Submitting challenge:', data);
+    console.log('Submitting challenge:', submission);
+    
+    // Validate required fields based on API contract
+    if (!submission.challengeId || !submission.assessmentId || !submission.candidateName || !submission.candidateEmail) {
+      throw new Error('Missing required submission fields');
+    }
+    
+    // Validate submission type specific fields
+    if (submission.type === 'code') {
+      const codeSubmission = submission as CodeSubmission;
+      if (!codeSubmission.files || Object.keys(codeSubmission.files).length === 0) {
+        throw new Error('Code submission must include files');
+      }
+      if (!codeSubmission.language) {
+        throw new Error('Code submission must include language');
+      }
+      
+      // Log the folder structure for debugging
+      console.log('Code submission with files:');
+      Object.keys(codeSubmission.files).forEach(filePath => {
+        console.log(`- ${filePath}: ${codeSubmission.files[filePath].length} characters`);
+        // Show folder structure
+        if (filePath.includes('/')) {
+          const parts = filePath.split('/');
+          const folder = parts.slice(0, -1).join('/');
+          const fileName = parts[parts.length - 1];
+          console.log(`  Folder: ${folder}, File: ${fileName}`);
+        }
+      });
+    } else if (submission.type === 'multiple-choice') {
+      const mcSubmission = submission as MultipleChoiceSubmission;
+      if (!mcSubmission.answers || Object.keys(mcSubmission.answers).length === 0) {
+        throw new Error('Multiple choice submission must include answers');
+      }
+    } else if (submission.type === 'open-ended') {
+      const oeSubmission = submission as OpenEndedSubmission;
+      if (!oeSubmission.answer || oeSubmission.answer.trim().length === 0) {
+        throw new Error('Open-ended submission must include answer');
+      }
+    }
     
     return {
       success: true,

@@ -43,7 +43,7 @@ function Login() {
     loadAssessment();
   }, [assessmentId, state.loading, state.assessment, state.candidate, dispatch]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError('');
     setIsSubmitting(true);

@@ -1,5 +1,11 @@
 
-const Table = ({ children, className = '', ...props }) => {
+interface TableProps {
+  children: React.ReactNode;
+  className?: string;
+  [key: string]: any;
+}
+
+const Table = ({ children, className = '', ...props }: TableProps) => {
   return (
     <div className={`overflow-x-auto ${className}`} {...props}>
       <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
@@ -9,7 +15,7 @@ const Table = ({ children, className = '', ...props }) => {
   );
 };
 
-const TableHeader = ({ children, className = '', ...props }) => {
+const TableHeader = ({ children, className = '', ...props }: TableProps) => {
   return (
     <thead className={`bg-gray-50 ${className}`} {...props}>
       {children}
@@ -17,7 +23,7 @@ const TableHeader = ({ children, className = '', ...props }) => {
   );
 };
 
-const TableBody = ({ children, className = '', ...props }) => {
+const TableBody = ({ children, className = '', ...props }: TableProps) => {
   return (
     <tbody className={className} {...props}>
       {children}
@@ -25,7 +31,7 @@ const TableBody = ({ children, className = '', ...props }) => {
   );
 };
 
-const TableRow = ({ children, className = '', ...props }) => {
+const TableRow = ({ children, className = '', ...props }: TableProps) => {
   return (
     <tr className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${className}`} {...props}>
       {children}
@@ -33,7 +39,11 @@ const TableRow = ({ children, className = '', ...props }) => {
   );
 };
 
-const TableCell = ({ children, className = '', isHeader = false, ...props }) => {
+interface TableCellProps extends TableProps {
+  isHeader?: boolean;
+}
+
+const TableCell = ({ children, className = '', isHeader = false, ...props }: TableCellProps) => {
   const Component = isHeader ? 'th' : 'td';
   const baseClasses = isHeader 
     ? 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'

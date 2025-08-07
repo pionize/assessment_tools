@@ -78,12 +78,12 @@ function ChallengeList() {
     }
   }, [assessmentId, dispatch]);
 
-  const handleTakeChallenge = (challengeId) => {
+  const handleTakeChallenge = (challengeId: string) => {
     navigate(`/assessment/${assessmentId}/challenge/${challengeId}`);
   };
 
 
-  const getTypeIcon = (type) => {
+  const getTypeIcon = (type: string) => {
     switch (type) {
       case 'code':
         return <Code className="w-5 h-5" />;
@@ -96,7 +96,7 @@ function ChallengeList() {
     }
   };
 
-  const isCompleted = (challengeId) => {
+  const isCompleted = (challengeId: string) => {
     return state.completedChallenges.has(challengeId);
   };
 
@@ -137,7 +137,7 @@ function ChallengeList() {
     }
   }, [assessmentId, state.candidate, state.submissions, dispatch, navigate]);
 
-  const formatAssessmentTime = (seconds) => {
+  const formatAssessmentTime = (seconds: number | null | undefined) => {
     if (seconds === null || seconds === undefined) return '--:--:--';
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);

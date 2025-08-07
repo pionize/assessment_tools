@@ -1,11 +1,19 @@
 
-const Card = ({ 
-  children, 
+interface CardProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'success' | 'danger' | 'info';
+  padding?: 'none' | 'sm' | 'default' | 'lg';
+  className?: string;
+  [key: string]: any;
+}
+
+const Card = ({
+  children,
   className = '', 
   variant = 'default',
   padding = 'default',
   ...props 
-}) => {
+}: CardProps) => {
   const baseClasses = 'bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg';
   
   const variantClasses = {
@@ -22,7 +30,7 @@ const Card = ({
     lg: 'p-10'
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${paddingClasses[padding]} ${className}`;
+  const classes = `${baseClasses} ${variantClasses[variant as keyof typeof variantClasses]} ${paddingClasses[padding as keyof typeof paddingClasses]} ${className}`;
 
   return (
     <div className={classes} {...props}>

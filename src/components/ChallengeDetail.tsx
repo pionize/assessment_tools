@@ -112,7 +112,7 @@ function ChallengeDetail() {
     return Math.floor(remaining / 1000); // Return seconds
   };
 
-  const formatAssessmentTime = (seconds) => {
+  const formatAssessmentTime = (seconds: number | null | undefined) => {
     if (seconds === null || seconds === undefined) return '--:--:--';
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -134,32 +134,52 @@ function ChallengeDetail() {
     setSubmitting(true);
 
     try {
-      const baseSubmission = {
-        challengeId,
-        assessmentId,
-        candidateName: state.candidate.name,
-        candidateEmail: state.candidate.email,
-        timestamp: new Date().toISOString()
-      };
-
-      let submission: Record<string, unknown> = { ...baseSubmission };
-
+      // Create submission object that matches API contract
       if (challenge.type === 'code') {
-        submission.files = files;
-        submission.language = selectedLanguage;
-        submission.type = 'code';
-      } else {
-        submission.answer = answer;
-        submission.type = 'open-ended';
-      }
+        // Convert files object to match API contract format (file path -> content string)
+        const submissionFiles: Record<string, string> = {};
+        Object.keys(files).forEach(filePath => {
+          submissionFiles[filePath] = (files as any)[filePath].content || '';
+        });
 
-      await apiService.submitChallenge({ challengeId, submission });
-      
-      // Update state
-      dispatch({
-        type: 'UPDATE_SUBMISSION',
-        payload: { challengeId, submission }
-      });
+        const codeSubmission = {
+          challengeId,
+          type: 'code' as const,
+          assessmentId,
+          candidateName: state.candidate.name,
+          candidateEmail: state.candidate.email,
+          files: submissionFiles,
+          language: selectedLanguage,
+          timestamp: new Date().toISOString()
+        };
+
+        await apiService.submitChallenge(codeSubmission);
+        
+        // Update state with internal format
+        dispatch({
+          type: 'UPDATE_SUBMISSION',
+          payload: { challengeId, submission: { files, language: selectedLanguage, type: 'code' } }
+        });
+      } else {
+        // Open-ended submission
+        const openEndedSubmission = {
+          challengeId,
+          type: 'open-ended' as const,
+          assessmentId,
+          candidateName: state.candidate.name,
+          candidateEmail: state.candidate.email,
+          answer,
+          timestamp: new Date().toISOString()
+        };
+
+        await apiService.submitChallenge(openEndedSubmission);
+        
+        // Update state
+        dispatch({
+          type: 'UPDATE_SUBMISSION',
+          payload: { challengeId, submission: { answer, type: 'open-ended' } }
+        });
+      }
 
       dispatch({
         type: 'COMPLETE_CHALLENGE',
@@ -177,16 +197,23 @@ function ChallengeDetail() {
     }
   };
 
-  const handleMultipleChoiceSubmit = async (submissionData) => {
-    if (!state.candidate) return;
+  const handleMultipleChoiceSubmit = async (submissionData: any) => {
+    if (!state.candidate || !challengeId || !assessmentId) return;
     
     try {
-      await apiService.submitChallenge({
-        ...submissionData,
+      // Create submission that matches API contract
+      const mcSubmission = {
+        challengeId,
+        type: 'multiple-choice' as const,
         assessmentId,
         candidateName: state.candidate.name,
-        candidateEmail: state.candidate.email
-      });
+        candidateEmail: state.candidate.email,
+        answers: submissionData.answers,
+        timestamp: submissionData.timestamp || new Date().toISOString(),
+        autoSubmit: submissionData.autoSubmit || false
+      };
+
+      await apiService.submitChallenge(mcSubmission);
       
       // Update state
       dispatch({
