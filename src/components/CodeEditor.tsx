@@ -3,7 +3,6 @@ import Editor from '@monaco-editor/react';
 import { 
   File, 
   Folder, 
-  Plus, 
   Trash2, 
   ChevronRight, 
   ChevronDown,
@@ -11,22 +10,29 @@ import {
   Code
 } from 'lucide-react';
 
+interface CodeEditorProps {
+  files?: Record<string, { content: string; language: string }>;
+  onFilesChange?: (files: Record<string, { content: string; language: string }>) => void;
+  selectedLanguage?: string;
+  onLanguageChange?: (language: string) => void;
+}
+
 function CodeEditor({ 
   files = {}, 
   onFilesChange, 
   selectedLanguage = 'javascript',
   onLanguageChange 
-}) {
+}: CodeEditorProps) {
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [selectedFile, setSelectedFile] = useState('');
-  const [fileStructure, setFileStructure] = useState({});
+  const [fileStructure, setFileStructure] = useState<Record<string, any>>({});
   const [showAddFile, setShowAddFile] = useState(false);
   const [showAddFolder, setShowAddFolder] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileParent, setNewFileParent] = useState('');
   const [newFolderParent, setNewFolderParent] = useState('');
-  const [contextMenu, setContextMenu] = useState(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; folderPath: string } | null>(null);
   const editorRef = useRef(null);
 
   // Language options
@@ -46,7 +52,7 @@ function CodeEditor({
 
   // Build file structure from flat files object
   useEffect(() => {
-    const structure = {};
+    const structure: any = {};
     Object.keys(files).forEach(filePath => {
       const parts = filePath.split('/');
       let current = structure;
@@ -75,7 +81,7 @@ function CodeEditor({
     }
   }, [files, selectedLanguage, selectedFile]);
 
-  const toggleFolder = (path) => {
+  const toggleFolder = (path: string) => {
     const newExpanded = new Set(expandedFolders);
     if (newExpanded.has(path)) {
       newExpanded.delete(path);
@@ -85,11 +91,11 @@ function CodeEditor({
     setExpandedFolders(newExpanded);
   };
 
-  const handleEditorDidMount = (editor) => {
+  const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
   };
 
-  const handleEditorChange = (value) => {
+  const handleEditorChange = (value: string | undefined) => {
     if (selectedFile && onFilesChange) {
       const updatedFiles = {
         ...files,
@@ -168,7 +174,7 @@ function CodeEditor({
     setContextMenu(null);
   };
 
-  const deleteFile = (filePath) => {
+  const deleteFile = (filePath: string) => {
     if (confirm(`Are you sure you want to delete ${filePath}?`)) {
       const updatedFiles = { ...files };
       delete updatedFiles[filePath];
@@ -184,7 +190,7 @@ function CodeEditor({
     }
   };
 
-  const getDefaultContent = (fileName) => {
+  const getDefaultContent = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
     switch (ext) {
       case 'js':
@@ -208,7 +214,7 @@ function CodeEditor({
     }
   };
 
-  const getLanguageFromExtension = (fileName) => {
+  const getLanguageFromExtension = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
     const extensionMap = {
       'js': 'javascript',
@@ -226,10 +232,10 @@ function CodeEditor({
       'html': 'html',
       'css': 'css'
     };
-    return extensionMap[ext] || selectedLanguage;
+    return extensionMap[ext as keyof typeof extensionMap] || selectedLanguage;
   };
 
-  const handleContextMenu = (e, folderPath) => {
+  const handleContextMenu = (e: React.MouseEvent, folderPath: string) => {
     e.preventDefault();
     e.stopPropagation();
     setContextMenu({
@@ -239,19 +245,19 @@ function CodeEditor({
     });
   };
 
-  const handleAddFileToFolder = (folderPath) => {
+  const handleAddFileToFolder = (folderPath: string) => {
     setNewFileParent(folderPath);
     setShowAddFile(true);
     setContextMenu(null);
   };
 
-  const handleAddFolderToFolder = (folderPath) => {
+  const handleAddFolderToFolder = (folderPath: string) => {
     setNewFolderParent(folderPath);
     setShowAddFolder(true);
     setContextMenu(null);
   };
 
-  const deleteFolder = (folderPath) => {
+  const deleteFolder = (folderPath: string) => {
     if (confirm(`Are you sure you want to delete the folder "${folderPath}" and all its contents?`)) {
       const updatedFiles = { ...files };
       
@@ -274,7 +280,7 @@ function CodeEditor({
     }
   };
 
-  const renderFileTree = (structure, basePath = '') => {
+  const renderFileTree = (structure: any, basePath = '') => {
     return Object.keys(structure)
       .filter(name => name !== '.gitkeep') // Hide .gitkeep files
       .map(name => {
