@@ -115,7 +115,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
               <div className="h-6 w-px bg-gray-300"></div>
               
               <div className="flex items-center space-x-2">
-                <HelpCircle className="w-5 h-5 text-purple-600" />
+                <HelpCircle className="w-5 h-5 text-blue-600" />
                 <span className="font-semibold text-gray-800">Multiple Choice</span>
               </div>
             </div>
@@ -140,9 +140,9 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
           {/* Assessment time display removed as not part of current state */}
           
           {challenge.instructions && (
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
-              <h3 className="font-semibold text-purple-800 mb-2">Instructions</h3>
-              <p className="text-purple-700">{challenge.instructions}</p>
+            <div className="bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-200 rounded-xl p-6">
+              <h3 className="font-semibold text-blue-800 mb-2">Instructions</h3>
+              <p className="text-blue-700">{challenge.instructions}</p>
             </div>
           )}
         </Card>
@@ -195,7 +195,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
           {challenge.questions.map((question, index) => (
             <Card key={question.id}>
               <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                <div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                   {index + 1}
                 </div>
                 <div className="flex-1">
@@ -222,8 +222,8 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
                                     ? 'bg-gray-100 border-gray-300 text-gray-700'
                                     : 'bg-gray-50 border-gray-200 text-gray-600'
                               : isSelected
-                                ? 'bg-purple-100 border-purple-300 text-purple-800'
-                                : 'bg-gray-50 border-gray-200 hover:border-purple-300 hover:bg-purple-50'
+                                ? 'bg-blue-100 border-blue-300 text-blue-800'
+                                : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                           }`}
                         >
                           <input
@@ -243,7 +243,7 @@ function MultipleChoiceChallenge({ challenge, onSubmit, onBack, savedAnswers }) 
                                   ? 'border-red-500 bg-red-500'
                                   : 'border-gray-400'
                               : isSelected
-                                ? 'border-purple-500 bg-purple-500'
+                                ? 'border-blue-500 bg-blue-500'
                                 : 'border-gray-400'
                           }`}>
                             {((showResults && isCorrect) || (!showResults && isSelected)) && (
