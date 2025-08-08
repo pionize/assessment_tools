@@ -451,6 +451,34 @@ interface AssessmentSession {
 	isExpired: boolean;
 }
 
+// Mock sessions storage
+interface MockSession {
+	assessmentId: string;
+	candidateName: string;
+	candidateEmail: string;
+	startedAt: string;
+	submissions: Record<string, unknown>;
+	isFinalized: boolean;
+	finalizedAt?: string;
+}
+
+const mockSessions: Record<string, MockSession> = {};
+
+// Helper functions for localStorage persistence
+function saveToLocalStorage() {
+	localStorage.setItem("mockSessions", JSON.stringify(mockSessions));
+}
+
+function loadFromLocalStorage() {
+	const stored = localStorage.getItem("mockSessions");
+	if (stored) {
+		Object.assign(mockSessions, JSON.parse(stored));
+	}
+}
+
+// Load existing sessions on initialization
+loadFromLocalStorage();
+
 export const apiService = {
 	async getAssessment(assessmentId: string): Promise<Assessment> {
 		await delay(500);
@@ -687,5 +715,97 @@ export const apiService = {
 			remainingTimeSeconds,
 			isExpired,
 		};
+	},
+
+	async authenticateCandidate(
+		assessmentId: string,
+		candidateName: string,
+		candidateEmail: string,
+	): Promise<{ success: boolean; session?: MockSession; error?: string }> {
+		await delay(500);
+
+		// Basic validation
+		if (!candidateName.trim() || !candidateEmail.trim()) {
+			return {
+				success: false,
+				error: "Name and email are required",
+			};
+		}
+
+		if (!candidateEmail.includes("@")) {
+			return {
+				success: false,
+				error: "Please enter a valid email address",
+			};
+		}
+
+		// Check if assessment exists
+		if (!mockAssessments[assessmentId]) {
+			return {
+				success: false,
+				error: "Assessment not found",
+			};
+		}
+
+		// Create or get existing session
+		const sessionKey = `${assessmentId}_${candidateEmail}`;
+		const existingSession = mockSessions[sessionKey];
+
+		if (existingSession) {
+			return {
+				success: true,
+				session: existingSession,
+			};
+		}
+
+		// Create new session
+		const newSession = {
+			assessmentId,
+			candidateName,
+			candidateEmail,
+			startedAt: new Date().toISOString(),
+			submissions: {},
+			isFinalized: false,
+		};
+
+		mockSessions[sessionKey] = newSession;
+		saveToLocalStorage();
+
+		return {
+			success: true,
+			session: newSession,
+		};
+	},
+
+	async finalizeAssessment(
+		assessmentId: string,
+		candidateEmail: string,
+	): Promise<{ success: boolean; error?: string }> {
+		await delay(500);
+
+		const sessionKey = `${assessmentId}_${candidateEmail}`;
+		const session = mockSessions[sessionKey];
+
+		if (!session) {
+			return {
+				success: false,
+				error: "Session not found",
+			};
+		}
+
+		if (session.isFinalized) {
+			return {
+				success: false,
+				error: "Assessment already finalized",
+			};
+		}
+
+		// Mark session as finalized
+		session.isFinalized = true;
+		session.finalizedAt = new Date().toISOString();
+
+		saveToLocalStorage();
+
+		return { success: true };
 	},
 };

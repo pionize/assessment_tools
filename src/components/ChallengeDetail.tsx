@@ -71,13 +71,7 @@ function ChallengeDetail() {
 		if (challengeId) {
 			loadChallenge();
 		}
-	}, [
-		challengeId,
-		assessmentId,
-		navigate,
-		dispatch,
-		state.submissions,
-	]);
+	}, [challengeId, assessmentId, navigate, dispatch, state.submissions]);
 
 	// Update current time every second for real-time timer
 	useEffect(() => {
@@ -260,9 +254,9 @@ function ChallengeDetail() {
 			alert(
 				submissionData.autoSubmit
 					? "Time's up! Your challenge has been auto-submitted."
-					: "Challenge submitted successfully!"
+					: "Challenge submitted successfully!",
 			);
-			
+
 			navigate(`/assessment/${assessmentId}/challenges`);
 		} catch (error) {
 			console.error("Error submitting challenge:", error);
