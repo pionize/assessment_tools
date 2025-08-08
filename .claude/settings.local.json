@@ -6,7 +6,10 @@
       "Bash(npx @biomejs/biome format:*)",
       "Bash(npm run build:*)",
       "Bash(npx @biomejs/biome check:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npx playwright:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run e2e:*)"
     ],
     "deny": []
   }
