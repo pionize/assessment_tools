@@ -1,5 +1,4 @@
 import Editor from "@monaco-editor/react";
-import type * as monaco from "monaco-editor";
 import {
 	ChevronDown,
 	ChevronRight,
@@ -9,6 +8,7 @@ import {
 	Folder,
 	Trash2,
 } from "lucide-react";
+import type * as monaco from "monaco-editor";
 import { useEffect, useRef, useState } from "react";
 
 interface FileTreeNode {
@@ -107,7 +107,9 @@ function CodeEditor({
 		setExpandedFolders(newExpanded);
 	};
 
-	const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
+	const handleEditorDidMount = (
+		editor: monaco.editor.IStandaloneCodeEditor,
+	) => {
 		editorRef.current = editor;
 	};
 
@@ -436,9 +438,7 @@ function CodeEditor({
 					{/* Language Selector */}
 					<select
 						value={selectedLanguage}
-						onChange={(e) =>
-							onLanguageChange?.(e.target.value)
-						}
+						onChange={(e) => onLanguageChange?.(e.target.value)}
 						className="w-full text-xs border border-gray-300 rounded px-2 py-1"
 					>
 						{languages.map((lang) => (

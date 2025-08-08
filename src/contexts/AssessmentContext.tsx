@@ -1,9 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
 import type React from "react";
 import { useContext, useEffect, useReducer } from "react";
-import { sessionStorage } from "../utils/sessionStorage";
-import type { AssessmentAction, AssessmentState, SubmissionData, Candidate, Assessment, Challenge } from "./context";
 import type { Submissions } from "../utils/sessionStorage";
+import { sessionStorage } from "../utils/sessionStorage";
+import type {
+	Assessment,
+	AssessmentAction,
+	AssessmentState,
+	Candidate,
+	Challenge,
+	SubmissionData,
+} from "./context";
 import { AssessmentContext } from "./context";
 
 const initialState: AssessmentState = {
@@ -24,42 +31,50 @@ const init = (initialState: AssessmentState): AssessmentState => {
 		// Convert sessionStorage submissions to AssessmentState format
 		const convertedSubmissions: Record<string, SubmissionData> = {};
 		if (loadedState.submissions) {
-			for (const [challengeId, value] of Object.entries(loadedState.submissions)) {
+			for (const [challengeId, value] of Object.entries(
+				loadedState.submissions,
+			)) {
 				if (value !== null) {
-					if (typeof value === 'string') {
+					if (typeof value === "string") {
 						convertedSubmissions[challengeId] = {
 							challengeId,
-							type: 'open-ended',
+							type: "open-ended",
 							answer: value,
-							timestamp: new Date().toISOString()
+							timestamp: new Date().toISOString(),
 						};
 					} else if (Array.isArray(value)) {
 						convertedSubmissions[challengeId] = {
 							challengeId,
-							type: 'code',
-							files: value.reduce((acc, file, idx) => { acc[`file${idx}`] = file; return acc; }, {} as Record<string, string>),
-							timestamp: new Date().toISOString()
+							type: "code",
+							files: value.reduce(
+								(acc, file, idx) => {
+									acc[`file${idx}`] = file;
+									return acc;
+								},
+								{} as Record<string, string>,
+							),
+							timestamp: new Date().toISOString(),
 						};
-					} else if (typeof value === 'object' && 'answer' in value) {
+					} else if (typeof value === "object" && "answer" in value) {
 						convertedSubmissions[challengeId] = {
 							challengeId,
-							type: 'open-ended',
+							type: "open-ended",
 							answer: value.answer,
-							timestamp: new Date().toISOString()
+							timestamp: new Date().toISOString(),
 						};
 					}
 				}
 			}
 		}
-		return { 
-			...initialState, 
+		return {
+			...initialState,
 			candidate: loadedState.candidate,
 			assessment: loadedState.assessment,
 			challenges: loadedState.challenges || [],
 			currentChallenge: loadedState.currentChallenge,
 			submissions: convertedSubmissions,
 			completedChallenges: loadedState.completedChallenges,
-			loading: false 
+			loading: false,
 		};
 	}
 	return { ...initialState, loading: false }; // Ensure loading is false if no session
@@ -73,7 +88,11 @@ function assessmentReducer(
 		case "SET_LOADING":
 			return { ...state, loading: action.payload as boolean };
 		case "SET_ERROR":
-			return { ...state, error: action.payload as string | null, loading: false };
+			return {
+				...state,
+				error: action.payload as string | null,
+				loading: false,
+			};
 		case "CLEAR_ERROR":
 			return { ...state, error: null };
 		case "SET_CANDIDATE":
@@ -85,7 +104,10 @@ function assessmentReducer(
 		case "SET_CURRENT_CHALLENGE":
 			return { ...state, currentChallenge: action.payload as Challenge | null };
 		case "UPDATE_SUBMISSION": {
-			const payload = action.payload as { challengeId: string; submission: SubmissionData };
+			const payload = action.payload as {
+				challengeId: string;
+				submission: SubmissionData;
+			};
 			return {
 				...state,
 				submissions: {
@@ -125,18 +147,20 @@ export function AssessmentProvider({
 		const { loading: _loading, error: _error, ...stateToSave } = state;
 		// Convert AssessmentState submissions back to sessionStorage format
 		const convertedSubmissions: Submissions = {};
-		for (const [challengeId, submission] of Object.entries(stateToSave.submissions)) {
-			if (submission.type === 'open-ended' && submission.answer) {
+		for (const [challengeId, submission] of Object.entries(
+			stateToSave.submissions,
+		)) {
+			if (submission.type === "open-ended" && submission.answer) {
 				convertedSubmissions[challengeId] = { answer: submission.answer };
-			} else if (submission.type === 'multiple-choice' && submission.answers) {
+			} else if (submission.type === "multiple-choice" && submission.answers) {
 				convertedSubmissions[challengeId] = submission.answers;
-			} else if (submission.type === 'code' && submission.files) {
+			} else if (submission.type === "code" && submission.files) {
 				convertedSubmissions[challengeId] = Object.values(submission.files);
 			}
 		}
 		sessionStorage.saveAppState({
 			...stateToSave,
-			submissions: convertedSubmissions
+			submissions: convertedSubmissions,
 		});
 	}, [state]);
 

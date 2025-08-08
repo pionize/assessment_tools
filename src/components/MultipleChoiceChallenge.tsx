@@ -74,7 +74,8 @@ function MultipleChoiceChallenge({
 		if (isSubmitting) return;
 
 		if (!autoSubmit && !isComplete()) {
-			const unanswered = (challenge.questions?.length || 0) - getAnsweredCount();
+			const unanswered =
+				(challenge.questions?.length || 0) - getAnsweredCount();
 			const confirm = window.confirm(
 				`You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Are you sure you want to submit?`,
 			);
@@ -122,7 +123,9 @@ function MultipleChoiceChallenge({
 			results,
 			correctCount,
 			totalQuestions: challenge.questions?.length || 0,
-			percentage: Math.round((correctCount / (challenge.questions?.length || 1)) * 100),
+			percentage: Math.round(
+				(correctCount / (challenge.questions?.length || 1)) * 100,
+			),
 		};
 	};
 
@@ -156,7 +159,8 @@ function MultipleChoiceChallenge({
 						<div className="flex items-center space-x-4">
 							{!showResults && (
 								<div className="text-sm text-gray-600">
-									{getAnsweredCount()}/{challenge.questions?.length || 0} answered
+									{getAnsweredCount()}/{challenge.questions?.length || 0}{" "}
+									answered
 								</div>
 							)}
 						</div>
@@ -333,13 +337,13 @@ function MultipleChoiceChallenge({
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
 								<div className="text-sm text-gray-600">
-									Progress: {getAnsweredCount()}/{challenge.questions?.length || 0}{" "}
-									questions completed
+									Progress: {getAnsweredCount()}/
+									{challenge.questions?.length || 0} questions completed
 								</div>
 								{!isComplete() && (
 									<div className="text-sm text-orange-600">
-										{(challenge.questions?.length || 0) - getAnsweredCount()} questions
-										remaining
+										{(challenge.questions?.length || 0) - getAnsweredCount()}{" "}
+										questions remaining
 									</div>
 								)}
 							</div>

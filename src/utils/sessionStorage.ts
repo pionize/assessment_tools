@@ -3,7 +3,12 @@
 // Import types from context to ensure consistency
 import type { Assessment, Candidate, Challenge } from "../contexts/context";
 
-export type SubmissionValue = string | string[] | { answer: string } | Record<string, string> | null;
+export type SubmissionValue =
+	| string
+	| string[]
+	| { answer: string }
+	| Record<string, string>
+	| null;
 
 export interface Submissions {
 	[challengeId: string]: SubmissionValue;
