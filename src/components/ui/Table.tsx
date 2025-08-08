@@ -1,59 +1,65 @@
-
-interface TableProps {
-  children: React.ReactNode;
-  className?: string;
-  [key: string]: any;
+interface TableProps extends React.HTMLAttributes<HTMLElement> {
+	children: React.ReactNode;
+	className?: string;
 }
 
-const Table = ({ children, className = '', ...props }: TableProps) => {
-  return (
-    <div className={`overflow-x-auto ${className}`} {...props}>
-      <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
-        {children}
-      </table>
-    </div>
-  );
+const Table = ({ children, className = "", ...props }: TableProps) => {
+	return (
+		<div className={`overflow-x-auto ${className}`} {...props}>
+			<table className="w-full border-collapse bg-white rounded-lg shadow-sm">
+				{children}
+			</table>
+		</div>
+	);
 };
 
-const TableHeader = ({ children, className = '', ...props }: TableProps) => {
-  return (
-    <thead className={`bg-gray-50 ${className}`} {...props}>
-      {children}
-    </thead>
-  );
+const TableHeader = ({ children, className = "", ...props }: TableProps) => {
+	return (
+		<thead className={`bg-gray-50 ${className}`} {...props}>
+			{children}
+		</thead>
+	);
 };
 
-const TableBody = ({ children, className = '', ...props }: TableProps) => {
-  return (
-    <tbody className={className} {...props}>
-      {children}
-    </tbody>
-  );
+const TableBody = ({ children, className = "", ...props }: TableProps) => {
+	return (
+		<tbody className={className} {...props}>
+			{children}
+		</tbody>
+	);
 };
 
-const TableRow = ({ children, className = '', ...props }: TableProps) => {
-  return (
-    <tr className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${className}`} {...props}>
-      {children}
-    </tr>
-  );
+const TableRow = ({ children, className = "", ...props }: TableProps) => {
+	return (
+		<tr
+			className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${className}`}
+			{...props}
+		>
+			{children}
+		</tr>
+	);
 };
 
 interface TableCellProps extends TableProps {
-  isHeader?: boolean;
+	isHeader?: boolean;
 }
 
-const TableCell = ({ children, className = '', isHeader = false, ...props }: TableCellProps) => {
-  const Component = isHeader ? 'th' : 'td';
-  const baseClasses = isHeader 
-    ? 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
-    : 'px-6 py-4 text-sm text-gray-900';
-  
-  return (
-    <Component className={`${baseClasses} ${className}`} {...props}>
-      {children}
-    </Component>
-  );
+const TableCell = ({
+	children,
+	className = "",
+	isHeader = false,
+	...props
+}: TableCellProps) => {
+	const Component = isHeader ? "th" : "td";
+	const baseClasses = isHeader
+		? "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+		: "px-6 py-4 text-sm text-gray-900";
+
+	return (
+		<Component className={`${baseClasses} ${className}`} {...props}>
+			{children}
+		</Component>
+	);
 };
 
 Table.Header = TableHeader;
