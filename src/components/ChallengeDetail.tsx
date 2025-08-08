@@ -255,6 +255,15 @@ function ChallengeDetail() {
 				type: "COMPLETE_CHALLENGE",
 				payload: { challengeId },
 			});
+
+			// Show success message and navigate back immediately
+			alert(
+				submissionData.autoSubmit
+					? "Time's up! Your challenge has been auto-submitted."
+					: "Challenge submitted successfully!"
+			);
+			
+			navigate(`/assessment/${assessmentId}/challenges`);
 		} catch (error) {
 			console.error("Error submitting challenge:", error);
 			throw error;
