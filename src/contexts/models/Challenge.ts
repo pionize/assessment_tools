@@ -15,4 +15,3 @@ export interface Challenge {
 		explanation: string;
 	}>;
 }
-

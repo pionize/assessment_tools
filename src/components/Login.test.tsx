@@ -78,14 +78,13 @@ describe("Login", () => {
 	it("should submit form with valid data", async () => {
 		const mockAuthResponse = {
 			success: true,
-			session: {
-				assessmentId: "assessment-123",
-				candidateName: "John Doe",
-				candidateEmail: "john@example.com",
-				startedAt: "2023-01-01T10:00:00.000Z",
-				submissions: {},
-				isFinalized: false,
-			},
+			candidateId: "candidate-123",
+			name: "John Doe",
+			email: "john@example.com",
+			assessmentId: "assessment-123",
+			token: "mock-token",
+			timeLimit: 60,
+			startedAt: "2023-01-01T10:00:00.000Z",
 		};
 
 		const { apiService } = await import("../services/api");

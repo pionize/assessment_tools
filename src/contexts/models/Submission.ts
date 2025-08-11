@@ -42,4 +42,3 @@ export interface MultipleChoiceSubmission {
 	timestamp: string;
 	autoSubmit?: boolean;
 }
-

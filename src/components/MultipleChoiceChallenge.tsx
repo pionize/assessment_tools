@@ -107,17 +107,25 @@ function MultipleChoiceChallenge({
 		if (!showResults) return null;
 
 		let correctCount = 0;
-		const results = (challenge.questions || []).map((question) => {
-			const selectedAnswer = answers[question.id];
-			const isCorrect = selectedAnswer === question.correctAnswer;
-			if (isCorrect) correctCount++;
+		const results = (challenge.questions || []).map(
+			(question: {
+				id: string;
+				question: string;
+				options: { id: string; text: string }[];
+				correctAnswer?: string;
+				explanation?: string;
+			}) => {
+				const selectedAnswer = answers[question.id];
+				const isCorrect = selectedAnswer === question.correctAnswer;
+				if (isCorrect) correctCount++;
 
-			return {
-				...question,
-				selectedAnswer,
-				isCorrect,
-			};
-		});
+				return {
+					...question,
+					selectedAnswer,
+					isCorrect,
+				};
+			},
+		);
 
 		return {
 			results,
@@ -236,99 +244,114 @@ function MultipleChoiceChallenge({
 
 				{/* Questions */}
 				<div className="space-y-6">
-					{(challenge.questions || []).map((question, index: number) => (
-						<Card key={question.id}>
-							<div className="flex items-start space-x-4 mb-6">
-								<div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-									{index + 1}
-								</div>
-								<div className="flex-1">
-									<h3 className="text-lg font-semibold text-gray-800 mb-4 whitespace-pre-line">
-										{question.question}
-									</h3>
-
-									<div className="space-y-3">
-										{question.options.map((option) => {
-											const isSelected = answers[question.id] === option.id;
-											const isCorrect = option.id === question.correctAnswer;
-											const isWrong = showResults && isSelected && !isCorrect;
-
-											return (
-												<label
-													key={option.id}
-													className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-														showResults
-															? isCorrect
-																? "bg-green-100 border-green-300 text-green-800"
-																: isWrong
-																	? "bg-red-100 border-red-300 text-red-800"
-																	: isSelected
-																		? "bg-gray-100 border-gray-300 text-gray-700"
-																		: "bg-gray-50 border-gray-200 text-gray-600"
-															: isSelected
-																? "bg-blue-100 border-blue-300 text-blue-800"
-																: "bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
-													}`}
-												>
-													<input
-														type="radio"
-														name={`question-${question.id}`}
-														value={option.id}
-														checked={isSelected}
-														onChange={() =>
-															!showResults &&
-															handleAnswerChange(question.id, option.id)
-														}
-														className="sr-only"
-														disabled={showResults}
-													/>
-													<div
-														className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
-															showResults
-																? isCorrect
-																	? "border-green-500 bg-green-500"
-																	: isWrong
-																		? "border-red-500 bg-red-500"
-																		: "border-gray-400"
-																: isSelected
-																	? "border-blue-500 bg-blue-500"
-																	: "border-gray-400"
-														}`}
-													>
-														{((showResults && isCorrect) ||
-															(!showResults && isSelected)) && (
-															<div className="w-2 h-2 bg-white rounded-full"></div>
-														)}
-														{showResults && isWrong && (
-															<XCircle className="w-3 h-3 text-white" />
-														)}
-													</div>
-													<span className="flex-1 font-medium">
-														{option.text}
-													</span>
-													{showResults && isCorrect && (
-														<CheckCircle className="w-5 h-5 text-green-600 ml-2" />
-													)}
-												</label>
-											);
-										})}
+					{(challenge.questions || []).map(
+						(
+							question: {
+								id: string;
+								question: string;
+								options: { id: string; text: string }[];
+								correctAnswer?: string;
+								explanation?: string;
+							},
+							index: number,
+						) => (
+							<Card key={question.id}>
+								<div className="flex items-start space-x-4 mb-6">
+									<div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-8 h-8 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+										{index + 1}
 									</div>
+									<div className="flex-1">
+										<h3 className="text-lg font-semibold text-gray-800 mb-4 whitespace-pre-line">
+											{question.question}
+										</h3>
 
-									{/* Show explanation in results */}
-									{showResults && question.explanation && (
-										<div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-											<h4 className="font-semibold text-blue-800 mb-2">
-												Explanation:
-											</h4>
-											<p className="text-blue-700 text-sm">
-												{question.explanation}
-											</p>
+										<div className="space-y-3">
+											{question.options.map(
+												(option: { id: string; text: string }) => {
+													const isSelected = answers[question.id] === option.id;
+													const isCorrect =
+														option.id === question.correctAnswer;
+													const isWrong =
+														showResults && isSelected && !isCorrect;
+
+													return (
+														<label
+															key={option.id}
+															className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+																showResults
+																	? isCorrect
+																		? "bg-green-100 border-green-300 text-green-800"
+																		: isWrong
+																			? "bg-red-100 border-red-300 text-red-800"
+																			: isSelected
+																				? "bg-gray-100 border-gray-300 text-gray-700"
+																				: "bg-gray-50 border-gray-200 text-gray-600"
+																	: isSelected
+																		? "bg-blue-100 border-blue-300 text-blue-800"
+																		: "bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+															}`}
+														>
+															<input
+																type="radio"
+																name={`question-${question.id}`}
+																value={option.id}
+																checked={isSelected}
+																onChange={() =>
+																	!showResults &&
+																	handleAnswerChange(question.id, option.id)
+																}
+																className="sr-only"
+																disabled={showResults}
+															/>
+															<div
+																className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
+																	showResults
+																		? isCorrect
+																			? "border-green-500 bg-green-500"
+																			: isWrong
+																				? "border-red-500 bg-red-500"
+																				: "border-gray-400"
+																		: isSelected
+																			? "border-blue-500 bg-blue-500"
+																			: "border-gray-400"
+																}`}
+															>
+																{((showResults && isCorrect) ||
+																	(!showResults && isSelected)) && (
+																	<div className="w-2 h-2 bg-white rounded-full"></div>
+																)}
+																{showResults && isWrong && (
+																	<XCircle className="w-3 h-3 text-white" />
+																)}
+															</div>
+															<span className="flex-1 font-medium">
+																{option.text}
+															</span>
+															{showResults && isCorrect && (
+																<CheckCircle className="w-5 h-5 text-green-600 ml-2" />
+															)}
+														</label>
+													);
+												},
+											)}
 										</div>
-									)}
+
+										{/* Show explanation in results */}
+										{showResults && question.explanation && (
+											<div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+												<h4 className="font-semibold text-blue-800 mb-2">
+													Explanation:
+												</h4>
+												<p className="text-blue-700 text-sm">
+													{question.explanation}
+												</p>
+											</div>
+										)}
+									</div>
 								</div>
-							</div>
-						</Card>
-					))}
+							</Card>
+						),
+					)}
 				</div>
 
 				{/* Submit Button */}

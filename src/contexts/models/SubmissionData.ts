@@ -8,4 +8,3 @@ export interface SubmissionData {
 	timestamp: string;
 	autoSubmit?: boolean;
 }
-

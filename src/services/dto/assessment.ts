@@ -8,4 +8,3 @@ export interface AssessmentDetailDTO {
 
 export type AssessmentDetailResponseDTO =
 	ApiResponseOutputDetail<AssessmentDetailDTO>;
-

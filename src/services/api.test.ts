@@ -15,27 +15,25 @@ describe("API Service", () => {
 	describe("authenticateCandidate", () => {
 		it("should authenticate candidate and return candidate and assessment data", async () => {
 			const result = await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 
 			expect(result).toHaveProperty("success", true);
-			expect(result).toHaveProperty("session");
-			expect(result.session).toBeDefined();
-
-			if (result.session) {
-				expect(result.session.candidateName).toBe("John Doe");
-				expect(result.session.candidateEmail).toBe("john@example.com");
-				expect(result.session.assessmentId).toBe("assessment-123");
-			}
+			expect(result).toHaveProperty("name", "John Doe");
+			expect(result).toHaveProperty("email", "john@example.com");
+			expect(result).toHaveProperty("assessmentId", "assessment-123");
+			expect(result).toHaveProperty("candidateId");
+			expect(result).toHaveProperty("token");
+			expect(result).toHaveProperty("timeLimit");
 		});
 
 		it("should return error for invalid assessment ID", async () => {
 			const result = await apiService.authenticateCandidate(
-				"invalid-id",
 				"John Doe",
 				"john@example.com",
+				"invalid-id",
 			);
 
 			expect(result).toHaveProperty("success", false);
@@ -45,23 +43,22 @@ describe("API Service", () => {
 		it("should resume existing session if valid", async () => {
 			// First authentication
 			await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 
 			// Second authentication should resume session
 			const result = await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 
-			expect(result.session).toBeDefined();
-			if (result.session) {
-				expect(result.session.candidateName).toBe("John Doe");
-				expect(result.session.candidateEmail).toBe("john@example.com");
-			}
+			expect(result).toBeDefined();
+			expect(result.name).toBe("John Doe");
+			expect(result.email).toBe("john@example.com");
+			expect(result.assessmentId).toBe("assessment-123");
 		});
 
 		it("should throw error if session expired", async () => {
@@ -70,9 +67,9 @@ describe("API Service", () => {
 			Date.now = vi.fn(() => new Date("2023-01-01T10:00:00.000Z").getTime());
 
 			await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 
 			// Fast forward time beyond limit
@@ -95,9 +92,9 @@ describe("API Service", () => {
 		it("should return session data for authenticated candidate", async () => {
 			// First authenticate
 			await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 
 			const session = await apiService.getAssessmentSession(
@@ -184,9 +181,9 @@ describe("API Service", () => {
 		beforeEach(async () => {
 			// Authenticate first
 			await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 		});
 
@@ -344,21 +341,29 @@ describe("API Service", () => {
 		beforeEach(async () => {
 			// Authenticate first
 			await apiService.authenticateCandidate(
-				"assessment-123",
 				"John Doe",
 				"john@example.com",
+				"assessment-123",
 			);
 		});
 
 		it("should finalize assessment", async () => {
 			await expect(
-				apiService.finalizeAssessment("assessment-123", "john@example.com"),
+				apiService.finalizeAssessment({
+					assessmentId: "assessment-123",
+					candidateName: "John Doe",
+					candidateEmail: "john@example.com",
+				}),
 			).resolves.not.toThrow();
 		});
 
 		it("should throw error for invalid assessment", async () => {
 			await expect(
-				apiService.finalizeAssessment("invalid-id", "john@example.com"),
+				apiService.finalizeAssessment({
+					assessmentId: "invalid-id",
+					candidateName: "John Doe",
+					candidateEmail: "john@example.com",
+				}),
 			).rejects.toThrow("No active session found");
 		});
 	});

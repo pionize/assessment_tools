@@ -2,25 +2,28 @@
 
 import type {
 	Assessment,
-	Challenge,
 	AssessmentSession,
-	SubmissionResponse,
 	AssessmentSubmissionResponse,
+	AuthResponse,
+	Challenge,
 	CodeSubmission,
-	OpenEndedSubmission,
 	MultipleChoiceSubmission,
- 	AuthResponse,
+	OpenEndedSubmission,
+	SubmissionResponse,
 } from "../contexts/context";
 
-// Re-export submission types so existing imports from services/api continue to work
+// Re-export types for external consumers
 export type {
-	SubmissionResponse,
+	Assessment,
+	AssessmentSession,
 	AssessmentSubmissionResponse,
+	AuthResponse,
+	Challenge,
 	CodeSubmission,
-	OpenEndedSubmission,
 	MultipleChoiceSubmission,
- 	AuthResponse,
-} from "../contexts/context";
+	OpenEndedSubmission,
+	SubmissionResponse,
+};
 
 type ChallengeSummary = Pick<
 	Challenge,
@@ -33,15 +36,18 @@ type ChallengeSummary = Pick<
 
 // AssessmentSession type imported from contexts
 
-import { get, post } from "./httpClient";
-import type { AuthenticateRequestDTO, AuthenticateResponseDTO } from "./dto/auth";
+import { sessionStorage as sessionStore } from "../utils/sessionStorage";
+import type { AssessmentDetailResponseDTO } from "./dto/assessment";
+import type {
+	AuthenticateRequestDTO,
+	AuthenticateResponseDTO,
+} from "./dto/auth";
 import type {
 	ChallengeDetailDTO,
 	ChallengeDetailResponseDTO,
 	ChallengeListResponseDTO,
 } from "./dto/challenge";
-import type { AssessmentDetailResponseDTO } from "./dto/assessment";
-import { sessionStorage as sessionStore } from "../utils/sessionStorage";
+import { get, post } from "./httpClient";
 
 function authHeader() {
 	const candidate = sessionStore.getCandidate?.();
@@ -62,13 +68,14 @@ function toChallengeSummary(dto: {
 		title: dto.title,
 		type: dto.type,
 		description: dto.description,
-		timeLimit: dto.time_limit,
+		timeLimit: dto.time_limit || 0,
 	};
 }
 
 function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 	// TODO: Backend may return files as string content; normalize to { content, language } strictly.
-	const normalizedFiles: Record<string, { content: string; language: string }> = {};
+	const normalizedFiles: Record<string, { content: string; language: string }> =
+		{};
 	if (dto.files) {
 		for (const [path, value] of Object.entries(dto.files)) {
 			if (typeof value === "string") {
@@ -78,9 +85,10 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 					language: dto.language || "plaintext",
 				};
 			} else if (value && typeof value === "object") {
+				const fileValue = value as { content?: string; language?: string };
 				normalizedFiles[path] = {
-					content: (value as any).content || "",
-					language: (value as any).language || dto.language || "plaintext",
+					content: fileValue.content || "",
+					language: fileValue.language || dto.language || "plaintext",
 				};
 			}
 		}
@@ -92,18 +100,19 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 		type: dto.type,
 		description: dto.description,
 		// TODO: Confirm instructions always present; domain model marks it required.
-		instructions: (dto as any).instructions || "",
-		timeLimit: (dto as any).time_limit,
+		instructions: (dto as { instructions?: string }).instructions || "",
+		timeLimit: (dto as { time_limit?: number }).time_limit || 0,
 		language: dto.language,
 		files: normalizedFiles,
 		questions: dto.questions?.map((q) => ({
 			// Normalize id to string for UI components.
 			id: String(q.id),
 			question: q.question,
-			options: q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
+			options:
+				q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
 			// TODO: DTO marks these optional; UI expects present on MC details. Guard/null-check in components if needed.
-			correctAnswer: (q as any).correctAnswer as any,
-			explanation: (q as any).explanation as any,
+			correctAnswer: (q as { correctAnswer?: string }).correctAnswer || "",
+			explanation: (q as { explanation?: string }).explanation || "",
 		})),
 	} as Challenge;
 }
@@ -114,13 +123,17 @@ export const apiService = {
 			`/assessments/${encodeURIComponent(assessmentId)}`,
 			{ headers: authHeader() },
 		);
-		const detail = (data as any)?.response_output?.detail as
-			| { id: string; title: string; description: string }
-			| undefined;
+		const detail = (
+			data as {
+				response_output?: {
+					detail?: { id: string; title: string; description: string };
+				};
+			}
+		)?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(data as any)?.response_schema?.response_message ||
-					"Failed to load assessment",
+				(data as { response_schema?: { response_message?: string } })
+					?.response_schema?.response_message || "Failed to load assessment",
 			);
 		}
 		return {
@@ -136,11 +149,12 @@ export const apiService = {
 			`/assessments/${encodeURIComponent(assessmentId)}/challenges`,
 			{ headers: authHeader() },
 		);
-		const list = (data as any)?.response_output?.content;
+		const list = (data as { response_output?: { content?: unknown } })
+			?.response_output?.content;
 		if (!Array.isArray(list)) {
 			throw new Error(
-				(data as any)?.response_schema?.response_message ||
-					"Failed to load challenges",
+				(data as { response_schema?: { response_message?: string } })
+					?.response_schema?.response_message || "Failed to load challenges",
 			);
 		}
 		return list.map(toChallengeSummary);
@@ -151,14 +165,15 @@ export const apiService = {
 			`/challenges/${encodeURIComponent(challengeId)}`,
 			{ headers: authHeader() },
 		);
-		const detail = (data as any)?.response_output?.detail;
+		const detail = (data as { response_output?: { detail?: unknown } })
+			?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(data as any)?.response_schema?.response_message ||
-					"Failed to load challenge",
+				(data as { response_schema?: { response_message?: string } })
+					?.response_schema?.response_message || "Failed to load challenge",
 			);
 		}
-		return toChallengeDetail(detail);
+		return toChallengeDetail(detail as ChallengeDetailDTO);
 	},
 
 	async submitChallenge(
@@ -191,18 +206,26 @@ export const apiService = {
 			};
 		}
 		const { data } = await post<
-			record<string, unknown>,
+			Record<string, unknown>,
 			{
-				response_output?: { detail?: { submission_id: string; message?: string } };
+				response_output?: {
+					detail?: { submission_id: string; message?: string };
+				};
 				response_schema?: { response_message?: string };
 			}
 		>("/challenges/submissions", body, { headers: authHeader() });
 
-		const detail = (data as any)?.response_output?.detail;
+		const detail = (
+			data as {
+				response_output?: {
+					detail?: { submission_id: string; message?: string };
+				};
+			}
+		)?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(data as any)?.response_schema?.response_message ||
-					"Failed to submit challenge",
+				(data as { response_schema?: { response_message?: string } })
+					?.response_schema?.response_message || "Failed to submit challenge",
 			);
 		}
 		return {
@@ -222,7 +245,11 @@ export const apiService = {
 			{ assessment_id: string },
 			{
 				response_output?: {
-					detail?: { submission_id: string; message?: string; assessment_id: string };
+					detail?: {
+						submission_id: string;
+						message?: string;
+						assessment_id: string;
+					};
 				};
 				response_schema?: { response_message?: string };
 			}
@@ -231,11 +258,21 @@ export const apiService = {
 			{ assessment_id: data.assessmentId },
 			{ headers: authHeader() },
 		);
-		const detail = (resp as any)?.response_output?.detail;
+		const detail = (
+			resp as {
+				response_output?: {
+					detail?: {
+						submission_id: string;
+						message?: string;
+						assessment_id: string;
+					};
+				};
+			}
+		)?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(resp as any)?.response_schema?.response_message ||
-					"Failed to submit assessment",
+				(resp as { response_schema?: { response_message?: string } })
+					?.response_schema?.response_message || "Failed to submit assessment",
 			);
 		}
 		return {
@@ -270,22 +307,37 @@ export const apiService = {
 			assessment_id: assessmentId,
 		});
 		// Support both shapes: response_detail or response_detail.detail
-		const rd: any = (data as any)?.response_detail;
-		const detail = rd?.detail ?? rd;
-		if (!detail?.success) {
-			const code = (data as any)?.response_schema?.response_code || "UNKNOWN";
-			const msg = (data as any)?.response_schema?.response_message || "Authentication failed";
+		const rd = (data as { response_detail?: { detail?: unknown } | unknown })
+			?.response_detail;
+		const detail = (rd as { detail?: unknown })?.detail ?? rd;
+		const detailTyped = detail as {
+			success?: boolean;
+			candidate_id?: string;
+			name?: string;
+			email?: string;
+			assessment_id?: string;
+			token?: string;
+			time_limit_minutes?: number;
+			start_at?: string;
+		};
+		if (!detailTyped?.success) {
+			const code =
+				(data as { response_schema?: { response_code?: string } })
+					?.response_schema?.response_code || "UNKNOWN";
+			const msg =
+				(data as { response_schema?: { response_message?: string } })
+					?.response_schema?.response_message || "Authentication failed";
 			throw new Error(`${code}: ${msg}`);
 		}
 		const resp: AuthResponse = {
 			success: true,
-			candidateId: detail.candidate_id,
-			name: detail.name,
-			email: detail.email,
-			assessmentId: detail.assessment_id,
-			token: detail.token,
-			timeLimit: detail.time_limit_minutes,
-			startedAt: detail.start_at,
+			candidateId: detailTyped.candidate_id || "",
+			name: detailTyped.name || "",
+			email: detailTyped.email || "",
+			assessmentId: detailTyped.assessment_id || "",
+			token: detailTyped.token || "",
+			timeLimit: detailTyped.time_limit_minutes || 0,
+			startedAt: detailTyped.start_at || new Date().toISOString(),
 		};
 		return resp;
 	},
@@ -298,8 +350,14 @@ export const apiService = {
 			throw new Error("Assessment ID and email are required");
 		}
 		const candidate = sessionStore.getCandidate();
-		if (!candidate || candidate.assessmentId !== assessmentId || candidate.email !== email) {
-			throw new Error("No active assessment session found. Please login first.");
+		if (
+			!candidate ||
+			candidate.assessmentId !== assessmentId ||
+			candidate.email !== email
+		) {
+			throw new Error(
+				"No active assessment session found. Please login first.",
+			);
 		}
 		const timeLimit = candidate.timeLimit || 0;
 		const timeLimitMs = timeLimit * 60 * 1000;
@@ -317,5 +375,23 @@ export const apiService = {
 			remainingTimeSeconds: Math.floor(remaining / 1000),
 			isExpired: remaining <= 0,
 		};
+	},
+
+	// Alias for authenticate method to maintain backward compatibility
+	authenticateCandidate: async (
+		name: string,
+		email: string,
+		assessmentId: string,
+	): Promise<AuthResponse> => {
+		return apiService.authenticate(name, email, assessmentId);
+	},
+
+	// Alias for submitAssessment method to maintain backward compatibility
+	finalizeAssessment: async (data: {
+		assessmentId: string;
+		candidateName: string;
+		candidateEmail: string;
+	}): Promise<AssessmentSubmissionResponse> => {
+		return apiService.submitAssessment(data);
 	},
 };

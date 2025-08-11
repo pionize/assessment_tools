@@ -21,4 +21,3 @@ export interface ApiResponseOutputList<TItem> {
 	response_schema: ResponseSchemaDTO;
 	response_output: { content: TItem[] };
 }
-

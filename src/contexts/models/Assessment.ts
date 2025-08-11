@@ -5,4 +5,3 @@ export interface Assessment {
 	challenges: string[];
 	timeLimit?: number;
 }
-
