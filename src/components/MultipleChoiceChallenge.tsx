@@ -3,7 +3,6 @@ import {
 	CheckCircle,
 	HelpCircle,
 	Send,
-	XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Challenge } from "../services/api";
@@ -106,34 +105,25 @@ function MultipleChoiceChallenge({
 	const getResultsData = () => {
 		if (!showResults) return null;
 
-		let correctCount = 0;
 		const results = (challenge.questions || []).map(
 			(question: {
 				id: string;
 				question: string;
 				options: { id: string; text: string }[];
-				correctAnswer?: string;
 				explanation?: string;
 			}) => {
 				const selectedAnswer = answers[question.id];
-				const isCorrect = selectedAnswer === question.correctAnswer;
-				if (isCorrect) correctCount++;
 
 				return {
 					...question,
 					selectedAnswer,
-					isCorrect,
 				};
 			},
 		);
 
 		return {
 			results,
-			correctCount,
 			totalQuestions: challenge.questions?.length || 0,
-			percentage: Math.round(
-				(correctCount / (challenge.questions?.length || 1)) * 100,
-			),
 		};
 	};
 
@@ -197,46 +187,24 @@ function MultipleChoiceChallenge({
 				{/* Results Section */}
 				{showResults && resultsData && (
 					<Card className="mb-8">
-						<div
-							className={`flex items-center justify-between p-6 rounded-xl mb-6 ${
-								resultsData.percentage >= 80
-									? "bg-green-100 border border-green-200"
-									: resultsData.percentage >= 60
-										? "bg-yellow-100 border border-yellow-200"
-										: "bg-red-100 border border-red-200"
-							}`}
-						>
+						<div className="flex items-center justify-between p-6 rounded-xl mb-6 bg-blue-100 border border-blue-200">
 							<div className="flex items-center space-x-4">
-								<div
-									className={`p-3 rounded-full ${
-										resultsData.percentage >= 80
-											? "bg-green-500"
-											: resultsData.percentage >= 60
-												? "bg-yellow-500"
-												: "bg-red-500"
-									}`}
-								>
-									{resultsData.percentage >= 80 ? (
-										<CheckCircle className="w-6 h-6 text-white" />
-									) : (
-										<XCircle className="w-6 h-6 text-white" />
-									)}
+								<div className="p-3 rounded-full bg-blue-500">
+									<CheckCircle className="w-6 h-6 text-white" />
 								</div>
 								<div>
 									<h3 className="text-2xl font-bold text-gray-800">
 										Quiz Complete!
 									</h3>
 									<p className="text-gray-600">
-										You scored {resultsData.correctCount} out of{" "}
+										You answered {Object.keys(answers).length} out of{" "}
 										{resultsData.totalQuestions} questions
 									</p>
 								</div>
 							</div>
 							<div className="text-right">
-								<div className="text-4xl font-bold text-gray-800">
-									{resultsData.percentage}%
-								</div>
-								<div className="text-sm text-gray-600">Final Score</div>
+								<div className="text-4xl font-bold text-gray-800">✓</div>
+								<div className="text-sm text-gray-600">Submitted</div>
 							</div>
 						</div>
 					</Card>
@@ -250,7 +218,6 @@ function MultipleChoiceChallenge({
 								id: string;
 								question: string;
 								options: { id: string; text: string }[];
-								correctAnswer?: string;
 								explanation?: string;
 							},
 							index: number,
@@ -269,23 +236,15 @@ function MultipleChoiceChallenge({
 											{question.options.map(
 												(option: { id: string; text: string }) => {
 													const isSelected = answers[question.id] === option.id;
-													const isCorrect =
-														option.id === question.correctAnswer;
-													const isWrong =
-														showResults && isSelected && !isCorrect;
 
 													return (
 														<label
 															key={option.id}
 															className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
 																showResults
-																	? isCorrect
-																		? "bg-green-100 border-green-300 text-green-800"
-																		: isWrong
-																			? "bg-red-100 border-red-300 text-red-800"
-																			: isSelected
-																				? "bg-gray-100 border-gray-300 text-gray-700"
-																				: "bg-gray-50 border-gray-200 text-gray-600"
+																	? isSelected
+																		? "bg-blue-100 border-blue-300 text-blue-800"
+																		: "bg-gray-50 border-gray-200 text-gray-600"
 																	: isSelected
 																		? "bg-blue-100 border-blue-300 text-blue-800"
 																		: "bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
@@ -305,31 +264,18 @@ function MultipleChoiceChallenge({
 															/>
 															<div
 																className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
-																	showResults
-																		? isCorrect
-																			? "border-green-500 bg-green-500"
-																			: isWrong
-																				? "border-red-500 bg-red-500"
-																				: "border-gray-400"
-																		: isSelected
-																			? "border-blue-500 bg-blue-500"
-																			: "border-gray-400"
+																	isSelected
+																		? "border-blue-500 bg-blue-500"
+																		: "border-gray-400"
 																}`}
 															>
-																{((showResults && isCorrect) ||
-																	(!showResults && isSelected)) && (
+																{isSelected && (
 																	<div className="w-2 h-2 bg-white rounded-full"></div>
-																)}
-																{showResults && isWrong && (
-																	<XCircle className="w-3 h-3 text-white" />
 																)}
 															</div>
 															<span className="flex-1 font-medium">
 																{option.text}
 															</span>
-															{showResults && isCorrect && (
-																<CheckCircle className="w-5 h-5 text-green-600 ml-2" />
-															)}
 														</label>
 													);
 												},

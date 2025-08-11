@@ -20,7 +20,6 @@ const mockChallenge: Challenge = {
 				{ id: "c", text: '"undefined"' },
 				{ id: "d", text: '"boolean"' },
 			],
-			correctAnswer: "b",
 			explanation:
 				'In JavaScript, typeof null returns "object" due to a historical bug in the language.',
 		},
@@ -34,7 +33,6 @@ const mockChallenge: Challenge = {
 				{ id: "c", text: "add()" },
 				{ id: "d", text: "insert()" },
 			],
-			correctAnswer: "b",
 			explanation:
 				"The push() method adds one or more elements to the end of an array.",
 		},
@@ -293,9 +291,8 @@ describe("MultipleChoiceChallenge", () => {
 		);
 
 		expect(screen.getByText("Quiz Complete!")).toBeInTheDocument();
-		expect(screen.getByText("100%")).toBeInTheDocument();
 		expect(
-			screen.getByText("You scored 2 out of 2 questions"),
+			screen.getByText("You answered 2 out of 2 questions"),
 		).toBeInTheDocument();
 	});
 

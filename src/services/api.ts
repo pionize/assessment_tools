@@ -111,7 +111,6 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 			options:
 				q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
 			// TODO: DTO marks these optional; UI expects present on MC details. Guard/null-check in components if needed.
-			correctAnswer: (q as { correctAnswer?: string }).correctAnswer || "",
 			explanation: (q as { explanation?: string }).explanation || "",
 		})),
 	} as Challenge;
