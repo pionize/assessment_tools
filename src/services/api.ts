@@ -479,6 +479,9 @@ function loadFromLocalStorage() {
 // Load existing sessions on initialization
 loadFromLocalStorage();
 
+import { post } from "./httpClient";
+import type { AuthenticateRequestDTO, AuthenticateResponseDTO } from "./dto/auth";
+
 export const apiService = {
 	async getAssessment(assessmentId: string): Promise<Assessment> {
 		await delay(500);
@@ -607,15 +610,8 @@ export const apiService = {
 		email: string,
 		assessmentId: string,
 	): Promise<AuthResponse> {
-		await delay(300);
-
 		if (!name || !email || !assessmentId) {
 			throw new Error("Name, email, and assessment ID are required");
-		}
-
-		const assessment = mockAssessments[assessmentId];
-		if (!assessment) {
-			throw new Error("Assessment not found");
 		}
 
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -623,50 +619,31 @@ export const apiService = {
 			throw new Error("Invalid email format");
 		}
 
-		// Check if user has existing session (mock backend session storage)
-		const sessionKey = `assessment_${assessmentId}_${email}`;
-		const existingSession = localStorage.getItem(sessionKey);
-		let startedAt: string;
-		let candidateId = `candidate-${email.replace("@", "_").replace(".", "_")}`;
-
-		if (existingSession) {
-			const sessionData = JSON.parse(existingSession);
-			startedAt = sessionData.startedAt;
-			candidateId = sessionData.candidateId;
-
-			// Validate session hasn't expired
-			const timeLimit = assessment.timeLimit || 180;
-			const timeLimitMs = timeLimit * 60 * 1000;
-			const elapsed = Date.now() - new Date(startedAt).getTime();
-
-			if (elapsed >= timeLimitMs) {
-				throw new Error("Assessment session has expired");
-			}
-		} else {
-			// First time login - set start time and save to "backend"
-			startedAt = new Date().toISOString();
-			localStorage.setItem(
-				sessionKey,
-				JSON.stringify({
-					candidateId,
-					startedAt,
-					name,
-					email,
-					assessmentId,
-					timeLimit: assessment.timeLimit || 180,
-				}),
-			);
-		}
-
-		return {
-			success: true,
-			candidateId,
+		const { data } = await post<
+			AuthenticateRequestDTO,
+			AuthenticateResponseDTO
+		>("/assessments/authenticate", {
 			name,
 			email,
-			assessmentId,
-			token: `token-${candidateId}-${Date.now()}`,
-			timeLimit: assessment.timeLimit || 180,
-			startedAt,
+			assessment_id: assessmentId,
+		});
+
+		if (!data?.response_detail?.success) {
+			const code = data?.response_schema?.response_code || "UNKNOWN";
+			const msg = data?.response_schema?.response_message || "Authentication failed";
+			throw new Error(`${code}: ${msg}`);
+		}
+
+		const d = data.response_detail;
+		return {
+			success: d.success,
+			candidateId: d.candidate_id,
+			name: d.name,
+			email: d.email,
+			assessmentId: d.assessment_id,
+			token: d.token,
+			timeLimit: d.time_limit_minutes,
+			startedAt: d.start_at,
 		};
 	},
 
