@@ -56,3 +56,13 @@ export async function post<TReq extends object, TRes = unknown>(
 	return handleResponse<TRes>(res);
 }
 
+export async function get<TRes = unknown>(
+	path: string,
+	init?: RequestInit,
+): Promise<ApiResponse<TRes>> {
+	const base = assertApiBaseUrl();
+	const url = joinUrl(base, path);
+	const res = await fetch(url, { method: "GET", ...(init || {}) });
+	return handleResponse<TRes>(res);
+}
+
