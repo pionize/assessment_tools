@@ -1,116 +1,37 @@
 // API service implementing real HTTP calls per docs/api-contract
 
-// --- TYPE DEFINITIONS ---
+import type {
+	Assessment,
+	Challenge,
+	AssessmentSession,
+	SubmissionResponse,
+	AssessmentSubmissionResponse,
+	CodeSubmission,
+	OpenEndedSubmission,
+	MultipleChoiceSubmission,
+ 	AuthResponse,
+} from "../contexts/context";
 
-interface CodeFile {
-	content: string;
-	language: string;
-}
+// Re-export submission types so existing imports from services/api continue to work
+export type {
+	SubmissionResponse,
+	AssessmentSubmissionResponse,
+	CodeSubmission,
+	OpenEndedSubmission,
+	MultipleChoiceSubmission,
+ 	AuthResponse,
+} from "../contexts/context";
 
-interface QuestionOption {
-	id: string;
-	text: string;
-}
-
-interface Question {
-	id: string | number;
-	question: string;
-	options: QuestionOption[];
-	correctAnswer?: string;
-	explanation?: string;
-}
-
-export interface Challenge {
-	id: string;
-	title: string;
-	type: "code" | "open-ended" | "multiple-choice";
-	description: string;
-	instructions?: string;
-	timeLimit?: number;
-	language?: string;
-	files?: Record<string, CodeFile | string>;
-	questions?: Question[];
-}
-
-export type ChallengeSummary = Pick<
+type ChallengeSummary = Pick<
 	Challenge,
 	"id" | "title" | "type" | "description" | "timeLimit"
 >;
 
-export interface Assessment {
-	id: string;
-	title: string;
-	description: string;
-	challenges?: string[];
-	timeLimit?: number;
-}
+// Submission types now imported from contexts
 
-interface SubmissionResponse {
-	success: boolean;
-	submissionId: string;
-	timestamp: string;
-	message: string;
-}
+// AuthResponse type imported from contexts
 
-export interface CodeSubmission {
-	challengeId: string;
-	type: "code";
-	assessmentId: string;
-	candidateName: string;
-	candidateEmail: string;
-	files: Record<string, string>;
-	language: string;
-	timestamp: string;
-}
-
-export interface OpenEndedSubmission {
-	challengeId: string;
-	type: "open-ended";
-	assessmentId: string;
-	candidateName: string;
-	candidateEmail: string;
-	answer: string;
-	timestamp: string;
-}
-
-export interface MultipleChoiceSubmission {
-	challengeId: string;
-	type: "multiple-choice";
-	assessmentId: string;
-	candidateName: string;
-	candidateEmail: string;
-	answers: Record<string, string>;
-	timestamp: string;
-	autoSubmit?: boolean;
-}
-
-interface AssessmentSubmissionResponse extends SubmissionResponse {
-	assessmentId: string;
-	candidateName?: string;
-	candidateEmail?: string;
-}
-
-interface AuthResponse {
-	success: boolean;
-	candidateId: string;
-	name: string;
-	email: string;
-	assessmentId: string;
-	token: string;
-	timeLimit: number;
-	startedAt?: string;
-}
-
-interface AssessmentSession {
-	assessmentId: string;
-	candidateId: string;
-	name: string;
-	email: string;
-	timeLimit: number;
-	startedAt: string;
-	remainingTimeSeconds: number;
-	isExpired: boolean;
-}
+// AssessmentSession type imported from contexts
 
 import { get, post } from "./httpClient";
 import type { AuthenticateRequestDTO, AuthenticateResponseDTO } from "./dto/auth";
@@ -146,23 +67,45 @@ function toChallengeSummary(dto: {
 }
 
 function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
+	// TODO: Backend may return files as string content; normalize to { content, language } strictly.
+	const normalizedFiles: Record<string, { content: string; language: string }> = {};
+	if (dto.files) {
+		for (const [path, value] of Object.entries(dto.files)) {
+			if (typeof value === "string") {
+				normalizedFiles[path] = {
+					content: value,
+					// TODO: Choose a better default; falling back to dto.language or 'plaintext'.
+					language: dto.language || "plaintext",
+				};
+			} else if (value && typeof value === "object") {
+				normalizedFiles[path] = {
+					content: (value as any).content || "",
+					language: (value as any).language || dto.language || "plaintext",
+				};
+			}
+		}
+	}
+
 	return {
 		id: dto.id,
 		title: dto.title,
 		type: dto.type,
 		description: dto.description,
-		instructions: dto.instructions,
-		timeLimit: dto.time_limit,
+		// TODO: Confirm instructions always present; domain model marks it required.
+		instructions: (dto as any).instructions || "",
+		timeLimit: (dto as any).time_limit,
 		language: dto.language,
-		files: dto.files,
+		files: normalizedFiles,
 		questions: dto.questions?.map((q) => ({
-			id: (q.id as unknown as string) ?? "",
+			// Normalize id to string for UI components.
+			id: String(q.id),
 			question: q.question,
 			options: q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
-			correctAnswer: (q as any).correctAnswer,
-			explanation: (q as any).explanation,
+			// TODO: DTO marks these optional; UI expects present on MC details. Guard/null-check in components if needed.
+			correctAnswer: (q as any).correctAnswer as any,
+			explanation: (q as any).explanation as any,
 		})),
-	};
+	} as Challenge;
 }
 
 export const apiService = {
@@ -184,7 +127,8 @@ export const apiService = {
 			id: detail.id,
 			title: detail.title,
 			description: detail.description,
-		};
+			// TODO: Backend assessment detail does not include time_limit. Consider deriving from authenticate response when displaying.
+		} as Assessment;
 	},
 
 	async getChallenges(assessmentId: string): Promise<ChallengeSummary[]> {
@@ -375,4 +319,3 @@ export const apiService = {
 		};
 	},
 };
-
