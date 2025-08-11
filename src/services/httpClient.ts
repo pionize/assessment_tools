@@ -65,4 +65,3 @@ export async function get<TRes = unknown>(
 	const res = await fetch(url, { method: "GET", ...(init || {}) });
 	return handleResponse<TRes>(res);
 }
-

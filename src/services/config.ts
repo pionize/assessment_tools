@@ -10,4 +10,3 @@ export function assertApiBaseUrl(): string {
 	}
 	return API_BASE_URL;
 }
-

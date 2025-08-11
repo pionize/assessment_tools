@@ -64,4 +64,3 @@ export interface SubmitAssessmentDetailDTO {
 
 export type SubmitAssessmentResponseDTO =
 	ApiResponseOutputDetail<SubmitAssessmentDetailDTO>;
-

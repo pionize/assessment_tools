@@ -7,4 +7,3 @@ export interface Candidate {
 	timeLimit: number;
 	startedAt: string;
 }
-

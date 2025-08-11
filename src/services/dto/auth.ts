@@ -17,5 +17,5 @@ export interface AuthenticateDetailDTO {
 	token: string;
 }
 
-export type AuthenticateResponseDTO = ApiResponseEnvelope<AuthenticateDetailDTO>;
-
+export type AuthenticateResponseDTO =
+	ApiResponseEnvelope<AuthenticateDetailDTO>;
