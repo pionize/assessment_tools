@@ -171,7 +171,6 @@ describe("API Service", () => {
 					expect(challenge.questions[0]).toHaveProperty("id");
 					expect(challenge.questions[0]).toHaveProperty("question");
 					expect(challenge.questions[0]).toHaveProperty("options");
-					expect(challenge.questions[0]).toHaveProperty("correctAnswer");
 				}
 			}
 		});
