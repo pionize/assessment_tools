@@ -14,14 +14,16 @@
 {
   "response_schema": {"response_code": "CODE-0000", "response_message": "Success"},
   "response_detail": {
-    "success": true,
-    "candidate_id": "candidate-1754639355070",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "assessment_id": "assessment-123",
-    "start_at": "2025-08-08T07:49:15.072113600Z",
-    "time_limit_minutes": 120,
-    "token": "<jwt>"
+    "detail": {
+      "success": true,
+      "candidate_id": "candidate-1754639355070",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "assessment_id": "assessment-123",
+      "start_at": "2025-08-08T07:49:15.072113600Z",
+      "time_limit_minutes": 120,
+      "token": "<jwt>"
+    }
   }
 }
 ```

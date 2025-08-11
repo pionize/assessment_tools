@@ -1,0 +1,71 @@
+# Node modules
+node_modules
+npm-debug.log*
+
+# Build outputs
+dist
+build
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Testing
+coverage
+test-results
+playwright-report
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Documentation (optional - remove if you want docs in container)
+README.md
+CLAUDE.md
+AGENTS.md
+TESTING.md
+docs/
+
+# Development tools
+.eslintrc*
+eslint.config.js
+tsconfig*.json
+vite.config.ts
+vitest.config.ts
+playwright.config.ts
+tailwind.config.js
+postcss.config.js
+
+# Test files
+**/*.test.*
+**/*.spec.*
+e2e/
+src/test/
