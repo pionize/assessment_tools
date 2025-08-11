@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 playwright-report/*
 test-results/*
-.claude
+.claude/*
 AGENTS.md
+.env

@@ -99,9 +99,8 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 		title: dto.title,
 		type: dto.type,
 		description: dto.description,
-		// TODO: Confirm instructions always present; domain model marks it required.
-		instructions: (dto as { instructions?: string }).instructions || "",
-		timeLimit: (dto as { time_limit?: number }).time_limit || 0,
+		instructions: dto.instructions || "",
+		timeLimit: dto.time_limit || 0,
 		language: dto.language,
 		files: normalizedFiles,
 		questions: dto.questions?.map((q) => ({
@@ -110,7 +109,6 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 			question: q.question,
 			options:
 				q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
-			// TODO: DTO marks these optional; UI expects present on MC details. Guard/null-check in components if needed.
 			explanation: (q as { explanation?: string }).explanation || "",
 		})),
 	} as Challenge;
@@ -305,10 +303,12 @@ export const apiService = {
 			email,
 			assessment_id: assessmentId,
 		});
-		// Support both shapes: response_detail or response_detail.detail
+		// Support both shapes: response_output.detail or response_detail 
+		const ro = (data as { response_output?: { detail?: unknown } })
+			?.response_output;
 		const rd = (data as { response_detail?: { detail?: unknown } | unknown })
 			?.response_detail;
-		const detail = (rd as { detail?: unknown })?.detail ?? rd;
+		const detail = ro?.detail ?? ((rd as { detail?: unknown })?.detail ?? rd);
 		const detailTyped = detail as {
 			success?: boolean;
 			candidate_id?: string;
