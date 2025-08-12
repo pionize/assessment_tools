@@ -32,7 +32,7 @@ Thumbs.db
 .git
 .gitignore
 
-# Testing
+# Testing artifacts
 coverage
 test-results
 playwright-report
@@ -47,25 +47,22 @@ pids
 *.seed
 *.pid.lock
 
-# Documentation (optional - remove if you want docs in container)
-README.md
-CLAUDE.md
-AGENTS.md
-TESTING.md
+# Docs (opsional)
 docs/
-
-# Development tools
-.eslintrc*
-eslint.config.js
-tsconfig*.json
-vite.config.ts
-vitest.config.ts
-playwright.config.ts
-tailwind.config.js
-postcss.config.js
 
 # Test files
 **/*.test.*
 **/*.spec.*
 e2e/
 src/test/
+
+!tsconfig.json
+!tsconfig*.json
+!vite.config.ts
+!vitest.config.ts
+!playwright.config.ts
+!tailwind.config.js
+!postcss.config.js
+!eslint.config.js
+!index.html
+!docker/nginx.conf
