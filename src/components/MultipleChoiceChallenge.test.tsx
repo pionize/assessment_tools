@@ -20,8 +20,6 @@ const mockChallenge: Challenge = {
 				{ id: "c", text: '"undefined"' },
 				{ id: "d", text: '"boolean"' },
 			],
-			explanation:
-				'In JavaScript, typeof null returns "object" due to a historical bug in the language.',
 		},
 		{
 			id: "q2",
@@ -33,8 +31,6 @@ const mockChallenge: Challenge = {
 				{ id: "c", text: "add()" },
 				{ id: "d", text: "insert()" },
 			],
-			explanation:
-				"The push() method adds one or more elements to the end of an array.",
 		},
 	],
 };
@@ -296,24 +292,4 @@ describe("MultipleChoiceChallenge", () => {
 		).toBeInTheDocument();
 	});
 
-	it("should show explanations in results view", () => {
-		const savedAnswers = {
-			answers: { q1: "b", q2: "b" },
-			submitted: true,
-		};
-
-		render(
-			<MultipleChoiceChallenge
-				challenge={mockChallenge}
-				onSubmit={mockOnSubmit}
-				onBack={mockOnBack}
-				savedAnswers={savedAnswers}
-			/>,
-		);
-
-		expect(screen.getByText("Explanation:")).toBeInTheDocument();
-		expect(
-			screen.getByText(/in javascript, typeof null returns "object"/i),
-		).toBeInTheDocument();
-	});
 });

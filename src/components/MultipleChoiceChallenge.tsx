@@ -110,7 +110,6 @@ function MultipleChoiceChallenge({
 				id: string;
 				question: string;
 				options: { id: string; text: string }[];
-				explanation?: string;
 			}) => {
 				const selectedAnswer = answers[question.id];
 
@@ -218,7 +217,6 @@ function MultipleChoiceChallenge({
 								id: string;
 								question: string;
 								options: { id: string; text: string }[];
-								explanation?: string;
 							},
 							index: number,
 						) => (
@@ -282,17 +280,6 @@ function MultipleChoiceChallenge({
 											)}
 										</div>
 
-										{/* Show explanation in results */}
-										{showResults && question.explanation && (
-											<div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-												<h4 className="font-semibold text-blue-800 mb-2">
-													Explanation:
-												</h4>
-												<p className="text-blue-700 text-sm">
-													{question.explanation}
-												</p>
-											</div>
-										)}
 									</div>
 								</div>
 							</Card>

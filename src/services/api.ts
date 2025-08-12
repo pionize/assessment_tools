@@ -109,7 +109,6 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 			question: q.question,
 			options:
 				q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
-			explanation: (q as { explanation?: string }).explanation || "",
 		})),
 	} as Challenge;
 }

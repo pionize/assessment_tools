@@ -11,6 +11,5 @@ export interface Challenge {
 		id: string;
 		question: string;
 		options: Array<{ id: string; text: string }>;
-		explanation: string;
 	}>;
 }
