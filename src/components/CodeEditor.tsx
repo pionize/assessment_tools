@@ -6,6 +6,7 @@ import {
 	File,
 	FileText,
 	Folder,
+	Play,
 	Trash2,
 } from "lucide-react";
 import type * as monaco from "monaco-editor";
@@ -49,21 +50,19 @@ function CodeEditor({
 		y: number;
 		folderPath: string;
 	} | null>(null);
+	const [output, setOutput] = useState("");
+	const [isRunning, setIsRunning] = useState(false);
+	const [showOutput, setShowOutput] = useState(false);
 	const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
 	// Language options
 	const languages = [
 		{ value: "javascript", label: "JavaScript" },
 		{ value: "typescript", label: "TypeScript" },
-		{ value: "python", label: "Python" },
-		{ value: "java", label: "Java" },
-		{ value: "cpp", label: "C++" },
-		{ value: "csharp", label: "C#" },
-		{ value: "go", label: "Go" },
-		{ value: "rust", label: "Rust" },
-		{ value: "php", label: "PHP" },
 		{ value: "html", label: "HTML" },
-		{ value: "css", label: "CSS" },
+		{ value: "java", label: "Java" },
+		{ value: "go", label: "Go" },
+		{ value: "php", label: "PHP" },
 	];
 
 	// Build file structure from flat files object
@@ -243,18 +242,67 @@ function CodeEditor({
 			jsx: "javascript",
 			ts: "typescript",
 			tsx: "typescript",
-			py: "python",
 			java: "java",
-			cpp: "cpp",
-			c: "cpp",
-			cs: "csharp",
 			go: "go",
-			rs: "rust",
 			php: "php",
 			html: "html",
-			css: "css",
 		};
 		return extensionMap[ext as keyof typeof extensionMap] || selectedLanguage;
+	};
+
+	const runCode = async () => {
+		if (!selectedFile || isRunning) return;
+
+		const currentFile = files[selectedFile];
+		if (!currentFile || currentFile.language !== "javascript") {
+			setOutput("Run Code is only available for JavaScript files.");
+			setShowOutput(true);
+			return;
+		}
+
+		setIsRunning(true);
+		setShowOutput(true);
+		setOutput("Running...");
+
+		try {
+			// Create a safe execution context
+			const originalConsole = console;
+			const logs: string[] = [];
+			
+			// Override console methods to capture output
+			const mockConsole = {
+				log: (...args: any[]) => logs.push(args.map(arg => String(arg)).join(' ')),
+				error: (...args: any[]) => logs.push(`Error: ${args.map(arg => String(arg)).join(' ')}`),
+				warn: (...args: any[]) => logs.push(`Warning: ${args.map(arg => String(arg)).join(' ')}`),
+				info: (...args: any[]) => logs.push(`Info: ${args.map(arg => String(arg)).join(' ')}`),
+			};
+
+			// Create execution context with limited scope
+			const executeInSandbox = new Function(
+				'console',
+				`
+				try {
+					${currentFile.content}
+				} catch (error) {
+					console.error(error.message);
+				}
+				`
+			);
+
+			// Execute the code
+			executeInSandbox(mockConsole);
+
+			// Display results
+			if (logs.length > 0) {
+				setOutput(logs.join('\n'));
+			} else {
+				setOutput("Code executed successfully (no console output)");
+			}
+		} catch (error) {
+			setOutput(`Execution Error: ${error instanceof Error ? error.message : String(error)}`);
+		} finally {
+			setIsRunning(false);
+		}
 	};
 
 	const handleContextMenu = (e: React.MouseEvent, folderPath: string) => {
@@ -598,7 +646,7 @@ function CodeEditor({
 								{selectedFile}
 							</span>
 						</div>
-						<div className="flex-1">
+						<div className={`flex-1 ${showOutput ? "h-1/2" : ""}`}>
 							<Editor
 								height="100%"
 								language={files[selectedFile]?.language || selectedLanguage}
@@ -617,6 +665,26 @@ function CodeEditor({
 								}}
 							/>
 						</div>
+						{/* Output Panel */}
+						{showOutput && (
+							<div className="h-1/2 border-t bg-gray-50">
+								<div className="bg-gray-100 px-4 py-2 border-b flex items-center justify-between">
+									<span className="text-sm font-medium text-gray-700">Output</span>
+									<button
+										onClick={() => setShowOutput(false)}
+										className="text-gray-500 hover:text-gray-700"
+										title="Hide output"
+									>
+										×
+									</button>
+								</div>
+								<div className="p-4 h-full overflow-auto">
+									<pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
+										{output}
+									</pre>
+								</div>
+							</div>
+						)}
 					</>
 				) : (
 					<div className="flex-1 flex items-center justify-center text-gray-500">

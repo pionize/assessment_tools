@@ -314,7 +314,7 @@ function ChallengeDetail() {
 		<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
 			{/* Header */}
 			<header className="bg-white/90 backdrop-blur-sm shadow-xl border-b border-white/20">
-				<div className="max-w-7xl mx-auto px-6 py-6">
+				<div className="px-6 py-4">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-6">
 							<Button
@@ -328,18 +328,18 @@ function ChallengeDetail() {
 							</Button>
 
 							<div className="flex items-center space-x-4">
-								<div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+								<div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
 									{challenge.type === "code" ? (
-										<Code className="w-6 h-6 text-white" />
+										<Code className="w-5 h-5 text-white" />
 									) : (
-										<FileText className="w-6 h-6 text-white" />
+										<FileText className="w-5 h-5 text-white" />
 									)}
 								</div>
 								<div>
-									<h1 className="text-3xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent">
+									<h1 className="text-2xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent">
 										{challenge.title}
 									</h1>
-									<div className="flex items-center mt-2 space-x-4">
+									<div className="flex items-center mt-1 space-x-4">
 										<Badge variant={challenge.type}>
 											{challenge.type.replace("-", " ")}
 										</Badge>
@@ -352,18 +352,17 @@ function ChallengeDetail() {
 												Completed
 											</Badge>
 										)}
-									</div>
 
-									{/* Assessment Time Remaining Counter */}
-									{sessionData?.timeLimit && remainingTimeSeconds !== null && (
-										<div className="flex items-center mt-3 text-sm text-gray-500">
-											<Clock className="w-4 h-4 mr-2" />
-											<span className="font-mono">
-												Time Remaining:{" "}
-												{formatAssessmentTime(remainingTimeSeconds)}
-											</span>
-										</div>
-									)}
+										{/* Assessment Time Remaining Counter */}
+										{sessionData?.timeLimit && remainingTimeSeconds !== null && (
+											<div className="flex items-center text-sm text-gray-500">
+												<Clock className="w-4 h-4 mr-2" />
+												<span className="font-mono">
+													Time: {formatAssessmentTime(remainingTimeSeconds)}
+												</span>
+											</div>
+										)}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -389,19 +388,19 @@ function ChallengeDetail() {
 				</div>
 			</header>
 
-			<div className="max-w-7xl mx-auto px-6 py-8">
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-220px)]">
+			<div className="px-6 py-4">
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)]">
 					{/* Instructions Panel */}
 					<Card padding="none" className="overflow-hidden">
-						<div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] p-6">
-							<h2 className="text-2xl font-bold text-white flex items-center">
-								<FileText className="w-6 h-6 mr-3" />
+						<div className="bg-gradient-to-r from-[#1578b9] to-[#40b3ff] p-4">
+							<h2 className="text-xl font-bold text-white flex items-center">
+								<FileText className="w-5 h-5 mr-3" />
 								Instructions
 							</h2>
 						</div>
-						<div className="p-6 overflow-auto h-full">
+						<div className="p-4 overflow-auto h-full">
 							<div className="prose prose-sm max-w-none">
-								<pre className="whitespace-pre-wrap text-base text-gray-700 font-sans leading-relaxed">
+								<pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans leading-relaxed">
 									{challenge.instructions}
 								</pre>
 							</div>
@@ -409,19 +408,19 @@ function ChallengeDetail() {
 					</Card>
 
 					{/* Answer Panel */}
-					<Card padding="none" className="overflow-hidden flex flex-col">
-						<div className="bg-gradient-to-r from-[#00487a] to-[#002957] p-6">
-							<h2 className="text-2xl font-bold text-white flex items-center">
+					<Card padding="none" className="overflow-hidden flex flex-col lg:col-span-2">
+						<div className="bg-gradient-to-r from-[#00487a] to-[#002957] p-4">
+							<h2 className="text-xl font-bold text-white flex items-center">
 								{challenge.type === "code" ? (
-									<Code className="w-6 h-6 mr-3" />
+									<Code className="w-5 h-5 mr-3" />
 								) : (
-									<FileText className="w-6 h-6 mr-3" />
+									<FileText className="w-5 h-5 mr-3" />
 								)}
 								Your Solution
 							</h2>
 						</div>
 
-						<div className="flex-1 p-6">
+						<div className="flex-1 p-4">
 							{challenge.type === "code" ? (
 								<div className="h-full">
 									<CodeEditor
@@ -445,7 +444,7 @@ function ChallengeDetail() {
 				</div>
 
 				{isCompleted && (
-					<Card variant="success" className="mt-8">
+					<Card variant="success" className="mt-4">
 						<div className="flex items-center">
 							<div className="bg-green-500 rounded-full p-2 mr-4">
 								<CheckCircle className="w-6 h-6 text-white" />
