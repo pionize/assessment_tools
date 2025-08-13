@@ -1,3 +1,4 @@
+import axios, { type AxiosResponse, type AxiosError } from "axios";
 import { assertApiBaseUrl } from "./config";
 
 export type Json =
@@ -11,13 +12,7 @@ export type Json =
 export interface ApiResponse<T> {
 	data: T;
 	status: number;
-	headers: Headers;
-}
-
-function joinUrl(base: string, path: string) {
-	const b = base.replace(/\/+$/, "");
-	const p = path.replace(/^\/+/, "");
-	return `${b}/${p}`;
+	headers: Record<string, string>;
 }
 
 interface ApiError extends Error {
@@ -25,43 +20,67 @@ interface ApiError extends Error {
 	body: unknown;
 }
 
-async function handleResponse<T>(res: Response): Promise<ApiResponse<T>> {
-	const contentType = res.headers.get("content-type") || "";
-	const isJson = contentType.includes("application/json");
-	const body = isJson ? await res.json() : await res.text();
-	if (!res.ok) {
-		const error = new Error(
-			`Request failed ${res.status}: ${typeof body === "string" ? body : JSON.stringify(body)}`,
-		) as ApiError;
-		error.status = res.status;
-		error.body = body;
-		throw error;
-	}
-	return { data: body as T, status: res.status, headers: res.headers };
+// Create axios instance with base configuration
+const createAxiosInstance = () => {
+	const baseURL = assertApiBaseUrl();
+	return axios.create({
+		baseURL,
+		headers: {
+			"Content-Type": "application/json",
+		},
+		timeout: 30000, // 30 seconds timeout
+	});
+};
+
+function handleAxiosError(error: AxiosError): never {
+	const status = error.response?.status || 0;
+	const data = error.response?.data;
+	
+	const apiError = new Error(
+		`Request failed ${status}: ${typeof data === "string" ? data : JSON.stringify(data)}`,
+	) as ApiError;
+	apiError.status = status;
+	apiError.body = data;
+	throw apiError;
 }
 
 export async function post<TReq extends object, TRes = unknown>(
 	path: string,
 	body: TReq,
-	init?: RequestInit,
+	config?: { headers?: Record<string, string> },
 ): Promise<ApiResponse<TRes>> {
-	const base = assertApiBaseUrl();
-	const url = joinUrl(base, path);
-	const res = await fetch(url, {
-		method: "POST",
-		headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
-		body: JSON.stringify(body),
-		...init,
-	});
-	return handleResponse<TRes>(res);
+	try {
+		const axiosInstance = createAxiosInstance();
+		const response: AxiosResponse<TRes> = await axiosInstance.post(path, body, {
+			headers: config?.headers,
+		});
+		
+		return {
+			data: response.data,
+			status: response.status,
+			headers: response.headers as Record<string, string>,
+		};
+	} catch (error) {
+		handleAxiosError(error as AxiosError);
+	}
 }
 
 export async function get<TRes = unknown>(
 	path: string,
-	init?: RequestInit,
+	config?: { headers?: Record<string, string> },
 ): Promise<ApiResponse<TRes>> {
-	const base = assertApiBaseUrl();
-	const url = joinUrl(base, path);
-	const res = await fetch(url, { method: "GET", ...(init || {}) });
-	return handleResponse<TRes>(res);
+	try {
+		const axiosInstance = createAxiosInstance();
+		const response: AxiosResponse<TRes> = await axiosInstance.get(path, {
+			headers: config?.headers,
+		});
+		
+		return {
+			data: response.data,
+			status: response.status,
+			headers: response.headers as Record<string, string>,
+		};
+	} catch (error) {
+		handleAxiosError(error as AxiosError);
+	}
 }
