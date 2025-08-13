@@ -251,16 +251,6 @@ function ChallengeList() {
 							</div>
 						</div>
 						<div className="flex items-center space-x-4">
-							{/* Show session info for debugging */}
-							{sessionData && (
-								<div className="text-right mr-6 text-xs text-gray-400">
-									<div>Session: {sessionData.candidateId}</div>
-									<div>
-										Started:{" "}
-										{new Date(sessionData.startedAt).toLocaleTimeString()}
-									</div>
-								</div>
-							)}
 							<div className="hidden md:flex items-center bg-gradient-to-r from-blue-50 to-sky-50 px-4 py-2 rounded-full border border-blue-100">
 								<User className="w-4 h-4 mr-2 text-blue-600" />
 								<span className="text-sm text-gray-700 font-medium">

@@ -115,7 +115,11 @@ function ChallengeDetail() {
 		const startTime = new Date(sessionData.startedAt);
 		const timeLimitMs = sessionData.timeLimit * 60 * 1000; // Convert minutes to milliseconds
 		const elapsed = currentTime.getTime() - startTime.getTime();
-		const remaining = Math.max(0, timeLimitMs - elapsed);
+		
+		// Fix for timezone issue: if elapsed is negative (start time in future),
+		// treat as if assessment just started
+		const actualElapsed = elapsed < 0 ? 0 : elapsed;
+		const remaining = Math.max(0, timeLimitMs - actualElapsed);
 
 		return Math.floor(remaining / 1000); // Return seconds
 	};
