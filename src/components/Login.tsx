@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowRight, Clock, Mail, User } from "lucide-react";
+import { AlertCircle, ArrowRight, Mail, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssessment } from "../contexts/AssessmentContext";
@@ -26,37 +26,8 @@ function Login() {
 		}
 	}, [state.loading, state.candidate, assessmentId, navigate]);
 
-	// Load assessment data if needed
-	useEffect(() => {
-		const loadAssessment = async () => {
-			if (
-				!assessmentId ||
-				state.loading ||
-				state.assessment ||
-				state.candidate
-			) {
-				return; // Skip if already loading, have assessment, or have candidate
-			}
-
-			dispatch({ type: "SET_LOADING", payload: true });
-			try {
-				const assessment = await apiService.getAssessment(assessmentId);
-				dispatch({ type: "SET_ASSESSMENT", payload: assessment });
-			} catch (error) {
-				dispatch({ type: "SET_ERROR", payload: error.message });
-			} finally {
-				dispatch({ type: "SET_LOADING", payload: false });
-			}
-		};
-
-		loadAssessment();
-	}, [
-		assessmentId,
-		state.loading,
-		state.assessment,
-		state.candidate,
-		dispatch,
-	]);
+	// Note: Removed pre-login getAssessment call
+	// Assessment data will be loaded after successful authentication
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -85,21 +56,28 @@ function Login() {
 				},
 			});
 
+			// Load assessment data after successful authentication
+			try {
+				const assessment = await apiService.getAssessment(assessmentId);
+				dispatch({ type: "SET_ASSESSMENT", payload: assessment });
+			} catch (assessmentError) {
+				console.warn("Failed to load assessment data:", assessmentError);
+				// Continue navigation even if assessment load fails
+			}
+
 			navigate(`/assessment/${assessmentId}/challenges`);
 		} catch (error) {
-			setLocalError(error.message);
+			const responseCode = error.body.response_schema.response_code;
+			console.log('error', error.body);
+			if (responseCode !== 'CODE-0000') {
+				setLocalError("Assessment not found");
+			}
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
-	if (state.loading) {
-		return (
-			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-			</div>
-		);
-	}
+	// Removed unnecessary loading state check since we don't pre-load assessment data
 
 	if (state.error) {
 		return (
@@ -138,24 +116,6 @@ function Login() {
 					<h1 className="text-3xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent mb-3">
 						Developer Assessment
 					</h1>
-					{state.assessment && (
-						<div className="text-center mb-6 p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl border border-blue-100">
-							<h2 className="text-lg font-semibold text-gray-800">
-								{state.assessment.title}
-							</h2>
-							<p className="text-gray-600 text-sm mt-1">
-								{state.assessment.description}
-							</p>
-							{state.assessment.timeLimit && (
-								<div className="flex items-center justify-center mt-3 text-sm text-blue-700">
-									<Clock className="w-4 h-4 mr-2" />
-									<span className="font-medium">
-										Time limit: {state.assessment.timeLimit} minutes
-									</span>
-								</div>
-							)}
-						</div>
-					)}
 					<p className="text-gray-600">
 						Enter your information to begin the challenge
 					</p>
@@ -229,10 +189,6 @@ function Login() {
 						{isSubmitting ? "Starting..." : "Start Assessment"}
 					</Button>
 				</form>
-
-				<div className="mt-6 text-center text-xs text-gray-500">
-					Assessment ID: {assessmentId}
-				</div>
 			</Card>
 		</div>
 	);
