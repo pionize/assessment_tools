@@ -141,19 +141,26 @@ export const apiService = {
 	},
 
 	async getChallenges(assessmentId: string): Promise<ChallengeSummary[]> {
-		const { data } = await get<ChallengeListResponseDTO>(
+		const { data } = await get<ChallengeListResponseDTO | Record<string, unknown>>(
 			`/assessments/${encodeURIComponent(assessmentId)}/challenges`,
 			{ headers: authHeader() },
 		);
-		const list = (data as { response_output?: { content?: unknown } })
-			?.response_output?.content;
-		if (!Array.isArray(list)) {
+		// Support both shapes:
+		// - { response_output: { content: [...] } }
+		// - { response_output: { list: { content: [...] } } }
+		const ro = (data as { response_output?: any })?.response_output;
+		const content = Array.isArray(ro?.content)
+			? ro.content
+			: Array.isArray(ro?.list?.content)
+				? ro.list.content
+				: undefined;
+		if (!Array.isArray(content)) {
 			throw new Error(
 				(data as { response_schema?: { response_message?: string } })
 					?.response_schema?.response_message || "Failed to load challenges",
 			);
 		}
-		return list.map(toChallengeSummary);
+		return content.map(toChallengeSummary);
 	},
 
 	async getChallengeDetails(challengeId: string): Promise<Challenge> {
