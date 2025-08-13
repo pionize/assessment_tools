@@ -6,7 +6,6 @@ import {
 	File,
 	FileText,
 	Folder,
-	Play,
 	Trash2,
 } from "lucide-react";
 import type * as monaco from "monaco-editor";
@@ -50,9 +49,6 @@ function CodeEditor({
 		y: number;
 		folderPath: string;
 	} | null>(null);
-	const [output, setOutput] = useState("");
-	const [isRunning, setIsRunning] = useState(false);
-	const [showOutput, setShowOutput] = useState(false);
 	const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
 	// Language options
@@ -250,61 +246,6 @@ function CodeEditor({
 		return extensionMap[ext as keyof typeof extensionMap] || selectedLanguage;
 	};
 
-	const runCode = async () => {
-		if (!selectedFile || isRunning) return;
-
-		const currentFile = files[selectedFile];
-		if (!currentFile || currentFile.language !== "javascript") {
-			setOutput("Run Code is only available for JavaScript files.");
-			setShowOutput(true);
-			return;
-		}
-
-		setIsRunning(true);
-		setShowOutput(true);
-		setOutput("Running...");
-
-		try {
-			// Create a safe execution context
-			const originalConsole = console;
-			const logs: string[] = [];
-			
-			// Override console methods to capture output
-			const mockConsole = {
-				log: (...args: any[]) => logs.push(args.map(arg => String(arg)).join(' ')),
-				error: (...args: any[]) => logs.push(`Error: ${args.map(arg => String(arg)).join(' ')}`),
-				warn: (...args: any[]) => logs.push(`Warning: ${args.map(arg => String(arg)).join(' ')}`),
-				info: (...args: any[]) => logs.push(`Info: ${args.map(arg => String(arg)).join(' ')}`),
-			};
-
-			// Create execution context with limited scope
-			const executeInSandbox = new Function(
-				'console',
-				`
-				try {
-					${currentFile.content}
-				} catch (error) {
-					console.error(error.message);
-				}
-				`
-			);
-
-			// Execute the code
-			executeInSandbox(mockConsole);
-
-			// Display results
-			if (logs.length > 0) {
-				setOutput(logs.join('\n'));
-			} else {
-				setOutput("Code executed successfully (no console output)");
-			}
-		} catch (error) {
-			setOutput(`Execution Error: ${error instanceof Error ? error.message : String(error)}`);
-		} finally {
-			setIsRunning(false);
-		}
-	};
-
 	const handleContextMenu = (e: React.MouseEvent, folderPath: string) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -370,9 +311,16 @@ function CodeEditor({
 					const isExpanded = expandedFolders.has(fullPath);
 					return (
 						<div key={fullPath}>
-							<div
-								className="flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group"
+							<button
+								type="button"
+								className="flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left"
 								onClick={() => toggleFolder(fullPath)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" || e.key === " ") {
+										e.preventDefault();
+										toggleFolder(fullPath);
+									}
+								}}
 								onContextMenu={(e) => handleContextMenu(e, fullPath)}
 							>
 								<div className="flex items-center">
@@ -386,6 +334,7 @@ function CodeEditor({
 								</div>
 								<div className="opacity-0 group-hover:opacity-100 flex">
 									<button
+										type="button"
 										onClick={(e) => {
 											e.stopPropagation();
 											handleAddFileToFolder(fullPath);
@@ -396,6 +345,7 @@ function CodeEditor({
 										<File className="w-3 h-3 text-gray-600" />
 									</button>
 									<button
+										type="button"
 										onClick={(e) => {
 											e.stopPropagation();
 											handleAddFolderToFolder(fullPath);
@@ -406,6 +356,7 @@ function CodeEditor({
 										<Folder className="w-3 h-3 text-gray-600" />
 									</button>
 									<button
+										type="button"
 										onClick={(e) => {
 											e.stopPropagation();
 											deleteFolder(fullPath);
@@ -416,7 +367,7 @@ function CodeEditor({
 										<Trash2 className="w-3 h-3 text-red-600" />
 									</button>
 								</div>
-							</div>
+							</button>
 							{isExpanded && (
 								<div className="ml-4">
 									{renderFileTree(item.children || {}, fullPath)}
@@ -426,14 +377,21 @@ function CodeEditor({
 					);
 				} else {
 					return (
-						<div
+						<button
 							key={fullPath}
-							className={`flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group ${
+							type="button"
+							className={`flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left ${
 								selectedFile === fullPath
 									? "bg-blue-50 border-l-2 border-blue-500"
 									: ""
 							}`}
 							onClick={() => setSelectedFile(fullPath)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									e.preventDefault();
+									setSelectedFile(fullPath);
+								}
+							}}
 						>
 							<div className="flex items-center">
 								<File className="w-4 h-4 mr-2 text-gray-500" />
@@ -444,6 +402,7 @@ function CodeEditor({
 								</span>
 							</div>
 							<button
+								type="button"
 								onClick={(e) => {
 									e.stopPropagation();
 									deleteFile(fullPath);
@@ -452,7 +411,7 @@ function CodeEditor({
 							>
 								<Trash2 className="w-3 h-3" />
 							</button>
-						</div>
+						</button>
 					);
 				}
 			});
@@ -467,6 +426,7 @@ function CodeEditor({
 						<span className="text-sm font-medium text-gray-700">Files</span>
 						<div className="flex space-x-1">
 							<button
+								type="button"
 								onClick={() => setShowAddFile(true)}
 								className="p-1 hover:bg-gray-200 rounded"
 								title="Add file"
@@ -474,6 +434,7 @@ function CodeEditor({
 								<File className="w-4 h-4 text-gray-600" />
 							</button>
 							<button
+								type="button"
 								onClick={() => setShowAddFolder(true)}
 								className="p-1 hover:bg-gray-200 rounded"
 								title="Add folder"
@@ -526,10 +487,10 @@ function CodeEditor({
 								value={newFileName}
 								onChange={(e) => setNewFileName(e.target.value)}
 								className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
-								autoFocus
 							/>
 							<div className="flex justify-end space-x-2">
 								<button
+									type="button"
 									onClick={() => {
 										setShowAddFile(false);
 										setNewFileParent("");
@@ -540,6 +501,7 @@ function CodeEditor({
 									Cancel
 								</button>
 								<button
+									type="button"
 									onClick={addFile}
 									className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
 								>
@@ -567,10 +529,10 @@ function CodeEditor({
 								value={newFolderName}
 								onChange={(e) => setNewFolderName(e.target.value)}
 								className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
-								autoFocus
 							/>
 							<div className="flex justify-end space-x-2">
 								<button
+									type="button"
 									onClick={() => {
 										setShowAddFolder(false);
 										setNewFolderParent("");
@@ -581,6 +543,7 @@ function CodeEditor({
 									Cancel
 								</button>
 								<button
+									type="button"
 									onClick={addFolder}
 									className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
 								>
@@ -594,9 +557,16 @@ function CodeEditor({
 				{/* Context Menu */}
 				{contextMenu && (
 					<>
-						<div
-							className="fixed inset-0 z-40"
+						<button
+							type="button"
+							className="fixed inset-0 z-40 bg-transparent border-none p-0 m-0"
 							onClick={() => setContextMenu(null)}
+							onKeyDown={(e) => {
+								if (e.key === "Escape") {
+									setContextMenu(null);
+								}
+							}}
+							aria-label="Close context menu"
 						/>
 						<div
 							className="fixed bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50"
@@ -607,6 +577,7 @@ function CodeEditor({
 							}}
 						>
 							<button
+								type="button"
 								onClick={() => handleAddFileToFolder(contextMenu.folderPath)}
 								className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
 							>
@@ -614,6 +585,7 @@ function CodeEditor({
 								Add File
 							</button>
 							<button
+								type="button"
 								onClick={() => handleAddFolderToFolder(contextMenu.folderPath)}
 								className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
 							>
@@ -622,6 +594,7 @@ function CodeEditor({
 							</button>
 							<hr className="my-1" />
 							<button
+								type="button"
 								onClick={() => {
 									deleteFolder(contextMenu.folderPath);
 									setContextMenu(null);
@@ -646,7 +619,7 @@ function CodeEditor({
 								{selectedFile}
 							</span>
 						</div>
-						<div className={`flex-1 ${showOutput ? "h-1/2" : ""}`}>
+						<div className="flex-1">
 							<Editor
 								height="100%"
 								language={files[selectedFile]?.language || selectedLanguage}
@@ -665,26 +638,6 @@ function CodeEditor({
 								}}
 							/>
 						</div>
-						{/* Output Panel */}
-						{showOutput && (
-							<div className="h-1/2 border-t bg-gray-50">
-								<div className="bg-gray-100 px-4 py-2 border-b flex items-center justify-between">
-									<span className="text-sm font-medium text-gray-700">Output</span>
-									<button
-										onClick={() => setShowOutput(false)}
-										className="text-gray-500 hover:text-gray-700"
-										title="Hide output"
-									>
-										×
-									</button>
-								</div>
-								<div className="p-4 h-full overflow-auto">
-									<pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
-										{output}
-									</pre>
-								</div>
-							</div>
-						)}
 					</>
 				) : (
 					<div className="flex-1 flex items-center justify-center text-gray-500">

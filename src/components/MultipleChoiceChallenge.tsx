@@ -1,9 +1,4 @@
-import {
-	ArrowLeft,
-	CheckCircle,
-	HelpCircle,
-	Send,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle, HelpCircle, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Challenge } from "../services/api";
 import { Button, Card } from "./ui";
@@ -279,7 +274,6 @@ function MultipleChoiceChallenge({
 												},
 											)}
 										</div>
-
 									</div>
 								</div>
 							</Card>

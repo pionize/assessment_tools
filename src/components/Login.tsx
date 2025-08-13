@@ -68,8 +68,8 @@ function Login() {
 			navigate(`/assessment/${assessmentId}/challenges`);
 		} catch (error) {
 			const responseCode = error.body.response_schema.response_code;
-			console.log('error', error.body);
-			if (responseCode !== 'CODE-0000') {
+			console.log("error", error.body);
+			if (responseCode !== "CODE-0000") {
 				setLocalError("Assessment not found");
 			}
 		} finally {

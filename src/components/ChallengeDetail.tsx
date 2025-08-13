@@ -115,7 +115,7 @@ function ChallengeDetail() {
 		const startTime = new Date(sessionData.startedAt);
 		const timeLimitMs = sessionData.timeLimit * 60 * 1000; // Convert minutes to milliseconds
 		const elapsed = currentTime.getTime() - startTime.getTime();
-		
+
 		// Fix for timezone issue: if elapsed is negative (start time in future),
 		// treat as if assessment just started
 		const actualElapsed = elapsed < 0 ? 0 : elapsed;
@@ -358,14 +358,15 @@ function ChallengeDetail() {
 										)}
 
 										{/* Assessment Time Remaining Counter */}
-										{sessionData?.timeLimit && remainingTimeSeconds !== null && (
-											<div className="flex items-center text-sm text-gray-500">
-												<Clock className="w-4 h-4 mr-2" />
-												<span className="font-mono">
-													Time: {formatAssessmentTime(remainingTimeSeconds)}
-												</span>
-											</div>
-										)}
+										{sessionData?.timeLimit &&
+											remainingTimeSeconds !== null && (
+												<div className="flex items-center text-sm text-gray-500">
+													<Clock className="w-4 h-4 mr-2" />
+													<span className="font-mono">
+														Time: {formatAssessmentTime(remainingTimeSeconds)}
+													</span>
+												</div>
+											)}
 									</div>
 								</div>
 							</div>
@@ -412,7 +413,10 @@ function ChallengeDetail() {
 					</Card>
 
 					{/* Answer Panel */}
-					<Card padding="none" className="overflow-hidden flex flex-col lg:col-span-2">
+					<Card
+						padding="none"
+						className="overflow-hidden flex flex-col lg:col-span-2"
+					>
 						<div className="bg-gradient-to-r from-[#00487a] to-[#002957] p-4">
 							<h2 className="text-xl font-bold text-white flex items-center">
 								{challenge.type === "code" ? (

@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse, type AxiosError } from "axios";
+import axios, { type AxiosError, type AxiosResponse } from "axios";
 import { assertApiBaseUrl } from "./config";
 
 export type Json =
@@ -35,7 +35,7 @@ const createAxiosInstance = () => {
 function handleAxiosError(error: AxiosError): never {
 	const status = error.response?.status || 0;
 	const data = error.response?.data;
-	
+
 	const apiError = new Error(
 		`Request failed ${status}: ${typeof data === "string" ? data : JSON.stringify(data)}`,
 	) as ApiError;
@@ -54,7 +54,7 @@ export async function post<TReq extends object, TRes = unknown>(
 		const response: AxiosResponse<TRes> = await axiosInstance.post(path, body, {
 			headers: config?.headers,
 		});
-		
+
 		return {
 			data: response.data,
 			status: response.status,
@@ -74,7 +74,7 @@ export async function get<TRes = unknown>(
 		const response: AxiosResponse<TRes> = await axiosInstance.get(path, {
 			headers: config?.headers,
 		});
-		
+
 		return {
 			data: response.data,
 			status: response.status,

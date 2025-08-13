@@ -86,7 +86,7 @@ describe("Card", () => {
 
 	it("should pass through additional props", () => {
 		render(
-			<Card data-testid="card" role="banner" aria-label="Test card">
+			<Card data-testid="card" aria-label="Test card">
 				Card content
 			</Card>,
 		);

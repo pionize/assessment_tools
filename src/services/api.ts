@@ -141,14 +141,22 @@ export const apiService = {
 	},
 
 	async getChallenges(assessmentId: string): Promise<ChallengeSummary[]> {
-		const { data } = await get<ChallengeListResponseDTO | Record<string, unknown>>(
-			`/assessments/${encodeURIComponent(assessmentId)}/challenges`,
-			{ headers: authHeader() },
-		);
+		const { data } = await get<
+			ChallengeListResponseDTO | Record<string, unknown>
+		>(`/assessments/${encodeURIComponent(assessmentId)}/challenges`, {
+			headers: authHeader(),
+		});
 		// Support both shapes:
 		// - { response_output: { content: [...] } }
 		// - { response_output: { list: { content: [...] } } }
-		const ro = (data as { response_output?: any })?.response_output;
+		const ro = (
+			data as {
+				response_output?: {
+					content?: unknown[];
+					list?: { content?: unknown[] };
+				};
+			}
+		)?.response_output;
 		const content = Array.isArray(ro?.content)
 			? ro.content
 			: Array.isArray(ro?.list?.content)
@@ -160,7 +168,17 @@ export const apiService = {
 					?.response_schema?.response_message || "Failed to load challenges",
 			);
 		}
-		return content.map(toChallengeSummary);
+		return content.map((item) =>
+			toChallengeSummary(
+				item as {
+					id: string;
+					title: string;
+					type: "code" | "open-ended" | "multiple-choice";
+					description: string;
+					time_limit?: number;
+				},
+			),
+		);
 	},
 
 	async getChallengeDetails(challengeId: string): Promise<Challenge> {
@@ -200,7 +218,7 @@ export const apiService = {
 				...body,
 				multiple_choice_answers: Object.entries(answers).map(
 					([questionId, optionId]) => ({
-						question_id: isNaN(Number(questionId))
+						question_id: Number.isNaN(Number(questionId))
 							? questionId
 							: Number(questionId),
 						option_id: optionId,
@@ -309,12 +327,12 @@ export const apiService = {
 			email,
 			assessment_id: assessmentId,
 		});
-		// Support both shapes: response_output.detail or response_detail 
+		// Support both shapes: response_output.detail or response_detail
 		const ro = (data as { response_output?: { detail?: unknown } })
 			?.response_output;
 		const rd = (data as { response_detail?: { detail?: unknown } | unknown })
 			?.response_detail;
-		const detail = ro?.detail ?? ((rd as { detail?: unknown })?.detail ?? rd);
+		const detail = ro?.detail ?? (rd as { detail?: unknown })?.detail ?? rd;
 		const detailTyped = detail as {
 			success?: boolean;
 			candidate_id?: string;

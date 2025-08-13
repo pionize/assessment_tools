@@ -291,5 +291,4 @@ describe("MultipleChoiceChallenge", () => {
 			screen.getByText("You answered 2 out of 2 questions"),
 		).toBeInTheDocument();
 	});
-
 });
