@@ -21,29 +21,34 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    assessments: {
-      id: string;
-      title: string;
-      description: string;
-      status: 'draft' | 'active' | 'archived';
-      challengeCount: number;
-      candidateCount: number;
-      timeLimit: number; // minutes
-      passThreshold: number; // percentage
-      createdBy: {
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    list: {
+      content: {
         id: string;
-        name: string;
-      };
-      createdAt: string;
-      updatedAt: string;
-    }[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
+        title: string;
+        description: string;
+        status: 'draft' | 'active' | 'archived';
+        challenge_count: number;
+        candidate_count: number;
+        time_limit: number; // minutes
+        pass_threshold: number; // percentage
+        created_by: {
+          id: string;
+          name: string;
+        };
+        created_at: string;
+        updated_at: string;
+      }[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+      }
     }
   }
 }
@@ -65,22 +70,27 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
 **Success Response (201):**
 ```typescript
 {
-  success: true;
-  data: {
-    id: string;
-    title: string;
-    description: string;
-    instructions: string;
-    timeLimit: number;
-    passThreshold: number;
-    status: 'draft';
-    challengeCount: 0;
-    createdBy: {
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
       id: string;
-      name: string;
-    };
-    createdAt: string;
-    updatedAt: string;
+      title: string;
+      description: string;
+      instructions: string;
+      time_limit: number;
+      pass_threshold: number;
+      status: 'draft';
+      challenge_count: 0;
+      created_by: {
+        id: string;
+        name: string;
+      };
+      created_at: string;
+      updated_at: string;
+    }
   }
 }
 ```
@@ -89,31 +99,36 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    id: string;
-    title: string;
-    description: string;
-    instructions: string;
-    timeLimit: number;
-    passThreshold: number;
-    status: 'draft' | 'active' | 'archived';
-    challengeCount: number;
-    candidateCount: number;
-    submissionCount: number;
-    averageScore: number | null;
-    challenges: {
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
       id: string;
       title: string;
-      type: 'code' | 'multiple-choice' | 'open-ended';
-      order: number;
-    }[];
-    createdBy: {
-      id: string;
-      name: string;
-    };
-    createdAt: string;
-    updatedAt: string;
+      description: string;
+      instructions: string;
+      time_limit: number;
+      pass_threshold: number;
+      status: 'draft' | 'active' | 'archived';
+      challenge_count: number;
+      candidate_count: number;
+      submission_count: number;
+      average_score: number | null;
+      challenges: {
+        id: string;
+        title: string;
+        type: 'code' | 'multiple-choice' | 'open-ended';
+        order: number;
+      }[];
+      created_by: {
+        id: string;
+        name: string;
+      };
+      created_at: string;
+      updated_at: string;
+    }
   }
 }
 ```
@@ -143,24 +158,29 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
 ```typescript
 // 400 - Validation errors
 {
-  success: false;
-  error: "Validation failed";
-  details: {
-    field: string;
-    message: string;
-  }[];
+  response_schema: {
+    response_code: "CODE-0001";
+    response_message: "Validation failed";
+  };
+  response_output: null;
 }
 
-// 409 - Business rule violations
+// 409 - Business rule violations  
 {
-  success: false;
-  error: "Cannot archive assessment with active submissions";
+  response_schema: {
+    response_code: "CODE-0002";
+    response_message: "Cannot archive assessment with active submissions";
+  };
+  response_output: null;
 }
 
 // 404 - Not found
 {
-  success: false;
-  error: "Assessment not found";
+  response_schema: {
+    response_code: "CODE-0003";
+    response_message: "Assessment not found";
+  };
+  response_output: null;
 }
 ```
 

@@ -22,44 +22,52 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge bertipe C
       readonly: boolean;      // If true, candidate cannot edit
       hidden: boolean;        // If true, not visible to candidate initially
     }
-  };
-  testCases?: {
-    id: string;
-    name: string;
-    input: string;
-    expectedOutput: string;
-    isPublic: boolean;        // If true, visible to candidate
-    points: number;           // Points for this test case
-  }[];
-  tags?: string[];           // Optional categorization tags
+  };        // Optional categorization tags
 }
 ```
 
 **Success Response (201):**
 ```typescript
 {
-  success: true;
-  data: {
-    id: string;
-    title: string;
-    description: string;
-    instructions: string;
-    type: 'code';
-    language: string;
-    timeLimit: number;
-    points: number;
-    difficulty: string;
-    files: Record<string, FileTemplate>;
-    testCases: TestCase[];
-    tags: string[];
-    version: 1;
-    status: 'draft';
-    createdBy: {
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
       id: string;
-      name: string;
-    };
-    createdAt: string;
-    updatedAt: string;
+      title: string;
+      description: string;
+      instructions: string;
+      type: 'code';
+      language: string;
+      time_limit: number;
+      points: number;
+      difficulty: string;
+      files: {
+        [fileName: string]: {
+          content: string;
+          language: string;
+        }
+      };
+      test_cases?: {
+        id: string;
+        name: string;
+        input: string;
+        expected_output: string;
+        is_public: boolean;
+        points: number;
+      }[];
+      tags: string[];
+      version: 1;
+      status: 'draft';
+      created_by: {
+        id: string;
+        name: string;
+      };
+      created_at: string;
+      updated_at: string;
+    }
   }
 }
 ```
@@ -68,43 +76,49 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge bertipe C
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    id: string;
-    title: string;
-    description: string;
-    instructions: string;
-    type: 'code';
-    language: string;
-    timeLimit: number;
-    points: number;
-    difficulty: 'easy' | 'medium' | 'hard';
-    files: {
-      [fileName: string]: {
-        content: string;
-        readonly: boolean;
-        hidden: boolean;
-      }
-    };
-    testCases: {
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
       id: string;
-      name: string;
-      input: string;
-      expectedOutput: string;
-      isPublic: boolean;
+      title: string;
+      description: string;
+      instructions: string;
+      type: 'code';
+      language: string;
+      time_limit: number;
       points: number;
-    }[];
-    tags: string[];
-    version: number;
-    status: 'draft' | 'published' | 'archived';
-    submissionCount: number;
-    averageScore: number | null;
-    createdBy: {
-      id: string;
-      name: string;
-    };
-    createdAt: string;
-    updatedAt: string;
+      difficulty: 'easy' | 'medium' | 'hard';
+      files: {
+        [fileName: string]: {
+          content: string;
+          language: string;
+          readonly?: boolean;
+          hidden?: boolean;
+        }
+      };
+      test_cases?: {
+        id: string;
+        name: string;
+        input: string;
+        expected_output: string;
+        is_public: boolean;
+        points: number;
+      }[];
+      tags: string[];
+      version: number;
+      status: 'draft' | 'published' | 'archived';
+      submission_count: number;
+      average_score: number | null;
+      created_by: {
+        id: string;
+        name: string;
+      };
+      created_at: string;
+      updated_at: string;
+    }
   }
 }
 ```
@@ -137,23 +151,28 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge bertipe C
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    fileStructure: {
-      [fileName: string]: {
-        content: string;
-        language: string;
-        readonly: boolean;
-      }
-    };
-    publicTestCases: {
-      id: string;
-      name: string;
-      input: string;
-      expectedOutput: string;
-    }[];
-    instructions: string;
-    timeLimit: number;
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      file_structure: {
+        [fileName: string]: {
+          content: string;
+          language: string;
+          readonly?: boolean;
+        }
+      };
+      public_test_cases: {
+        id: string;
+        name: string;
+        input: string;
+        expected_output: string;
+      }[];
+      instructions: string;
+      time_limit: number;
+    }
   }
 }
 ```
@@ -163,29 +182,37 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge bertipe C
 ```typescript
 {
   files: {
-    [fileName: string]: string; // File content to test
+    [fileName: string]: {
+      content: string;
+      language: string;
+    }
   };
-  testCaseId?: string;         // Specific test case, or all if omitted
+  test_case_id?: string;         // Specific test case, or all if omitted
 }
 ```
 
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    results: {
-      testCaseId: string;
-      passed: boolean;
-      output: string;
-      expectedOutput: string;
-      executionTime: number;
-      memoryUsage: number;
-      error?: string;
-    }[];
-    overallScore: number;      // 0-100 percentage
-    totalTests: number;
-    passedTests: number;
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      results: {
+        test_case_id: string;
+        passed: boolean;
+        output: string;
+        expected_output: string;
+        execution_time: number;
+        memory_usage: number;
+        error?: string;
+      }[];
+      overall_score: number;      // 0-100 percentage
+      total_tests: number;
+      passed_tests: number;
+    }
   }
 }
 ```

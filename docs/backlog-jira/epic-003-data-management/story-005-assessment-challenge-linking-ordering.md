@@ -9,17 +9,22 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    challengeId: string;
-    title: string;
-    type: 'code' | 'multiple-choice' | 'open-ended';
-    order: number;
-    points: number;           // May override challenge default points
-    timeLimit: number;        // May override challenge default time
-    required: boolean;        // If false, candidate can skip
-    difficulty: 'easy' | 'medium' | 'hard';
-  }[]
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    content: {
+      challenge_id: string;
+      title: string;
+      type: 'code' | 'multiple-choice' | 'open-ended';
+      order: number;
+      points: number;           // May override challenge default points
+      time_limit: number;       // May override challenge default time
+      required: boolean;        // If false, candidate can skip
+      difficulty: 'easy' | 'medium' | 'hard';
+    }[]
+  }
 }
 ```
 
@@ -27,11 +32,27 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 **Request:**
 ```typescript
 {
-  challengeId: string;
+  challenge_id: string;
   order?: number;            // Auto-assigned if not provided
-  pointsOverride?: number;   // Override challenge default points
-  timeLimitOverride?: number; // Override challenge default time limit
+  points_override?: number;   // Override challenge default points
+  time_limit_override?: number; // Override challenge default time limit
   required?: boolean;        // Default: true
+}
+```
+
+**Success Response (201):**
+```typescript
+{
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      success: true;
+      message: "Challenge added to assessment successfully";
+    }
+  }
 }
 ```
 
@@ -40,9 +61,25 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 ```typescript
 {
   challenges: {
-    challengeId: string;
+    challenge_id: string;
     order: number;
   }[]
+}
+```
+
+**Success Response (200):**
+```typescript
+{
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      success: true;
+      message: "Challenge order updated successfully";
+    }
+  }
 }
 ```
 
@@ -51,9 +88,25 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 ```typescript
 {
   order?: number;
-  pointsOverride?: number;
-  timeLimitOverride?: number;
+  points_override?: number;
+  time_limit_override?: number;
   required?: boolean;
+}
+```
+
+**Success Response (200):**
+```typescript
+{
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      success: true;
+      message: "Challenge settings updated successfully";
+    }
+  }
 }
 ```
 
@@ -61,8 +114,16 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  message: "Challenge removed from assessment";
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      success: true;
+      message: "Challenge removed from assessment";
+    }
+  }
 }
 ```
 
@@ -72,10 +133,31 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 {
   type?: 'code' | 'multiple-choice' | 'open-ended';
   difficulty?: 'easy' | 'medium' | 'hard';
-  excludeAssessmentId?: string;  // Exclude challenges already in this assessment
+  exclude_assessment_id?: string;  // Exclude challenges already in this assessment
   search?: string;
   page?: number;
   limit?: number;
+}
+```
+
+**Success Response (200):**
+```typescript
+{
+  response_schema: {
+    response_code: "CODE-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    content: {
+      id: string;
+      title: string;
+      type: 'code' | 'multiple-choice' | 'open-ended';
+      description: string;
+      difficulty: 'easy' | 'medium' | 'hard';
+      time_limit: number;
+      points: number;
+    }[]
+  }
 }
 ```
 
