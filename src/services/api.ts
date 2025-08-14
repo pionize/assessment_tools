@@ -195,10 +195,16 @@ export const apiService = {
 			challenge_id: submission.challengeId,
 		};
 		if (submission.type === "code") {
+				const filesObj: Record<string, { content: string; language: string }> = {};
+				for (const [path, content] of Object.entries(submission.files)) {
+					filesObj[path] = {
+						content,
+						language: submission.language || "javascript",
+					};
+				}
 			body = {
 				...body,
-				files: (submission as CodeSubmission).files,
-				language: (submission as CodeSubmission).language,
+				files: filesObj,
 			};
 		} else if (submission.type === "open-ended") {
 			body = { ...body, answer: (submission as OpenEndedSubmission).answer };

@@ -332,7 +332,7 @@ function CodeEditor({
 	};
 
 	const confirmRename = () => {
-		if (!renameItem || !renameItem.newName.trim()) return;
+		if (!renameItem?.newName.trim()) return;
 
 		// Validate new name
 		const namePattern = renameItem.type === "file" ? /^[a-zA-Z0-9-_.]+$/ : /^[a-zA-Z0-9-_]+$/;
