@@ -1,7 +1,7 @@
 # EPIC-003: CMS Data Management (CRUD)
 
 ## Deskripsi
-Menyediakan kemampuan CRUD terstruktur untuk seluruh entitas inti: Assessments, Challenges (code, multiple choice, open-ended), Challenge–Assessment linkage & ordering, Candidates, dan Submissions (read/review). Mengacu `docs/cms-api-contract` untuk list, detail, dan submissions.
+Menyediakan kemampuan CRUD terstruktur untuk seluruh entitas inti: Assessments, Challenges (code, multiple choice, open-ended), Challenge–Assessment linkage & ordering, Candidates, dan Submissions (read/review).
 
 ## Tujuan Bisnis
 - Admin dapat membuat/mengelola konten assessment secara efisien dan konsisten.
@@ -14,11 +14,6 @@ Menyediakan kemampuan CRUD terstruktur untuk seluruh entitas inti: Assessments, 
 - Candidate management (read/search), Submissions read/review-only dari CMS.
 
 ## Acceptance Criteria Umum
-- Setiap operasi CRUD tervalidasi, mematuhi RBAC, dan ter-audit.
+- Setiap operasi CRUD tervalidasi
 - Pagination, search, sort, filter sesuai kontrak API CMS.
 - Status management mempengaruhi visibilitas pada aplikasi kandidat.
-
-## Dependensi
-- EPIC-001 dan EPIC-002 untuk akses dan izin.
-- Skema DB mengikuti `docs/database-schema.sql` (extended bila perlu).
-
