@@ -1,0 +1,1122 @@
+{
+	"info": {
+		"_postman_id": "d06e789b-9ff5-4f61-832d-dc5c7ee4b990",
+		"name": "Developer Assessment API Mock Copy",
+		"description": "Mock API collection for Developer Assessment system, lengkap dengan contoh request dan response (semua tipe challenge).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15509016"
+	},
+	"item": [
+		{
+			"name": "Authenticate Candidate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Check for successful response code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"// Set token into environment variable\r",
+							"if (response.response_output && response.response_detail.token) {\r",
+							"    pm.environment.set(\"authToken\", response.response_detail.token);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"assessment_id\": \"assessment-123\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/assessments/authenticate",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"assessments",
+						"authenticate"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"assessment_id\": \"assessment-123\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/assessments/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"authenticate"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "670"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"success\": true,\n            \"candidate_id\": \"candidate-1754639355070\",\n            \"name\": \"John Doe\",\n            \"email\": \"john@example.com\",\n            \"assessment_id\": \"assessment-123\",\n            \"start_at\": \"2025-08-13T08:00:15.072113600Z\",\n            \"time_limit_minutes\": 120,\n            \"token\": \"eyJraWQiOiJzaWduaW5nLWtleSIsImFsZyI6IkhTMjU2IiwidHlwIjoiSldUIn0.eyJzdWIiOiJiYjAwZThmMi1mZjIxLTRmOTEtODA0NC1jOTQ0NzE5MzEwYTgiLCJpYXQiOjE3NTQ2MzkzNTUsImV4cCI6MTc1NDY0ODM1NSwiZ3JvdXBzIjpbImFzc2VzbWVudF90ZXN0Il0sImp0aSI6Ijg4MjNiNDFhLWRiYzUtNDQxMS1iNGQ1LTRlNDc4NWEwNzFjYSIsImlzcyI6Imh0dHBzOi8vcXVhcmt1cy5pby9pc3N1ZXIifQ.SzfmPDRcwKN4j0LwDG1R25tJr5DXE_fsuJFxcoKyD50\"\n        }\n    }\n}"
+				},
+				{
+					"name": "Internal Server Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"assessment_id\": \"assessment-123\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/assessments/authentica",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"authentica"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "115"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-9999\",\n        \"response_message\": \"Internal Server Error\"\n    },\n    \"response_output\": null\n}"
+				},
+				{
+					"name": "Assessment Not Found",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"assessment_id\": \"assessment-1x23\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/assessments/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"authenticate"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "103"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0001\",\n        \"response_message\": \"Not Found\"\n    },\n    \"response_output\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Assessment By ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/assessments/assessment-123",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"assessments",
+						"assessment-123"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/assessments/assessment-123",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"assessment-123"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "228"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": \"assessment-123\",\n            \"title\": \"Frontend Developer Assessment\",\n            \"description\": \"Complete assessment for frontend developer position\"\n        }\n    }\n}"
+				},
+				{
+					"name": "Not Found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/assessments/assessment-123xxxx",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"assessment-123xxxx"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "103"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0001\",\n        \"response_message\": \"Not Found\"\n    },\n    \"response_output\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "List Challenges By Assessment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/assessments/assessment-123x/challenges",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"assessments",
+						"assessment-123x",
+						"challenges"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/assessments/assessment-12x3/challenges",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"assessment-12x3",
+								"challenges"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "658"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"content\": [\n            {\n                \"id\": \"challenge-1\",\n                \"title\": \"React Component Implementation\",\n                \"type\": \"code\",\n                \"description\": \"Create a reusable React component that displays a list of users with search functionality.\",\n                \"time_limit\": 60\n            },\n            {\n                \"id\": \"challenge-2\",\n                \"title\": \"Algorithm Problem\",\n                \"type\": \"open-ended\",\n                \"description\": \"Solve this algorithmic problem and explain your approach.\",\n                \"time_limit\": 30\n            },\n            {\n                \"id\": \"challenge-3\",\n                \"title\": \"JavaScript Fundamentals Quiz\",\n                \"type\": \"multiple-choice\",\n                \"description\": \"Test your knowledge of JavaScript fundamentals and modern ES6+ features.\",\n                \"time_limit\": 25\n            }\n        ]\n    }\n}"
+				},
+				{
+					"name": "Session not match with assesment Id",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/assessments/assessment-123x/challenges",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"assessment-123x",
+								"challenges"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "126"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0003\",\n        \"response_message\": \"Session Not Match With Assesment\"\n    },\n    \"response_output\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Challenge Detail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/challenges/challenge-3",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"challenges",
+						"challenge-3"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Code",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/challenges/challenge-1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"challenge-1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "1483"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"id\": \"challenge-1\",\n            \"title\": \"React Component Implementation\",\n            \"type\": \"code\",\n            \"description\": \"Create a reusable React component that displays a list of users with search functionality.\",\n            \"instructions\": \"# React Component Challenge\\r\\n\\r\\nCreate a UserList component with the following requirements:\\r\\n- Display a list of users from props\\r\\n- Include search functionality\\r\\n- Show user avatar, name, and email\\r\\n- Handle loading and empty states\\r\\n\\r\\n## Requirements:\\r\\n- Use functional components with hooks\\r\\n- Implement search filtering\\r\\n- Add proper TypeScript types\\r\\n- Include basic styling\",\n            \"time_limit\": 60,\n            \"files\": {\n                \"UserList.jsx\": {\n                    \"content\": \"// Implement your UserList component here\\r\\n\\r\\nconst UserList = ({ users }) => {\\r\\n  return (\\r\\n    <div>\\r\\n      {/* Your implementation here */}\\r\\n    </div>\\r\\n  );\\r\\n};\\r\\n\\r\\nexport default UserList;\",\n                    \"language\": \"javascript\"\n                },\n                \"App.jsx\": {\n                    \"content\": \"import UserList from \\\"./UserList\\\";\\r\\n\\r\\nconst users = [\\r\\n  { id: 1, name: \\\"John Doe\\\", email: \\\"john@example.com\\\", avatar: \\\"https://via.placeholder.com/40\\\" },\\r\\n  { id: 2, name: \\\"Jane Smith\\\", email: \\\"jane@example.com\\\", avatar: \\\"https://via.placeholder.com/40\\\" }\\r\\n];\\r\\n\\r\\nfunction App() {\\r\\n  return (\\r\\n    <div className=\\\"App\\\">\\r\\n      <UserList users={users} />\\r\\n    </div>\\r\\n  );\\r\\n}\\r\\n\\r\\nexport default App;\",\n                    \"language\": \"javascript\"\n                }\n            }\n        }\n    }\n}"
+				},
+				{
+					"name": "Open Ended",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/challenges/challenge-2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"challenge-2"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "824"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"id\": \"challenge-2\",\n            \"title\": \"Algorithm Problem\",\n            \"type\": \"open-ended\",\n            \"description\": \"Solve this algorithmic problem and explain your approach.\",\n            \"instructions\": \"# Two Sum Problem\\r\\n\\r\\nGiven an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\\r\\n\\r\\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\\r\\n\\r\\n## Example:\\r\\nInput: nums = [2,7,11,15], target = 9\\r\\nOutput: [0,1]\\r\\nExplanation: Because nums[0] + nums[1] == 9, we return [0, 1].\\r\\n\\r\\n## Requirements:\\r\\n1. Provide the solution code\\r\\n2. Explain your approach and time complexity\\r\\n3. Discuss alternative solutions if any\",\n            \"time_limit\": 30\n        }\n    }\n}"
+				},
+				{
+					"name": "Multiple Choice",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/challenges/challenge-3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"challenge-3"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "2486"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"id\": \"challenge-3\",\n            \"title\": \"JavaScript Fundamentals Quiz\",\n            \"type\": \"multiple-choice\",\n            \"description\": \"Test your knowledge of JavaScript fundamentals and modern ES6+ features.\",\n            \"instructions\": \"Answer the following multiple-choice questions about JavaScript. Each question has only one correct answer.\",\n            \"time_limit\": 25,\n            \"questions\": [\n                {\n                    \"id\": 1,\n                    \"question\": \"What is the output of the following code?\\r\\n\\r\\n```javascript\\r\\nconsole.log(typeof null);\\r\\n```\",\n                    \"options\": [\n                        {\n                            \"id\": \"A\",\n                            \"text\": \"\\\"null\\\"\"\n                        },\n                        {\n                            \"id\": \"B\",\n                            \"text\": \"\\\"object\\\"\"\n                        },\n                        {\n                            \"id\": \"C\",\n                            \"text\": \"\\\"undefined\\\"\"\n                        },\n                        {\n                            \"id\": \"D\",\n                            \"text\": \"\\\"boolean\\\"\"\n                        }\n                    ],\n                    \"explanation\": \"In JavaScript, `typeof null` returns \\\"object\\\". This is a well-known quirk in the language that exists for historical reasons.\"\n                },\n                {\n                    \"id\": 2,\n                    \"question\": \"Which of the following is NOT a valid way to declare a variable in modern JavaScript?\",\n                    \"options\": [\n                        {\n                            \"id\": \"A\",\n                            \"text\": \"let myVar = 10;\"\n                        },\n                        {\n                            \"id\": \"B\",\n                            \"text\": \"const myVar = 10;\"\n                        },\n                        {\n                            \"id\": \"C\",\n                            \"text\": \"var myVar = 10;\"\n                        },\n                        {\n                            \"id\": \"D\",\n                            \"text\": \"variable myVar = 10;\"\n                        }\n                    ],\n                    \"explanation\": \"\\\"variable\\\" is not a valid JavaScript keyword for declaring variables. Use let, const, or var instead.\"\n                },\n                {\n                    \"id\": 3,\n                    \"question\": \"What does the spread operator (...) do when used with arrays?\",\n                    \"options\": [\n                        {\n                            \"id\": \"A\",\n                            \"text\": \"Creates a shallow copy of the array\"\n                        },\n                        {\n                            \"id\": \"B\",\n                            \"text\": \"Expands array elements individually\"\n                        },\n                        {\n                            \"id\": \"C\",\n                            \"text\": \"Can be used for array concatenation\"\n                        },\n                        {\n                            \"id\": \"D\",\n                            \"text\": \"All of the above\"\n                        }\n                    ],\n                    \"explanation\": \"The spread operator can create shallow copies, expand elements individually, and is commonly used in concatenation operations.\"\n                },\n                {\n                    \"id\": 4,\n                    \"question\": \"Which method is used to add elements to the end of an array?\",\n                    \"options\": [\n                        {\n                            \"id\": \"A\",\n                            \"text\": \"append()\"\n                        },\n                        {\n                            \"id\": \"B\",\n                            \"text\": \"add()\"\n                        },\n                        {\n                            \"id\": \"C\",\n                            \"text\": \"push()\"\n                        },\n                        {\n                            \"id\": \"D\",\n                            \"text\": \"insert()\"\n                        }\n                    ],\n                    \"explanation\": \"The push() method adds one or more elements to the end of an array and returns the new length of the array.\"\n                },\n                {\n                    \"id\": 5,\n                    \"question\": \"What is the difference between == and === in JavaScript?\",\n                    \"options\": [\n                        {\n                            \"id\": \"A\",\n                            \"text\": \"No difference, they work exactly the same\"\n                        },\n                        {\n                            \"id\": \"B\",\n                            \"text\": \"== compares values with type coercion, === compares values and types strictly\"\n                        },\n                        {\n                            \"id\": \"C\",\n                            \"text\": \"== is for numbers only, === is for strings only\"\n                        },\n                        {\n                            \"id\": \"D\",\n                            \"text\": \"=== is deprecated and should not be used\"\n                        }\n                    ],\n                    \"explanation\": \"== performs type coercion and compares values, while === compares both value and type without any coercion (strict equality).\"\n                }\n            ]\n        }\n    }\n}"
+				},
+				{
+					"name": "Not Found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/challenges/challenge-3xxxx",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"challenge-3xxxx"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "113"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0005\",\n        \"response_message\": \"Challenge Not Found\"\n    },\n    \"response_output\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Challege Already Submited",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"challenge_id\": \"challenge-2\",\n    \"answer\": \"ini jawaban tes\",\n    \"times_spent_in_seconds\":12300\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/challenges/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"challenges",
+						"submissions"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Validate Answer Null / Empty",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-2\",\n    \"answer\": \"\",\n    \"times_spent_in_seconds\":12300\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "110"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0009\",\n        \"response_message\": \"Answer Not Found\"\n    },\n    \"response_output\": null\n}"
+				},
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-2\",\n    \"answer\": \"ini jawaban tes\",\n    \"times_spent_in_seconds\":12300\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "246"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"success\": true,\n            \"submission_id\": \"submission-1754886109880\",\n            \"timestamp\": \"2025-08-11T04:21:49.880347500Z\",\n            \"message\": \"Challenge submitted successfully\"\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Submit Challenge - Code",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"challenge_id\": \"challenge-1\",\n    \"times_spent_in_seconds\":12300,\n    \"files\": {\n        \"UserList.jsx\": {\n            \"content\": \"// Implement your UserList component here\\n\\nconst UserList = ({ users }) => {\\n  return (\\n    <div>\\n      {/* Your implementation here */}\\n    </div>\\n  );\\n};\\n\\nexport default UserList;\",\n            \"language\": \"javascript\"\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/challenges/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"challenges",
+						"submissions"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-1\",\n    \"times_spent_in_seconds\":12300,\n    \"files\": {\n        \"UserList.jsx\": {\n            \"content\": \"// Implement your UserList component here\\n\\nconst UserList = ({ users }) => {\\n  return (\\n    <div>\\n      {/* Your implementation here */}\\n    </div>\\n  );\\n};\\n\\nexport default UserList;\",\n            \"language\": \"javascript\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "246"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"success\": true,\n            \"submission_id\": \"submission-1754886109880\",\n            \"timestamp\": \"2025-08-11T04:21:49.880347500Z\",\n            \"message\": \"Challenge submitted successfully\"\n        }\n    }\n}"
+				},
+				{
+					"name": "Validate Answer Null / Empty",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-1\",\n    \"times_spent_in_seconds\":12300,\n    \"files\": {\n        \"UserList.jsx\": {\n            \"content\": \"// Implement your UserList component here\\n\\nconst UserList = ({ users }) => {\\n  return (\\n    <div>\\n      {/* Your implementation here */}\\n    </div>\\n  );\\n};\\n\\nexport default UserList;\",\n            \"language\": \"javascript\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "115"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0009\",\n        \"response_message\": \"Code Answer Not Found\"\n    },\n    \"response_output\": null\n}"
+				},
+				{
+					"name": "Challege Already Submited",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-1\",\n    \"times_spent_in_seconds\":12300,\n    \"files\": {\n        \"UserList.jsx\": {\n            \"content\": \"// Implement your UserList component here\\n\\nconst UserList = ({ users }) => {\\n  return (\\n    <div>\\n      {/* Your implementation here */}\\n    </div>\\n  );\\n};\\n\\nexport default UserList;\",\n            \"language\": \"javascript\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "Not Acceptable",
+					"code": 406,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "120"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0010\",\n        \"response_message\": \"Challenge Already Submited\"\n    },\n    \"response_output\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Submit Challenge - Multiple Choice",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"challenge_id\": \"challenge-3\",\n    \"times_spent_in_seconds\":12300,\n    \"multiple_choice_answers\":[\n        {\n            \"question_id\":1,\n            \"option_id\":\"B\"\n        },\n        {\n            \"question_id\":2,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":3,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":4,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":5,\n            \"option_id\":\"A\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/challenges/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"challenges",
+						"submissions"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Validate Answer null / Empty",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-3\",\n    \"times_spent_in_seconds\":12300\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "126"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0009\",\n        \"response_message\": \"Multiple Choice Answer Not Found\"\n    },\n    \"response_output\": null\n}"
+				},
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-3\",\n    \"times_spent_in_seconds\":12300,\n    \"multiple_choice_answers\":[\n        {\n            \"question_id\":1,\n            \"option_id\":\"B\"\n        },\n        {\n            \"question_id\":2,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":3,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":4,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":5,\n            \"option_id\":\"A\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "246"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"success\": true,\n            \"submission_id\": \"submission-1754886109880\",\n            \"timestamp\": \"2025-08-11T04:21:49.880347500Z\",\n            \"message\": \"Challenge submitted successfully\"\n        }\n    }\n}"
+				},
+				{
+					"name": "Challege Already Submited",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"challenge_id\": \"challenge-3\",\n    \"times_spent_in_seconds\":12300,\n    \"multiple_choice_answers\":[\n        {\n            \"question_id\":1,\n            \"option_id\":\"B\"\n        },\n        {\n            \"question_id\":2,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":3,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":4,\n            \"option_id\":\"A\"\n        },\n        {\n            \"question_id\":5,\n            \"option_id\":\"A\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/challenges/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"challenges",
+								"submissions"
+							]
+						}
+					},
+					"status": "Not Acceptable",
+					"code": 406,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "120"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0010\",\n        \"response_message\": \"Challenge Already Submited\"\n    },\n    \"response_output\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Submit Assessment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assessment_id\": \"assessment-123\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/assessments/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"assessments",
+						"submissions"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Submited",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"assessment_id\": \"assessment-123\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/assessments/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"submissions"
+							]
+						}
+					},
+					"status": "Not Acceptable",
+					"code": 406,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "121"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0010\",\n        \"response_message\": \"Assessment Already Submited\"\n    },\n    \"response_output\": null\n}"
+				},
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"assessment_id\": \"assessment-123\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/assessments/submissions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"assessments",
+								"submissions"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "content-length",
+							"value": "237"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"response_schema\": {\n        \"response_code\": \"CODE-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\":{\n            \"success\": true,\n            \"assessment_id\": \"assessment-123\",\n            \"timestamp\": \"2025-08-11T05:43:55.588690700Z\",\n            \"message\": \"Assessment submitted successfully\"\n        }\n    }\n}"
+				}
+			]
+		}
+	]
+}
