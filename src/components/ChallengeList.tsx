@@ -329,7 +329,7 @@ function ChallengeList() {
 										dispatch({ type: "RESET_ASSESSMENT" });
 
 										alert(
-											"🎉 Assessment submitted successfully! Thank you for your participation.",
+											"Assessment submitted successfully! Thank you for your participation.",
 										);
 
 										// Redirect to assessment start page
