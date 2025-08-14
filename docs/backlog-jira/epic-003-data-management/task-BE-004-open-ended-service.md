@@ -1,6 +1,6 @@
 # TASK-BE-004: Open-ended Challenge Service (Backend)
 
-**Story**: Story-004 Challenge CRUD - Open-ended  
+**Story**: Story-004 Challenge CRUD - Open-ended
 **Estimasi**: 2 hari
 
 ## Dependencies
@@ -11,24 +11,24 @@
 ## Acceptance Criteria Backend
 
 ### Core CRUD Operations
-- ✅ **POST /admin/challenges/open-ended** untuk create
-- ✅ **GET /admin/challenges/open-ended/:id** dengan detail
-- ✅ **PUT /admin/challenges/open-ended/:id** untuk updates
-- ✅ **DELETE /admin/challenges/open-ended/:id** dengan soft delete
-- ✅ **POST /admin/challenges/open-ended/:id/duplicate** untuk cloning
+- **POST /admin/challenges/open-ended** untuk create
+- **GET /admin/challenges/open-ended/:id** dengan detail
+- **PUT /admin/challenges/open-ended/:id** untuk updates
+- **DELETE /admin/challenges/open-ended/:id** dengan soft delete
+- **POST /admin/challenges/open-ended/:id/duplicate** untuk cloning
 
 ### Open-ended Features
-- ✅ **Word count limits** validation
-- ✅ **File attachment** support untuk submissions
-- ✅ **Scoring rubric** management
-- ✅ **Sample answers** storage untuk reference
-- ✅ **Auto-save settings** configuration
-- ✅ **Rich text processing** untuk instructions
+- **Word count limits** validation
+- **File attachment** support untuk submissions
+- **Scoring rubric** management
+- **Sample answers** storage untuk reference
+- **Auto-save settings** configuration
+- **Rich text processing** untuk instructions
 
 ### Response Format Compliance
-- ✅ **Response wrapper**: `response_schema` + `response_output.detail`
-- ✅ **Field naming**: snake_case (`min_words`, `max_words`)
-- ✅ **Settings format**: JSON structure untuk rubric dan attachments
+- **Response wrapper**: `response_schema` + `response_output.detail`
+- **Field naming**: snake_case (`min_words`, `max_words`)
+- **Settings format**: JSON structure untuk rubric dan attachments
 
 ## Database Schema
 
@@ -99,22 +99,22 @@ interface ScoringRubric {
 ```
 
 ## Validation Rules
-- ✅ **Word limits**: min_words <= max_words if both specified
-- ✅ **Attachment settings**: logical constraints untuk file limits
-- ✅ **Rubric validation**: Total points consistency
-- ✅ **Sample answers**: Format validation
-- ✅ **Instructions**: Rich text format validation
+- **Word limits**: min_words <= max_words if both specified
+- **Attachment settings**: logical constraints untuk file limits
+- **Rubric validation**: Total points consistency
+- **Sample answers**: Format validation
+- **Instructions**: Rich text format validation
 
 ## Business Logic
-- ✅ **Word count validation** untuk submissions
-- ✅ **File attachment validation** dengan size/type checks
-- ✅ **Scoring calculation** based on rubric
-- ✅ **Auto-save configuration** untuk candidate experience
-- ✅ **Plagiarism detection** integration hooks
+- **Word count validation** untuk submissions
+- **File attachment validation** dengan size/type checks
+- **Scoring calculation** based on rubric
+- **Auto-save configuration** untuk candidate experience
+- **Plagiarism detection** integration hooks
 
 ## Testing Requirements
-- ✅ Unit tests untuk open-ended challenge CRUD
-- ✅ Word count validation tests
-- ✅ Attachment handling tests
-- ✅ Rubric validation tests
-- ✅ Sample answer management tests
+- Unit tests untuk open-ended challenge CRUD
+- Word count validation tests
+- Attachment handling tests
+- Rubric validation tests
+- Sample answer management tests

@@ -1,6 +1,6 @@
 # TASK-FE-003: Multiple Choice Challenge Builder (Frontend)
 
-**Story**: Story-003 Challenge CRUD - Multiple Choice  
+**Story**: Story-003 Challenge CRUD - Multiple Choice
 **Estimasi**: 3 hari
 
 ## Dependencies
@@ -12,26 +12,26 @@
 ## Acceptance Criteria Frontend
 
 ### Question Builder Interface
-- ✅ **Question editor** dengan rich text support
-- ✅ **Option management** dengan add/delete/reorder
-- ✅ **Correct answer selection** dengan validation
-- ✅ **Question reordering** dengan drag-and-drop
-- ✅ **Media attachment** untuk questions (images, videos)
-- ✅ **Question preview** dengan candidate view
+- **Question editor** dengan rich text support
+- **Option management** dengan add/delete/reorder
+- **Correct answer selection** dengan validation
+- **Question reordering** dengan drag-and-drop
+- **Media attachment** untuk questions (images, videos)
+- **Question preview** dengan candidate view
 
 ### Advanced Features
-- ✅ **Bulk question import** dari CSV/JSON
-- ✅ **Question templates** untuk common patterns
-- ✅ **Question categorization** dengan tags
-- ✅ **Answer explanation** management
-- ✅ **Point distribution** per question
-- ✅ **Randomization settings** configuration
+- **Bulk question import** dari CSV/JSON
+- **Question templates** untuk common patterns
+- **Question categorization** dengan tags
+- **Answer explanation** management
+- **Point distribution** per question
+- **Randomization settings** configuration
 
 ### Form Management
-- ✅ **Multi-question form** dengan validation
-- ✅ **Auto-save drafts** dengan conflict detection
-- ✅ **Form submission** dengan error handling
-- ✅ **Question validation** real-time feedback
+- **Multi-question form** dengan validation
+- **Auto-save drafts** dengan conflict detection
+- **Form submission** dengan error handling
+- **Question validation** real-time feedback
 
 ## Component Structure
 
@@ -102,24 +102,24 @@ interface ImportFormat {
 ```
 
 ## Validation Rules
-- ✅ **Question text**: Required, max 2000 characters
-- ✅ **Options**: Minimum 2, maximum 10 options
-- ✅ **Correct answers**: At least 1 correct answer required
-- ✅ **Points**: Per question points <= total challenge points
-- ✅ **Media files**: Size limits, format validation
+- **Question text**: Required, max 2000 characters
+- **Options**: Minimum 2, maximum 10 options
+- **Correct answers**: At least 1 correct answer required
+- **Points**: Per question points <= total challenge points
+- **Media files**: Size limits, format validation
 
 ## UI/UX Requirements
-- ✅ **Drag-and-drop** untuk question dan option reordering
-- ✅ **Rich text editor** dengan formatting tools
-- ✅ **Media upload** dengan preview functionality
-- ✅ **Responsive design** untuk mobile editing
-- ✅ **Keyboard shortcuts** untuk power users
-- ✅ **Auto-save indicators** dengan status display
+- **Drag-and-drop** untuk question dan option reordering
+- **Rich text editor** dengan formatting tools
+- **Media upload** dengan preview functionality
+- **Responsive design** untuk mobile editing
+- **Keyboard shortcuts** untuk power users
+- **Auto-save indicators** dengan status display
 
 ## Testing Requirements
-- ✅ Component unit tests dengan React Testing Library
-- ✅ Question builder workflow tests
-- ✅ Drag-and-drop functionality tests
-- ✅ Rich text editor integration tests
-- ✅ Bulk import validation tests
-- ✅ Form validation dan error handling tests
+- Component unit tests dengan React Testing Library
+- Question builder workflow tests
+- Drag-and-drop functionality tests
+- Rich text editor integration tests
+- Bulk import validation tests
+- Form validation dan error handling tests

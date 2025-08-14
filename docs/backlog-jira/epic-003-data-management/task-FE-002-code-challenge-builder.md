@@ -1,6 +1,6 @@
 # TASK-FE-002: Code Challenge Builder UI (Frontend)
 
-**Story**: Story-002 Challenge CRUD - Code Type  
+**Story**: Story-002 Challenge CRUD - Code Type
 **Estimasi**: 4 hari
 
 ## Dependencies
@@ -11,27 +11,27 @@
 ## Acceptance Criteria Frontend
 
 ### Code Challenge Builder
-- ✅ **File structure editor** dengan Monaco Editor
-- ✅ **Language selection** dengan syntax highlighting
-- ✅ **Test case builder** dengan input/output forms
-- ✅ **Code execution testing** dengan real-time results
-- ✅ **File management**: add, delete, rename files
-- ✅ **Challenge preview** dalam candidate view
+- **File structure editor** dengan Monaco Editor
+- **Language selection** dengan syntax highlighting
+- **Test case builder** dengan input/output forms
+- **Code execution testing** dengan real-time results
+- **File management**: add, delete, rename files
+- **Challenge preview** dalam candidate view
 
 ### File Management Features
-- ✅ **File explorer** dengan tree view
-- ✅ **Drag-and-drop** file reordering
-- ✅ **Syntax highlighting** per language
-- ✅ **Auto-completion** dan error detection
-- ✅ **File validation** (extensions, content)
-- ✅ **Template presets** untuk common structures
+- **File explorer** dengan tree view
+- **Drag-and-drop** file reordering
+- **Syntax highlighting** per language
+- **Auto-completion** dan error detection
+- **File validation** (extensions, content)
+- **Template presets** untuk common structures
 
 ### Test Case Management
-- ✅ **Visual test builder** dengan forms
-- ✅ **Test execution** dengan result display
-- ✅ **Public/private test cases** management
-- ✅ **Batch import** dari CSV/JSON
-- ✅ **Performance metrics** display
+- **Visual test builder** dengan forms
+- **Test execution** dengan result display
+- **Public/private test cases** management
+- **Batch import** dari CSV/JSON
+- **Performance metrics** display
 
 ## Component Structure
 
@@ -81,15 +81,15 @@ const languageSupport = {
 ```
 
 ## Validation & Error Handling
-- ✅ **File structure validation** sebelum save
-- ✅ **Language-specific validation** untuk file extensions
-- ✅ **Test case validation** untuk input/output format
-- ✅ **Real-time error display** dalam editor
-- ✅ **Save confirmation** dengan conflict resolution
+- **File structure validation** sebelum save
+- **Language-specific validation** untuk file extensions
+- **Test case validation** untuk input/output format
+- **Real-time error display** dalam editor
+- **Save confirmation** dengan conflict resolution
 
 ## Testing Requirements
-- ✅ Component unit tests dengan React Testing Library
-- ✅ Monaco Editor integration tests
-- ✅ File management workflow tests
-- ✅ Test execution flow tests
-- ✅ Form validation tests
+- Component unit tests dengan React Testing Library
+- Monaco Editor integration tests
+- File management workflow tests
+- Test execution flow tests
+- Form validation tests

@@ -140,83 +140,6 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge bertipe C
 }
 ```
 
-### POST /admin/challenges/code/:id/preview
-**Request:**
-```typescript
-{
-  candidateView: boolean;    // If true, return candidate-visible structure only
-}
-```
-
-**Success Response (200):**
-```typescript
-{
-  response_schema: {
-    response_code: "CODE-0000";
-    response_message: "Success";
-  };
-  response_output: {
-    detail: {
-      file_structure: {
-        [fileName: string]: {
-          content: string;
-          language: string;
-          readonly?: boolean;
-        }
-      };
-      public_test_cases: {
-        id: string;
-        name: string;
-        input: string;
-        expected_output: string;
-      }[];
-      instructions: string;
-      time_limit: number;
-    }
-  }
-}
-```
-
-### POST /admin/challenges/code/:id/test
-**Request:**
-```typescript
-{
-  files: {
-    [fileName: string]: {
-      content: string;
-      language: string;
-    }
-  };
-  test_case_id?: string;         // Specific test case, or all if omitted
-}
-```
-
-**Success Response (200):**
-```typescript
-{
-  response_schema: {
-    response_code: "CODE-0000";
-    response_message: "Success";
-  };
-  response_output: {
-    detail: {
-      results: {
-        test_case_id: string;
-        passed: boolean;
-        output: string;
-        expected_output: string;
-        execution_time: number;
-        memory_usage: number;
-        error?: string;
-      }[];
-      overall_score: number;      // 0-100 percentage
-      total_tests: number;
-      passed_tests: number;
-    }
-  }
-}
-```
-
 ## File Template Structure
 ```typescript
 interface FileTemplate {
@@ -238,16 +161,16 @@ interface TestCase {
 ```
 
 ## Acceptance Criteria
-- ✅ Form builder untuk code challenge dengan rich text editor
-- ✅ File management: create, edit, delete, reorder files
-- ✅ Language selection dengan syntax highlighting preview
-- ✅ Test case builder dengan input/output validation
-- ✅ Challenge preview dalam candidate view
-- ✅ Version control untuk published challenges
-- ✅ File template validation (at least 1 editable file required)
-- ✅ Test execution untuk validation during creation
-- ✅ Challenge duplication dengan modification
-- ✅ Import/export challenge definitions
+- Form builder untuk code challenge dengan rich text editor
+- File management: create, edit, delete, reorder files
+- Language selection dengan syntax highlighting preview
+- Test case builder dengan input/output validation
+- Challenge preview dalam candidate view
+- Version control untuk published challenges
+- File template validation (at least 1 editable file required)
+- Test execution untuk validation during creation
+- Challenge duplication dengan modification
+- Import/export challenge definitions
 
 ## Validation Rules
 - **Title**: 3-100 characters, unique per assessment

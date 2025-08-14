@@ -63,13 +63,13 @@ Sebagai pengguna CMS, saya ingin sesi saya aman dan dapat diperpanjang tanpa ser
 ```
 
 ## Acceptance Criteria
-- ✅ Sistem mengeluarkan access token (15 menit) dan refresh token (7 hari)
-- ✅ Endpoint refresh mengembalikan access token baru jika refresh token valid
-- ✅ Logout mencabut refresh token aktif dan clear client tokens
-- ✅ Refresh token tersimpan dalam httpOnly cookie (secure, sameSite=strict)
-- ✅ Refresh token dapat direvoke per-device
-- ✅ Access token otomatis di-refresh saat mendekati expiry
-- ✅ Auto-logout jika refresh token expired/revoked
+- Sistem mengeluarkan access token (15 menit) dan refresh token (7 hari)
+- Endpoint refresh mengembalikan access token baru jika refresh token valid
+- Logout mencabut refresh token aktif dan clear client tokens
+- Refresh token tersimpan dalam httpOnly cookie (secure, sameSite=strict)
+- Refresh token dapat direvoke per-device
+- Access token otomatis di-refresh saat mendekati expiry
+- Auto-logout jika refresh token expired/revoked
 
 ## Validation Rules
 - **Access Token**: JWT dengan RS256, expires dalam 15 menit

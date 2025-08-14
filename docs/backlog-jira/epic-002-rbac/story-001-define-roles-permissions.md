@@ -10,7 +10,7 @@ Sebagai Super Admin, saya ingin sistem memiliki role dan permission yang jelas a
 enum Permissions {
   // User Management
   'user:create' = 'user:create',
-  'user:read' = 'user:read', 
+  'user:read' = 'user:read',
   'user:update' = 'user:update',
   'user:delete' = 'user:delete',
   'user:role_assign' = 'user:role_assign',
@@ -18,7 +18,7 @@ enum Permissions {
   // Assessment Management
   'assessment:create' = 'assessment:create',
   'assessment:read' = 'assessment:read',
-  'assessment:update' = 'assessment:update', 
+  'assessment:update' = 'assessment:update',
   'assessment:delete' = 'assessment:delete',
   'assessment:publish' = 'assessment:publish',
 
@@ -30,7 +30,7 @@ enum Permissions {
 
   // Submission Review
   'submission:read' = 'submission:read',
-  'submission:review' = 'submission:review', 
+  'submission:review' = 'submission:review',
   'submission:score' = 'submission:score',
   'submission:export' = 'submission:export',
 
@@ -58,7 +58,7 @@ interface Role {
 const roles: Role[] = [
   {
     id: 'super_admin',
-    name: 'Super Administrator', 
+    name: 'Super Administrator',
     description: 'Full system access',
     permissions: [...ALL_PERMISSIONS],
     isSystemRole: true
@@ -81,20 +81,20 @@ const roles: Role[] = [
     name: 'Submission Reviewer',
     description: 'Review and score candidate submissions',
     permissions: [
-      'assessment:read', 
+      'assessment:read',
       'challenge:read',
       'submission:read', 'submission:review', 'submission:score',
       'report:view'
     ],
-    isSystemRole: true  
+    isSystemRole: true
   },
   {
-    id: 'analyst', 
+    id: 'analyst',
     name: 'Data Analyst',
     description: 'View reports and analytics',
     permissions: [
       'assessment:read',
-      'challenge:read', 
+      'challenge:read',
       'submission:read',
       'report:view', 'report:export', 'analytics:view'
     ],
@@ -140,7 +140,7 @@ CREATE TABLE roles (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Permissions table  
+-- Permissions table
 CREATE TABLE permissions (
   id VARCHAR(50) PRIMARY KEY,
   name VARCHAR(100) NOT NULL UNIQUE,
@@ -162,14 +162,14 @@ CREATE INDEX idx_admin_users_role ON admin_users(role_id);
 ```
 
 ## Acceptance Criteria
-- ✅ Role system: Super Admin, Assessment Manager, Reviewer, Analyst
-- ✅ Granular permissions per feature dengan resource:action pattern
-- ✅ Permission groups untuk UI organization  
-- ✅ Role-permission mapping dengan database constraints
-- ✅ Default "least privilege" principle applied
-- ✅ System roles cannot be deleted atau modified
-- ✅ Permission inheritance dari role assignments
-- ✅ Database seed/migration ready untuk initial setup
+- Role system: Super Admin, Assessment Manager, Reviewer, Analyst
+- Granular permissions per feature dengan resource:action pattern
+- Permission groups untuk UI organization
+- Role-permission mapping dengan database constraints
+- Default "least privilege" principle applied
+- System roles cannot be deleted atau modified
+- Permission inheritance dari role assignments
+- Database seed/migration ready untuk initial setup
 
 ## Validation Rules
 - **Role Assignment**: Only Super Admin dapat assign roles

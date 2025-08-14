@@ -215,18 +215,18 @@ npm run e2e:ui
 ## Coverage
 
 The unit tests provide comprehensive coverage for:
-- ✅ Utility functions (sessionStorage)
-- ✅ Context providers (AssessmentContext)
-- ✅ API service methods
-- ✅ UI components
-- ✅ Core application components
+- Utility functions (sessionStorage)
+- Context providers (AssessmentContext)
+- API service methods
+- UI components
+- Core application components
 
 The e2e tests cover:
-- ✅ Complete user workflows
-- ✅ Cross-browser compatibility
-- ✅ Mobile responsiveness
-- ✅ Error scenarios
-- ✅ Session persistence
+- Complete user workflows
+- Cross-browser compatibility
+- Mobile responsiveness
+- Error scenarios
+- Session persistence
 
 ## Notes for Developers
 

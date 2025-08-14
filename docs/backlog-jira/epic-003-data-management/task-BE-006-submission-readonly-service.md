@@ -1,6 +1,6 @@
 # TASK-BE-006: Submission Read-only Service (Backend)
 
-**Story**: Story-006 Candidate & Submissions Read-only  
+**Story**: Story-006 Candidate & Submissions Read-only
 **Estimasi**: 2 hari
 
 ## Dependencies
@@ -11,31 +11,31 @@
 ## Acceptance Criteria Backend
 
 ### Read-only Operations
-- ✅ **GET /admin/submissions** dengan filtering dan pagination
-- ✅ **GET /admin/submissions/:id** dengan full detail
-- ✅ **GET /admin/assessments/:id/submissions** untuk assessment view
-- ✅ **GET /admin/challenges/:id/submissions** untuk challenge view
-- ✅ **GET /admin/candidates/:id/submissions** untuk candidate view
-- ✅ **POST /admin/submissions/:id/review** untuk scoring dan feedback
+- **GET /admin/submissions** dengan filtering dan pagination
+- **GET /admin/submissions/:id** dengan full detail
+- **GET /admin/assessments/:id/submissions** untuk assessment view
+- **GET /admin/challenges/:id/submissions** untuk challenge view
+- **GET /admin/candidates/:id/submissions** untuk candidate view
+- **POST /admin/submissions/:id/review** untuk scoring dan feedback
 
 ### Advanced Filtering
-- ✅ **Multi-criteria filtering**: by assessment, challenge, candidate, date
-- ✅ **Submission status**: submitted, reviewed, scored, flagged
-- ✅ **Performance metrics**: completion time, score ranges
-- ✅ **Search functionality**: dalam candidate name, email, submission content
-- ✅ **Export functionality**: CSV, Excel formats untuk bulk analysis
+- **Multi-criteria filtering**: by assessment, challenge, candidate, date
+- **Submission status**: submitted, reviewed, scored, flagged
+- **Performance metrics**: completion time, score ranges
+- **Search functionality**: dalam candidate name, email, submission content
+- **Export functionality**: CSV, Excel formats untuk bulk analysis
 
 ### Response Format Compliance
-- ✅ **List format**: `response_output.list.content` dengan pagination
-- ✅ **Detail format**: `response_output.detail` dengan full submission data
-- ✅ **Review format**: Include reviewer info dan scoring breakdown
+- **List format**: `response_output.list.content` dengan pagination
+- **Detail format**: `response_output.detail` dengan full submission data
+- **Review format**: Include reviewer info dan scoring breakdown
 
 ## Database Views & Queries
 
 ```sql
 -- Submission summary view for efficient listing
 CREATE VIEW submission_summary AS
-SELECT 
+SELECT
   s.id,
   s.challenge_id,
   s.candidate_id,
@@ -93,7 +93,7 @@ interface SubmissionDetail {
   submitted_at: string;
   time_spent_seconds: number;
   status: string;
-  
+
   // Challenge info
   challenge: {
     id: string;
@@ -101,17 +101,17 @@ interface SubmissionDetail {
     type: 'code' | 'multiple-choice' | 'open-ended';
     max_score: number;
   };
-  
+
   // Candidate info
   candidate: {
     id: string;
     name: string;
     email: string;
   };
-  
+
   // Submission content (type-specific)
   content: CodeSubmissionContent | MCSubmissionContent | OpenEndedSubmissionContent;
-  
+
   // Review and scoring
   review?: {
     score: number;
@@ -190,7 +190,7 @@ const createSubmissionReview = async (submissionId: string, review: ReviewReques
   if (review.score < 0 || review.score > review.max_score) {
     throw new ValidationError('Score must be between 0 and max_score');
   }
-  
+
   // Create review record
   const reviewRecord = await db('submission_reviews').insert({
     submission_id: submissionId,
@@ -201,12 +201,12 @@ const createSubmissionReview = async (submissionId: string, review: ReviewReques
     reviewed_by: getCurrentUserId(),
     reviewed_at: new Date()
   }).returning('*');
-  
+
   // Update submission status
   await db('submissions')
     .where('id', submissionId)
     .update({ status: 'reviewed' });
-    
+
   return reviewRecord[0];
 };
 ```
@@ -222,7 +222,7 @@ interface ExportRequest {
 
 const exportSubmissions = async (exportRequest: ExportRequest) => {
   const submissions = await getSubmissions(exportRequest.filters);
-  
+
   if (exportRequest.format === 'csv') {
     return generateCSV(submissions, exportRequest.fields);
   } else {
@@ -232,9 +232,9 @@ const exportSubmissions = async (exportRequest: ExportRequest) => {
 ```
 
 ## Testing Requirements
-- ✅ Unit tests untuk submission read operations
-- ✅ Filtering dan search functionality tests
-- ✅ Review and scoring tests
-- ✅ Export functionality tests
-- ✅ Performance tests untuk large datasets
-- ✅ Access control tests untuk sensitive data
+- Unit tests untuk submission read operations
+- Filtering dan search functionality tests
+- Review and scoring tests
+- Export functionality tests
+- Performance tests untuk large datasets
+- Access control tests untuk sensitive data

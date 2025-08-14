@@ -8,34 +8,34 @@ Implementasi complete authentication service untuk admin CMS dengan JWT tokens, 
 
 ## Dependencies
 - Database schema deployment
-- JWT signing keys configuration  
+- JWT signing keys configuration
 - Redis for rate limiting (optional, can use in-memory)
 
 ## Acceptance Criteria Backend
 
 ### Core Authentication
-- ✅ **POST /admin/auth/login** endpoint implemented
-- ✅ **POST /admin/auth/refresh** endpoint implemented  
-- ✅ **POST /admin/auth/logout** endpoint implemented
-- ✅ Input validation: email format, password min 8 chars
-- ✅ Password hashing with bcrypt (cost factor 12)
-- ✅ JWT generation with RS256 algorithm
-- ✅ Refresh token management (UUID v4, 7 days expiry)
+- **POST /admin/auth/login** endpoint implemented
+- **POST /admin/auth/refresh** endpoint implemented
+- **POST /admin/auth/logout** endpoint implemented
+- Input validation: email format, password min 8 chars
+- Password hashing with bcrypt (cost factor 12)
+- JWT generation with RS256 algorithm
+- Refresh token management (UUID v4, 7 days expiry)
 
 ### Security Features
-- ✅ Rate limiting: 10 req/min per IP on login endpoint
-- ✅ Account lockout: 5 failed attempts = 15 min lockout
-- ✅ Password policy enforcement (8+ chars, mixed case, numbers, special)
-- ✅ Common password blacklist (top 1000 passwords)
-- ✅ Secure cookie configuration (httpOnly, secure, sameSite)
-- ✅ CORS configuration for admin frontend
+- Rate limiting: 10 req/min per IP on login endpoint
+- Account lockout: 5 failed attempts = 15 min lockout
+- Password policy enforcement (8+ chars, mixed case, numbers, special)
+- Common password blacklist (top 1000 passwords)
+- Secure cookie configuration (httpOnly, secure, sameSite)
+- CORS configuration for admin frontend
 
 ### Database Operations
-- ✅ Admin user lookup and validation
-- ✅ Refresh token storage and management
-- ✅ Failed login attempt tracking
-- ✅ Account lockout status management
-- ✅ Token revocation on logout
+- Admin user lookup and validation
+- Refresh token storage and management
+- Failed login attempt tracking
+- Account lockout status management
+- Token revocation on logout
 
 ## Database Schema Required
 
@@ -79,7 +79,7 @@ CREATE INDEX idx_refresh_tokens_expires ON admin_refresh_tokens(expires_at);
 ```bash
 # JWT Configuration
 JWT_PRIVATE_KEY=<RSA private key>
-JWT_PUBLIC_KEY=<RSA public key>  
+JWT_PUBLIC_KEY=<RSA public key>
 JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=7d
 
@@ -109,16 +109,16 @@ COOKIE_DOMAIN=.yourdomain.com
 | AUTH_007 | 403 | Token revoked |
 
 ## Testing Requirements
-- ✅ Unit tests for password hashing and validation
-- ✅ Integration tests for all auth endpoints
-- ✅ Security tests for rate limiting and lockout
-- ✅ Token validation and expiry tests
-- ✅ Database integration tests
+- Unit tests for password hashing and validation
+- Integration tests for all auth endpoints
+- Security tests for rate limiting and lockout
+- Token validation and expiry tests
+- Database integration tests
 
 ## Security Validation
-- ✅ Password strength validation
-- ✅ JWT signature verification
-- ✅ Refresh token rotation (optional)
-- ✅ Secure header configuration
-- ✅ Input sanitization
-- ✅ SQL injection prevention
+- Password strength validation
+- JWT signature verification
+- Refresh token rotation (optional)
+- Secure header configuration
+- Input sanitization
+- SQL injection prevention

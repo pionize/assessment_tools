@@ -1,6 +1,6 @@
 # TASK-FE-006: Submission Review Dashboard (Frontend)
 
-**Story**: Story-006 Candidate & Submissions Read-only  
+**Story**: Story-006 Candidate & Submissions Read-only
 **Estimasi**: 4 hari
 
 ## Dependencies
@@ -12,28 +12,28 @@
 ## Acceptance Criteria Frontend
 
 ### Submission Dashboard
-- ✅ **Submission list** dengan advanced filtering
-- ✅ **Multi-view layout**: table, card, detailed views
-- ✅ **Real-time search** dengan highlighted results
-- ✅ **Advanced filtering** by assessment, challenge, candidate, status
-- ✅ **Bulk operations** untuk review dan export
-- ✅ **Performance metrics** visualization
+- **Submission list** dengan advanced filtering
+- **Multi-view layout**: table, card, detailed views
+- **Real-time search** dengan highlighted results
+- **Advanced filtering** by assessment, challenge, candidate, status
+- **Bulk operations** untuk review dan export
+- **Performance metrics** visualization
 
 ### Submission Detail View
-- ✅ **Full submission viewer** dengan type-specific rendering
-- ✅ **Code submission viewer** dengan syntax highlighting
-- ✅ **Multiple choice results** dengan answer breakdown
-- ✅ **Open-ended viewer** dengan rich text rendering
-- ✅ **Candidate information** panel
-- ✅ **Time tracking** dan performance metrics
+- **Full submission viewer** dengan type-specific rendering
+- **Code submission viewer** dengan syntax highlighting
+- **Multiple choice results** dengan answer breakdown
+- **Open-ended viewer** dengan rich text rendering
+- **Candidate information** panel
+- **Time tracking** dan performance metrics
 
 ### Review & Scoring Interface
-- ✅ **Scoring form** dengan rubric integration
-- ✅ **Feedback editor** dengan rich text support
-- ✅ **Score breakdown** per criteria
-- ✅ **Flag submission** untuk suspicious activity
-- ✅ **Review history** tracking
-- ✅ **Batch review** untuk similar submissions
+- **Scoring form** dengan rubric integration
+- **Feedback editor** dengan rich text support
+- **Score breakdown** per criteria
+- **Flag submission** untuk suspicious activity
+- **Review history** tracking
+- **Batch review** untuk similar submissions
 
 ## Component Structure
 
@@ -66,12 +66,12 @@ interface ReviewPanelProps {
 ```typescript
 const CodeSubmissionViewer = ({ submission }: { submission: CodeSubmission }) => {
   const [selectedFile, setSelectedFile] = useState<string>();
-  
+
   return (
     <div className="code-submission-viewer">
       <div className="file-tree">
         {Object.keys(submission.content.files).map(fileName => (
-          <div 
+          <div
             key={fileName}
             className={`file-item ${selectedFile === fileName ? 'active' : ''}`}
             onClick={() => setSelectedFile(fileName)}
@@ -80,7 +80,7 @@ const CodeSubmissionViewer = ({ submission }: { submission: CodeSubmission }) =>
           </div>
         ))}
       </div>
-      
+
       <div className="code-editor">
         <MonacoEditor
           language={submission.content.files[selectedFile]?.language || 'javascript'}
@@ -93,7 +93,7 @@ const CodeSubmissionViewer = ({ submission }: { submission: CodeSubmission }) =>
           }}
         />
       </div>
-      
+
       {submission.content.test_results && (
         <div className="test-results">
           <h4>Test Results</h4>
@@ -129,7 +129,7 @@ const MCSubmissionViewer = ({ submission }: { submission: MCSubmission }) => {
           </span>
         </div>
       </div>
-      
+
       <div className="answers-list">
         {submission.content.answers.map(answer => (
           <div key={answer.question_id} className="answer-item">
@@ -157,11 +157,11 @@ const OpenEndedViewer = ({ submission }: { submission: OpenEndedSubmission }) =>
           <span>Attachments: {submission.content.attachments.length}</span>
         )}
       </div>
-      
+
       <div className="answer-content">
         <ReactMarkdown>{submission.content.answer}</ReactMarkdown>
       </div>
-      
+
       {submission.content.attachments && (
         <div className="attachments">
           <h4>Attachments</h4>
@@ -205,7 +205,7 @@ const ReviewPanel = ({ submission, challenge, onReviewSubmit }: ReviewPanelProps
     scoringBreakdown: [],
     flags: []
   });
-  
+
   const handleSubmit = async () => {
     try {
       await onReviewSubmit(review);
@@ -214,7 +214,7 @@ const ReviewPanel = ({ submission, challenge, onReviewSubmit }: ReviewPanelProps
       showError('Failed to submit review');
     }
   };
-  
+
   return (
     <div className="review-panel">
       <div className="score-section">
@@ -228,7 +228,7 @@ const ReviewPanel = ({ submission, challenge, onReviewSubmit }: ReviewPanelProps
         />
         <span>/ {review.maxScore}</span>
       </div>
-      
+
       <div className="feedback-section">
         <label>Feedback</label>
         <RichTextEditor
@@ -237,7 +237,7 @@ const ReviewPanel = ({ submission, challenge, onReviewSubmit }: ReviewPanelProps
           placeholder="Provide feedback for the candidate..."
         />
       </div>
-      
+
       {challenge.scoring_rubric && (
         <div className="rubric-scoring">
           <h4>Scoring Rubric</h4>
@@ -258,7 +258,7 @@ const ReviewPanel = ({ submission, challenge, onReviewSubmit }: ReviewPanelProps
           ))}
         </div>
       )}
-      
+
       <button onClick={handleSubmit} className="submit-review-btn">
         Submit Review
       </button>
@@ -296,27 +296,27 @@ const AdvancedFilters = ({ filters, onChange }: FilterProps) => {
         placeholder="Search candidates, submissions..."
         debounceMs={300}
       />
-      
+
       <SelectFilter
         label="Assessment"
         options={assessmentOptions}
         value={filters.assessmentId}
         onChange={(assessmentId) => onChange({ ...filters, assessmentId })}
       />
-      
+
       <SelectFilter
         label="Status"
         options={statusOptions}
         value={filters.status}
         onChange={(status) => onChange({ ...filters, status })}
       />
-      
+
       <DateRangeFilter
         label="Submission Date"
         value={filters.dateRange}
         onChange={(dateRange) => onChange({ ...filters, dateRange })}
       />
-      
+
       <RangeFilter
         label="Score Range"
         min={0}
@@ -345,7 +345,7 @@ const BulkOperations = ({ selectedSubmissions }: { selectedSubmissions: string[]
       showError('Export failed');
     }
   };
-  
+
   return (
     <div className="bulk-operations">
       <span>{selectedSubmissions.length} selected</span>
@@ -358,10 +358,10 @@ const BulkOperations = ({ selectedSubmissions }: { selectedSubmissions: string[]
 ```
 
 ## Testing Requirements
-- ✅ Component unit tests dengan React Testing Library
-- ✅ Submission viewer integration tests
-- ✅ Review and scoring workflow tests
-- ✅ Filtering dan search functionality tests
-- ✅ Export functionality tests
-- ✅ Bulk operations tests
-- ✅ Performance tests untuk large submission lists
+- Component unit tests dengan React Testing Library
+- Submission viewer integration tests
+- Review and scoring workflow tests
+- Filtering dan search functionality tests
+- Export functionality tests
+- Bulk operations tests
+- Performance tests untuk large submission lists

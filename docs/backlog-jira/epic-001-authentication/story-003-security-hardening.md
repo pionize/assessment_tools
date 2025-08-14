@@ -15,7 +15,7 @@ Sebagai pemilik sistem, saya ingin endpoint login dan data kredensial dilindungi
   skipSuccessfulRequests: false
 }
 
-// Per User Account  
+// Per User Account
 {
   windowMs: 300000,       // 5 minutes
   maxRequests: 5,         // 5 failed attempts per window
@@ -29,7 +29,7 @@ interface PasswordPolicy {
   minLength: 8;
   maxLength: 128;
   requireUppercase: boolean;     // At least 1 uppercase letter
-  requireLowercase: boolean;     // At least 1 lowercase letter  
+  requireLowercase: boolean;     // At least 1 lowercase letter
   requireNumbers: boolean;       // At least 1 number
   requireSpecialChars: boolean;  // At least 1 special character
   blockedPasswords: string[];    // Common passwords blacklist
@@ -47,14 +47,14 @@ const hashConfig = {
 ```
 
 ## Acceptance Criteria
-- ✅ Rate limiting: 10 req/min per IP, 5 failed attempts per user
-- ✅ Account lockout: 15 minutes after 5 consecutive failures
-- ✅ Password policy: min 8 chars, mixed case, numbers, special chars
-- ✅ Blocked common passwords (top 10k list)
-- ✅ Password hashing: bcrypt cost factor 12 with automatic salt
-- ✅ Secure headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options
-- ✅ Input sanitization: prevent injection attacks
-- ✅ Request body size limits: max 1MB for auth endpoints
+- Rate limiting: 10 req/min per IP, 5 failed attempts per user
+- Account lockout: 15 minutes after 5 consecutive failures
+- Password policy: min 8 chars, mixed case, numbers, special chars
+- Blocked common passwords (top 10k list)
+- Password hashing: bcrypt cost factor 12 with automatic salt
+- Secure headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options
+- Input sanitization: prevent injection attacks
+- Request body size limits: max 1MB for auth endpoints
 
 ## Validation Rules
 - **Rate Limiting**: Redis-based sliding window counter

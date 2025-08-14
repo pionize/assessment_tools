@@ -1,6 +1,6 @@
 # TASK-FE-004: Open-ended Challenge Builder (Frontend)
 
-**Story**: Story-004 Challenge CRUD - Open-ended  
+**Story**: Story-004 Challenge CRUD - Open-ended
 **Estimasi**: 2 hari
 
 ## Dependencies
@@ -11,25 +11,25 @@
 ## Acceptance Criteria Frontend
 
 ### Challenge Builder Interface
-- ✅ **Rich text editor** untuk instructions dengan markdown
-- ✅ **Word limit configuration** dengan validation
-- ✅ **Attachment settings** management
-- ✅ **Scoring rubric builder** dengan criteria definition
-- ✅ **Sample answer management** untuk reference
-- ✅ **Challenge preview** dalam candidate view
+- **Rich text editor** untuk instructions dengan markdown
+- **Word limit configuration** dengan validation
+- **Attachment settings** management
+- **Scoring rubric builder** dengan criteria definition
+- **Sample answer management** untuk reference
+- **Challenge preview** dalam candidate view
 
 ### Rubric Builder Features
-- ✅ **Criteria management**: add, edit, delete criteria
-- ✅ **Scoring levels** configuration per criteria
-- ✅ **Point distribution** dengan total validation
-- ✅ **Rubric templates** untuk common evaluation types
-- ✅ **Rubric preview** dengan sample scoring
+- **Criteria management**: add, edit, delete criteria
+- **Scoring levels** configuration per criteria
+- **Point distribution** dengan total validation
+- **Rubric templates** untuk common evaluation types
+- **Rubric preview** dengan sample scoring
 
 ### Settings Configuration
-- ✅ **Word count settings** dengan min/max inputs
-- ✅ **File attachment toggles** dengan limits
-- ✅ **Auto-save settings** configuration
-- ✅ **Response format** settings
+- **Word count settings** dengan min/max inputs
+- **File attachment toggles** dengan limits
+- **Auto-save settings** configuration
+- **Response format** settings
 
 ## Component Structure
 
@@ -93,19 +93,19 @@ interface CriteriaBuilder {
 ```
 
 ## Validation Rules
-- ✅ **Word limits**: min_words <= max_words validation
-- ✅ **Rubric points**: Total points == challenge points
-- ✅ **Criteria validation**: Each criteria has valid scoring levels
-- ✅ **File settings**: Logical attachment constraints
-- ✅ **Instructions**: Rich text format validation
+- **Word limits**: min_words <= max_words validation
+- **Rubric points**: Total points == challenge points
+- **Criteria validation**: Each criteria has valid scoring levels
+- **File settings**: Logical attachment constraints
+- **Instructions**: Rich text format validation
 
 ## UI/UX Requirements
-- ✅ **Rich text editor** dengan formatting toolbar
-- ✅ **Drag-and-drop** untuk criteria reordering
-- ✅ **Inline editing** untuk criteria dan levels
-- ✅ **Real-time validation** dengan error messages
-- ✅ **Preview mode** untuk candidate experience
-- ✅ **Form auto-save** dengan conflict resolution
+- **Rich text editor** dengan formatting toolbar
+- **Drag-and-drop** untuk criteria reordering
+- **Inline editing** untuk criteria dan levels
+- **Real-time validation** dengan error messages
+- **Preview mode** untuk candidate experience
+- **Form auto-save** dengan conflict resolution
 
 ## Sample Answer Management
 ```typescript
@@ -128,9 +128,9 @@ interface SampleAnswerManager {
 ```
 
 ## Testing Requirements
-- ✅ Component unit tests dengan React Testing Library
-- ✅ Rich text editor integration tests
-- ✅ Rubric builder workflow tests
-- ✅ Form validation tests
-- ✅ Settings configuration tests
-- ✅ Sample answer management tests
+- Component unit tests dengan React Testing Library
+- Rich text editor integration tests
+- Rubric builder workflow tests
+- Form validation tests
+- Settings configuration tests
+- Sample answer management tests

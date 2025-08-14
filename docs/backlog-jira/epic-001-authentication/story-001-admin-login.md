@@ -19,7 +19,7 @@ Sebagai Super Admin/Staff CMS, saya ingin bisa login ke CMS menggunakan email da
 {
   success: true;
   data: {
-    accessToken: string;   // JWT, expires in 15 minutes  
+    accessToken: string;   // JWT, expires in 15 minutes
     refreshToken: string;  // UUID, expires in 7 days
     admin: {
       id: string;
@@ -62,16 +62,16 @@ Sebagai Super Admin/Staff CMS, saya ingin bisa login ke CMS menggunakan email da
 ```
 
 ## Acceptance Criteria
-- ✅ Dapat memasukkan email dan password pada halaman login CMS
-- ✅ Validasi input: email format valid, password minimal 8 karakter
-- ✅ Jika kredensial benar, sistem mengembalikan JWT access + refresh token
-- ✅ UI menyimpan token aman (httpOnly cookie untuk refresh, memory untuk access)
-- ✅ Jika kredensial salah, tampilkan pesan error generik
-- ✅ Akun yang di-lockout menampilkan pesan sesuai dan tidak memberikan token
-- ✅ Sesi berakhir otomatis saat token kedaluwarsa; redirect ke login
-- ✅ Rate limiting: 10 requests/minute per IP
-- ✅ Account lockout: 5 failed attempts = 15 minute lockout
-- ✅ Password hashing menggunakan bcrypt (cost factor 12)
+- Dapat memasukkan email dan password pada halaman login CMS
+- Validasi input: email format valid, password minimal 8 karakter
+- Jika kredensial benar, sistem mengembalikan JWT access + refresh token
+- UI menyimpan token aman (httpOnly cookie untuk refresh, memory untuk access)
+- Jika kredensial salah, tampilkan pesan error generik
+- Akun yang di-lockout menampilkan pesan sesuai dan tidak memberikan token
+- Sesi berakhir otomatis saat token kedaluwarsa; redirect ke login
+- Rate limiting: 10 requests/minute per IP
+- Account lockout: 5 failed attempts = 15 minute lockout
+- Password hashing menggunakan bcrypt (cost factor 12)
 
 ## Validation Rules
 - **Email**: Must be valid email format using regex `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`

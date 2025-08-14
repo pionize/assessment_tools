@@ -1,6 +1,6 @@
 # TASK-BE-001: Assessment CRUD Service (Backend)
 
-**Story**: Story-001 Assessment CRUD + Lifecycle  
+**Story**: Story-001 Assessment CRUD + Lifecycle
 **Estimasi**: 4 hari
 
 ## Dependencies
@@ -11,26 +11,26 @@
 ## Acceptance Criteria Backend
 
 ### Core CRUD Operations
-- ✅ **GET /admin/assessments** dengan pagination, filtering, sorting
-- ✅ **POST /admin/assessments** dengan validation
-- ✅ **GET /admin/assessments/:id** dengan detail
-- ✅ **PUT /admin/assessments/:id** dengan partial updates
-- ✅ **PUT /admin/assessments/:id/status** untuk lifecycle management
-- ✅ **DELETE /admin/assessments/:id** dengan soft delete
+- **GET /admin/assessments** dengan pagination, filtering, sorting
+- **POST /admin/assessments** dengan validation
+- **GET /admin/assessments/:id** dengan detail
+- **PUT /admin/assessments/:id** dengan partial updates
+- **PUT /admin/assessments/:id/status** untuk lifecycle management
+- **DELETE /admin/assessments/:id** dengan soft delete
 
 ### Response Format Compliance
-- ✅ **Postman format**: `response_schema` + `response_output`
-- ✅ **Snake case fields**: `time_limit`, `pass_threshold`, etc.
-- ✅ **List format**: `response_output.list.content` untuk pagination
-- ✅ **Detail format**: `response_output.detail` untuk single item
-- ✅ **Error format**: `response_schema` dengan `CODE-xxxx`
+- **Postman format**: `response_schema` + `response_output`
+- **Snake case fields**: `time_limit`, `pass_threshold`, etc.
+- **List format**: `response_output.list.content` untuk pagination
+- **Detail format**: `response_output.detail` untuk single item
+- **Error format**: `response_schema` dengan `CODE-xxxx`
 
 ### Business Logic
-- ✅ **Status lifecycle**: draft → active → archived
-- ✅ **Title uniqueness** per organization
-- ✅ **Archive constraints**: no active sessions
-- ✅ **Activation rules**: must have challenges
-- ✅ **Audit trail** untuk semua changes
+- **Status lifecycle**: draft → active → archived
+- **Title uniqueness** per organization
+- **Archive constraints**: no active sessions
+- **Activation rules**: must have challenges
+- **Audit trail** untuk semua changes
 
 ## Database Schema
 
@@ -49,7 +49,7 @@ CREATE TABLE assessments (
   updated_at TIMESTAMP DEFAULT NOW(),
   published_at TIMESTAMP,
   archived_at TIMESTAMP,
-  
+
   UNIQUE(title, organization_id, status)
 );
 
@@ -59,7 +59,7 @@ CREATE INDEX idx_assessments_search ON assessments USING gin(to_tsvector('englis
 ```
 
 ## Testing Requirements
-- ✅ Unit tests untuk business logic
-- ✅ Integration tests untuk API endpoints
-- ✅ Status transition validation tests
-- ✅ Database constraint tests
+- Unit tests untuk business logic
+- Integration tests untuk API endpoints
+- Status transition validation tests
+- Database constraint tests

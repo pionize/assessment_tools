@@ -14,28 +14,28 @@ Implementasi comprehensive Role-Based Access Control system dengan middleware un
 ## Acceptance Criteria Backend
 
 ### Permission Middleware
-- ✅ **Permission checking middleware** untuk protect API endpoints
-- ✅ **Role-based route protection** dengan decorators/annotations
-- ✅ **Resource-level permissions** (e.g., assessment ownership)
-- ✅ **Multiple permission requirements** (AND/OR logic)
-- ✅ **Permission caching** untuk performance optimization
-- ✅ **Graceful permission denial** dengan proper error responses
+- **Permission checking middleware** untuk protect API endpoints
+- **Role-based route protection** dengan decorators/annotations
+- **Resource-level permissions** (e.g., assessment ownership)
+- **Multiple permission requirements** (AND/OR logic)
+- **Permission caching** untuk performance optimization
+- **Graceful permission denial** dengan proper error responses
 
 ### Database Operations
-- ✅ **Role CRUD operations** dengan validation
-- ✅ **Permission assignment/revocation** untuk roles
-- ✅ **User role management** with history tracking
-- ✅ **Permission inheritance** calculation
-- ✅ **Bulk permission operations** untuk efficiency
-- ✅ **Database constraints** untuk data integrity
+- **Role CRUD operations** dengan validation
+- **Permission assignment/revocation** untuk roles
+- **User role management** with history tracking
+- **Permission inheritance** calculation
+- **Bulk permission operations** untuk efficiency
+- **Database constraints** untuk data integrity
 
 ### API Endpoints
-- ✅ **GET /admin/roles** - List all roles with permissions
-- ✅ **POST /admin/roles** - Create new custom role
-- ✅ **PUT /admin/roles/:id** - Update role permissions
-- ✅ **DELETE /admin/roles/:id** - Delete custom role (not system roles)
-- ✅ **GET /admin/users/:id/permissions** - Get user effective permissions
-- ✅ **PUT /admin/users/:id/role** - Assign role to user
+- **GET /admin/roles** - List all roles with permissions
+- **POST /admin/roles** - Create new custom role
+- **PUT /admin/roles/:id** - Update role permissions
+- **DELETE /admin/roles/:id** - Delete custom role (not system roles)
+- **GET /admin/users/:id/permissions** - Get user effective permissions
+- **PUT /admin/users/:id/role** - Assign role to user
 
 ## API Contracts
 
@@ -60,7 +60,7 @@ Response: {
 ```typescript
 Request: {
   name: string;           // Required, unique
-  description?: string;   
+  description?: string;
   permissions: string[];  // Array of permission IDs
 }
 
@@ -132,17 +132,17 @@ CREATE TABLE resource_ownership (
 ```typescript
 // Express.js middleware
 export const requirePermissions = (
-  permissions: string[], 
+  permissions: string[],
   options: PermissionMiddleware['options'] = {}
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user; // From JWT middleware
     const userPermissions = await getUserPermissions(user.id);
-    
-    const hasPermission = options.operator === 'OR' 
+
+    const hasPermission = options.operator === 'OR'
       ? permissions.some(p => userPermissions.includes(p))
       : permissions.every(p => userPermissions.includes(p));
-    
+
     if (!hasPermission) {
       return res.status(403).json({
         success: false,
@@ -150,7 +150,7 @@ export const requirePermissions = (
         required: permissions
       });
     }
-    
+
     next();
   };
 };
@@ -163,21 +163,21 @@ export const requireResourceAccess = (
   return async (req: Request, res: Response, next: NextFunction) => {
     const resourceId = req.params.id;
     const userId = req.user.id;
-    
+
     const hasAccess = await checkResourceAccess(
-      userId, 
-      resourceType, 
-      resourceId, 
+      userId,
+      resourceType,
+      resourceId,
       permission
     );
-    
+
     if (!hasAccess) {
       return res.status(403).json({
         success: false,
         error: 'Access denied to this resource'
       });
     }
-    
+
     next();
   };
 };
@@ -195,22 +195,22 @@ export const requireResourceAccess = (
 | RBAC_006 | 409 | Role name already exists |
 
 ## Performance Considerations
-- ✅ **Permission caching** dengan Redis atau in-memory cache
-- ✅ **Efficient database queries** dengan proper indexing
-- ✅ **Lazy loading** untuk permission resolution
-- ✅ **Batch operations** untuk bulk permission checks
-- ✅ **Cache invalidation** saat role/permission berubah
+- **Permission caching** dengan Redis atau in-memory cache
+- **Efficient database queries** dengan proper indexing
+- **Lazy loading** untuk permission resolution
+- **Batch operations** untuk bulk permission checks
+- **Cache invalidation** saat role/permission berubah
 
 ## Testing Requirements
-- ✅ Unit tests untuk permission middleware
-- ✅ Integration tests untuk all RBAC endpoints
-- ✅ Security tests untuk permission bypass attempts  
-- ✅ Performance tests untuk large permission sets
-- ✅ Database constraint tests
+- Unit tests untuk permission middleware
+- Integration tests untuk all RBAC endpoints
+- Security tests untuk permission bypass attempts
+- Performance tests untuk large permission sets
+- Database constraint tests
 
 ## Security Validation
-- ✅ **Principle of least privilege** enforced
-- ✅ **System role protection** against modification
-- ✅ **Permission escalation prevention**
-- ✅ **Audit trail** untuk role assignments
-- ✅ **Resource ownership validation**
+- **Principle of least privilege** enforced
+- **System role protection** against modification
+- **Permission escalation prevention**
+- **Audit trail** untuk role assignments
+- **Resource ownership validation**

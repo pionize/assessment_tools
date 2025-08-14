@@ -1,6 +1,6 @@
 # TASK-FE-001: Assessment Management UI (Frontend)
 
-**Story**: Story-001 Assessment CRUD + Lifecycle  
+**Story**: Story-001 Assessment CRUD + Lifecycle
 **Estimasi**: 3 hari
 
 ## Dependencies
@@ -11,27 +11,27 @@
 ## Acceptance Criteria Frontend
 
 ### Assessment List & Dashboard
-- ✅ **Assessment list** dengan grid/table view
-- ✅ **Search & filtering** dengan real-time results
-- ✅ **Status filtering** dengan visual indicators
-- ✅ **Pagination** dengan page navigation
-- ✅ **Sorting** untuk multiple columns
-- ✅ **Bulk actions** untuk multiple assessments
+- **Assessment list** dengan grid/table view
+- **Search & filtering** dengan real-time results
+- **Status filtering** dengan visual indicators
+- **Pagination** dengan page navigation
+- **Sorting** untuk multiple columns
+- **Bulk actions** untuk multiple assessments
 
 ### Assessment Form
-- ✅ **Create assessment form** dengan validation
-- ✅ **Edit assessment form** dengan auto-save
-- ✅ **Rich text editor** untuk instructions
-- ✅ **Status management** dengan confirmation
-- ✅ **Form field validation** dengan real-time feedback
-- ✅ **Assessment templates** selection
+- **Create assessment form** dengan validation
+- **Edit assessment form** dengan auto-save
+- **Rich text editor** untuk instructions
+- **Status management** dengan confirmation
+- **Form field validation** dengan real-time feedback
+- **Assessment templates** selection
 
 ### UI/UX Requirements
-- ✅ **Responsive design** untuk mobile/desktop
-- ✅ **Loading states** untuk async operations
-- ✅ **Error handling** dengan user-friendly messages
-- ✅ **Success notifications** untuk operations
-- ✅ **Confirmation dialogs** untuk destructive actions
+- **Responsive design** untuk mobile/desktop
+- **Loading states** untuk async operations
+- **Error handling** dengan user-friendly messages
+- **Success notifications** untuk operations
+- **Confirmation dialogs** untuk destructive actions
 
 ## Component Structure
 
@@ -65,7 +65,7 @@ interface StatusManagerProps {
 - **Status Transitions**: Enforce business rules
 
 ## Testing Requirements
-- ✅ Component unit tests dengan React Testing Library
-- ✅ Form validation tests
-- ✅ User interaction tests
-- ✅ Error handling tests
+- Component unit tests dengan React Testing Library
+- Form validation tests
+- User interaction tests
+- Error handling tests

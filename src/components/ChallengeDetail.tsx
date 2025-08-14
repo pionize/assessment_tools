@@ -426,7 +426,7 @@ function ChallengeDetail() {
 								<CheckCircle className="w-6 h-6 text-white" />
 							</div>
 							<div>
-								<h3 className="text-lg font-bold text-green-800 mb-1">✅ Challenge Completed!</h3>
+								<h3 className="text-lg font-bold text-green-800 mb-1">Challenge Completed!</h3>
 								<span className="text-green-700">
 									You can review your submission above. Great work!
 								</span>

@@ -1,6 +1,6 @@
 # TASK-BE-002: Code Challenge CRUD Service (Backend)
 
-**Story**: Story-002 Challenge CRUD - Code Type  
+**Story**: Story-002 Challenge CRUD - Code Type
 **Estimasi**: 5 hari
 
 ## Dependencies
@@ -11,24 +11,24 @@
 ## Acceptance Criteria Backend
 
 ### Core CRUD Operations
-- ✅ **POST /admin/challenges/code** untuk create code challenge
-- ✅ **GET /admin/challenges/code/:id** dengan detail
-- ✅ **PUT /admin/challenges/code/:id** untuk updates
-- ✅ **DELETE /admin/challenges/code/:id** dengan soft delete
-- ✅ **POST /admin/challenges/code/:id/duplicate** untuk cloning
+- **POST /admin/challenges/code** untuk create code challenge
+- **GET /admin/challenges/code/:id** dengan detail
+- **PUT /admin/challenges/code/:id** untuk updates
+- **DELETE /admin/challenges/code/:id** dengan soft delete
+- **POST /admin/challenges/code/:id/duplicate** untuk cloning
 
 ### Code-Specific Features
-- ✅ **File template management** dengan version control
-- ✅ **POST /admin/challenges/code/:id/test** untuk test execution
-- ✅ **POST /admin/challenges/code/:id/preview** untuk candidate view
-- ✅ **Language support**: JavaScript, TypeScript, Python, Java, Go, Rust, C++
-- ✅ **Security validation** untuk code content
-- ✅ **Performance monitoring** untuk test execution
+- **File template management** dengan version control
+- **POST /admin/challenges/code/:id/test** untuk test execution
+- **POST /admin/challenges/code/:id/preview** untuk candidate view
+- **Language support**: JavaScript, TypeScript, Python, Java, Go, Rust, C++
+- **Security validation** untuk code content
+- **Performance monitoring** untuk test execution
 
 ### Response Format Compliance
-- ✅ **Files format** sesuai Postman: `{fileName: {content, language}}`
-- ✅ **Test cases format**: `test_cases` dengan snake_case
-- ✅ **Response wrapper**: `response_schema` + `response_output.detail`
+- **Files format** sesuai Postman: `{fileName: {content, language}}`
+- **Test cases format**: `test_cases` dengan snake_case
+- **Response wrapper**: `response_schema` + `response_output.detail`
 
 ## Database Schema
 
@@ -83,8 +83,8 @@ const securityConfigs = {
 ```
 
 ## Testing Requirements
-- ✅ Unit tests untuk challenge CRUD
-- ✅ File validation tests
-- ✅ Test case execution tests
-- ✅ Security validation tests
-- ✅ Performance tests untuk large files
+- Unit tests untuk challenge CRUD
+- File validation tests
+- Test case execution tests
+- Security validation tests
+- Performance tests untuk large files

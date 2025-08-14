@@ -162,14 +162,14 @@ Sebagai Assessment Manager, saya ingin mengaitkan challenge ke assessment, menen
 ```
 
 ## Acceptance Criteria
-- ✅ Challenge library dengan search/filter untuk assessment assignment
-- ✅ Drag-and-drop interface untuk challenge reordering
-- ✅ Points dan time limit override per assessment
-- ✅ Duplicate challenge validation (tidak boleh sama dalam 1 assessment)
-- ✅ Required/optional challenge designation
-- ✅ Bulk challenge assignment dengan order preservation
-- ✅ Assessment preview dengan challenge flow
-- ✅ Real-time order persistence dengan optimistic updates
+- Challenge library dengan search/filter untuk assessment assignment
+- Drag-and-drop interface untuk challenge reordering
+- Points dan time limit override per assessment
+- Duplicate challenge validation (tidak boleh sama dalam 1 assessment)
+- Required/optional challenge designation
+- Bulk challenge assignment dengan order preservation
+- Assessment preview dengan challenge flow
+- Real-time order persistence dengan optimistic updates
 
 ## Validation Rules
 - **Challenge Uniqueness**: Each challenge dapat muncul max 1x per assessment

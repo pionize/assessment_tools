@@ -27,7 +27,7 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
   };
   response_output: {
     list: {
-      content: {
+      content: [{
         id: string;
         title: string;
         description: string;
@@ -42,7 +42,7 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
         };
         created_at: string;
         updated_at: string;
-      }[];
+      }];
       pagination: {
         page: number;
         limit: number;
@@ -67,7 +67,7 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
 }
 ```
 
-**Success Response (201):**
+**Success Response (200):**
 ```typescript
 {
   response_schema: {
@@ -165,7 +165,7 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
   response_output: null;
 }
 
-// 409 - Business rule violations  
+// 409 - Business rule violations
 {
   response_schema: {
     response_code: "CODE-0002";
@@ -185,14 +185,14 @@ Sebagai Assessment Manager, saya ingin membuat, mengedit, mengarsipkan assessmen
 ```
 
 ## Acceptance Criteria
-- ✅ Dapat membuat assessment baru dengan field validation lengkap
-- ✅ Title unique per organisation/tenant dengan conflict detection
-- ✅ Status lifecycle: draft → active → archived dengan business rules
-- ✅ Assessment list dengan pagination, search, filtering, sorting
-- ✅ Detail view dengan challenge overview dan statistics
-- ✅ Update assessment fields dengan validation constraints
-- ✅ Status change validation (archived assessments read-only)
-- ✅ Soft delete untuk data integrity (archived, bukan delete)
+- Dapat membuat assessment baru dengan field validation lengkap
+- Title unique per organisation/tenant dengan conflict detection
+- Status lifecycle: draft → active → archived dengan business rules
+- Assessment list dengan pagination, search, filtering, sorting
+- Detail view dengan challenge overview dan statistics
+- Update assessment fields dengan validation constraints
+- Status change validation (archived assessments read-only)
+- Soft delete untuk data integrity (archived, bukan delete)
 
 ## Validation Rules
 - **Title**: 3-100 characters, unique, alphanumeric + spaces
