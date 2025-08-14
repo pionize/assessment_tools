@@ -1,5 +1,14 @@
 import Editor from "@monaco-editor/react";
-import { ChevronDown, ChevronRight, Code, Edit2, File, FileText, Folder, Trash2 } from "lucide-react";
+import {
+	ChevronDown,
+	ChevronRight,
+	Code,
+	Edit2,
+	File,
+	FileText,
+	Folder,
+	Trash2,
+} from "lucide-react";
 import type * as monaco from "monaco-editor";
 import { useEffect, useRef, useState } from "react";
 
@@ -36,11 +45,11 @@ function CodeEditor({
 		x: number;
 		y: number;
 		path: string;
-		type: 'file' | 'folder';
+		type: "file" | "folder";
 	} | null>(null);
 	const [renameItem, setRenameItem] = useState<{
 		path: string;
-		type: 'file' | 'folder';
+		type: "file" | "folder";
 		newName: string;
 	} | null>(null);
 	const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -145,9 +154,9 @@ function CodeEditor({
 		if (newFileParent) {
 			setExpandedFolders((prev) => {
 				const newExpanded = new Set([...prev]);
-				const pathParts = newFileParent.split('/');
+				const pathParts = newFileParent.split("/");
 				for (let i = 1; i <= pathParts.length; i++) {
-					const parentPath = pathParts.slice(0, i).join('/');
+					const parentPath = pathParts.slice(0, i).join("/");
 					newExpanded.add(parentPath);
 				}
 				return newExpanded;
@@ -172,8 +181,8 @@ function CodeEditor({
 		const fullPath = newFolderParent ? `${newFolderParent}/${newFolderName}` : newFolderName;
 
 		// Check if folder already exists by looking for any files starting with the path
-		const existingFolderFiles = Object.keys(files).filter((filePath) =>
-			filePath.startsWith(`${fullPath}/`) || filePath === fullPath
+		const existingFolderFiles = Object.keys(files).filter(
+			(filePath) => filePath.startsWith(`${fullPath}/`) || filePath === fullPath
 		);
 
 		if (existingFolderFiles.length > 0) {
@@ -199,9 +208,9 @@ function CodeEditor({
 		setExpandedFolders((prev) => {
 			const newExpanded = new Set([...prev, fullPath]);
 			// Also expand all parent folders
-			const pathParts = fullPath.split('/');
+			const pathParts = fullPath.split("/");
 			for (let i = 1; i < pathParts.length; i++) {
-				const parentPath = pathParts.slice(0, i).join('/');
+				const parentPath = pathParts.slice(0, i).join("/");
 				newExpanded.add(parentPath);
 			}
 			return newExpanded;
@@ -268,7 +277,7 @@ function CodeEditor({
 		return extensionMap[ext as keyof typeof extensionMap] || selectedLanguage;
 	};
 
-	const handleContextMenu = (e: React.MouseEvent, path: string, type: 'file' | 'folder') => {
+	const handleContextMenu = (e: React.MouseEvent, path: string, type: "file" | "folder") => {
 		e.preventDefault();
 		e.stopPropagation();
 		setContextMenu({
@@ -290,7 +299,6 @@ function CodeEditor({
 		setShowAddFolder(true);
 		setContextMenu(null);
 	};
-
 
 	const deleteFolder = (folderPath: string) => {
 		if (
@@ -317,8 +325,8 @@ function CodeEditor({
 		}
 	};
 
-	const startRename = (path: string, type: 'file' | 'folder') => {
-		const name = path.split('/').pop() || '';
+	const startRename = (path: string, type: "file" | "folder") => {
+		const name = path.split("/").pop() || "";
 		setRenameItem({ path, type, newName: name });
 		setContextMenu(null);
 	};
@@ -327,22 +335,22 @@ function CodeEditor({
 		if (!renameItem || !renameItem.newName.trim()) return;
 
 		// Validate new name
-		const namePattern = renameItem.type === 'file' 
-			? /^[a-zA-Z0-9-_.]+$/ 
-			: /^[a-zA-Z0-9-_]+$/;
+		const namePattern = renameItem.type === "file" ? /^[a-zA-Z0-9-_.]+$/ : /^[a-zA-Z0-9-_]+$/;
 
 		if (!namePattern.test(renameItem.newName)) {
-			alert(`${renameItem.type === 'file' ? 'File' : 'Folder'} name can only contain letters, numbers, hyphens, underscores${renameItem.type === 'file' ? ', and dots' : ''}`);
+			alert(
+				`${renameItem.type === "file" ? "File" : "Folder"} name can only contain letters, numbers, hyphens, underscores${renameItem.type === "file" ? ", and dots" : ""}`
+			);
 			return;
 		}
 
-		const pathParts = renameItem.path.split('/');
-		const newPath = [...pathParts.slice(0, -1), renameItem.newName].join('/');
+		const pathParts = renameItem.path.split("/");
+		const newPath = [...pathParts.slice(0, -1), renameItem.newName].join("/");
 
-		if (renameItem.type === 'file') {
+		if (renameItem.type === "file") {
 			// Check if new file name already exists
 			if (files[newPath] && newPath !== renameItem.path) {
-				alert('A file with this name already exists!');
+				alert("A file with this name already exists!");
 				return;
 			}
 
@@ -362,22 +370,22 @@ function CodeEditor({
 			}
 		} else {
 			// Check if new folder name already exists
-			const existingFiles = Object.keys(files).filter(filePath => 
-				filePath.startsWith(`${newPath}/`) && newPath !== renameItem.path
+			const existingFiles = Object.keys(files).filter(
+				(filePath) => filePath.startsWith(`${newPath}/`) && newPath !== renameItem.path
 			);
 
 			if (existingFiles.length > 0) {
-				alert('A folder with this name already exists!');
+				alert("A folder with this name already exists!");
 				return;
 			}
 
 			// Rename folder and all its contents
 			const updatedFiles = { ...files };
-			const filesToRename = Object.keys(updatedFiles).filter(filePath => 
+			const filesToRename = Object.keys(updatedFiles).filter((filePath) =>
 				filePath.startsWith(`${renameItem.path}/`)
 			);
 
-			filesToRename.forEach(oldFilePath => {
+			filesToRename.forEach((oldFilePath) => {
 				const relativePath = oldFilePath.substring(renameItem.path.length + 1);
 				const newFilePath = `${newPath}/${relativePath}`;
 				updatedFiles[newFilePath] = updatedFiles[oldFilePath];
@@ -395,7 +403,7 @@ function CodeEditor({
 			}
 
 			// Update expanded folders
-			setExpandedFolders(prev => {
+			setExpandedFolders((prev) => {
 				const newExpanded = new Set<string>();
 				for (const folderPath of prev as Set<string>) {
 					if (folderPath === renameItem.path) {
@@ -436,7 +444,7 @@ function CodeEditor({
 										toggleFolder(fullPath);
 									}
 								}}
-								onContextMenu={(e) => handleContextMenu(e, fullPath, 'folder')}
+								onContextMenu={(e) => handleContextMenu(e, fullPath, "folder")}
 							>
 								<div className="flex items-center">
 									{isExpanded ? (
@@ -446,27 +454,27 @@ function CodeEditor({
 									)}
 									<Folder className="w-4 h-4 mr-2 text-blue-500" />
 									{isRenaming ? (
-									<input
-										type="text"
-										value={renameItem.newName}
-										onChange={(e) => setRenameItem({ ...renameItem, newName: e.target.value })}
-										onKeyDown={(e) => {
-											if (e.key === 'Enter') {
-												e.preventDefault();
-												confirmRename();
-											} else if (e.key === 'Escape') {
-												e.preventDefault();
-												setRenameItem(null);
-											}
-										}}
-										onBlur={confirmRename}
-										autoFocus
-										className="bg-white border border-blue-500 rounded px-1 py-0 text-sm flex-1 min-w-0"
-										onClick={(e) => e.stopPropagation()}
-									/>
-								) : (
-									<span className="text-gray-700">{name}</span>
-								)}
+										<input
+											type="text"
+											value={renameItem.newName}
+											onChange={(e) => setRenameItem({ ...renameItem, newName: e.target.value })}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+													confirmRename();
+												} else if (e.key === "Escape") {
+													e.preventDefault();
+													setRenameItem(null);
+												}
+											}}
+											onBlur={confirmRename}
+											autoFocus
+											className="bg-white border border-blue-500 rounded px-1 py-0 text-sm flex-1 min-w-0"
+											onClick={(e) => e.stopPropagation()}
+										/>
+									) : (
+										<span className="text-gray-700">{name}</span>
+									)}
 								</div>
 								<div className="opacity-0 group-hover:opacity-100 flex">
 									<button
@@ -524,7 +532,7 @@ function CodeEditor({
 									setSelectedFile(fullPath);
 								}
 							}}
-							onContextMenu={(e) => handleContextMenu(e, fullPath, 'file')}
+							onContextMenu={(e) => handleContextMenu(e, fullPath, "file")}
 						>
 							<div className="flex items-center">
 								<File className="w-4 h-4 mr-2 text-gray-500" />
@@ -534,10 +542,10 @@ function CodeEditor({
 										value={renameItem.newName}
 										onChange={(e) => setRenameItem({ ...renameItem, newName: e.target.value })}
 										onKeyDown={(e) => {
-											if (e.key === 'Enter') {
+											if (e.key === "Enter") {
 												e.preventDefault();
 												confirmRename();
-											} else if (e.key === 'Escape') {
+											} else if (e.key === "Escape") {
 												e.preventDefault();
 												setRenameItem(null);
 											}
@@ -548,7 +556,9 @@ function CodeEditor({
 										onClick={(e) => e.stopPropagation()}
 									/>
 								) : (
-									<span className={`text-gray-700 ${selectedFile === fullPath ? "font-medium" : ""}`}>
+									<span
+										className={`text-gray-700 ${selectedFile === fullPath ? "font-medium" : ""}`}
+									>
 										{name}
 									</span>
 								)}
@@ -726,7 +736,7 @@ function CodeEditor({
 								minWidth: "150px",
 							}}
 						>
-							{contextMenu.type === 'folder' && (
+							{contextMenu.type === "folder" && (
 								<>
 									<button
 										type="button"
@@ -759,7 +769,7 @@ function CodeEditor({
 							<button
 								type="button"
 								onClick={() => {
-									if (contextMenu.type === 'folder') {
+									if (contextMenu.type === "folder") {
 										deleteFolder(contextMenu.path);
 									} else {
 										deleteFile(contextMenu.path);
@@ -769,7 +779,7 @@ function CodeEditor({
 								className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center text-red-600 hover:bg-red-50"
 							>
 								<Trash2 className="w-4 h-4 mr-2" />
-								Delete {contextMenu.type === 'folder' ? 'Folder' : 'File'}
+								Delete {contextMenu.type === "folder" ? "Folder" : "File"}
 							</button>
 						</div>
 					</>
