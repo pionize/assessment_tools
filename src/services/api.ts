@@ -25,10 +25,7 @@ export type {
 	SubmissionResponse,
 };
 
-type ChallengeSummary = Pick<
-	Challenge,
-	"id" | "title" | "type" | "description" | "timeLimit"
->;
+type ChallengeSummary = Pick<Challenge, "id" | "title" | "type" | "description" | "timeLimit">;
 
 // Submission types now imported from contexts
 
@@ -38,10 +35,7 @@ type ChallengeSummary = Pick<
 
 import { sessionStorage as sessionStore } from "../utils/sessionStorage";
 import type { AssessmentDetailResponseDTO } from "./dto/assessment";
-import type {
-	AuthenticateRequestDTO,
-	AuthenticateResponseDTO,
-} from "./dto/auth";
+import type { AuthenticateRequestDTO, AuthenticateResponseDTO } from "./dto/auth";
 import type {
 	ChallengeDetailDTO,
 	ChallengeDetailResponseDTO,
@@ -51,9 +45,7 @@ import { get, post } from "./httpClient";
 
 function authHeader() {
 	const candidate = sessionStore.getCandidate?.();
-	return candidate?.token
-		? { Authorization: `Bearer ${candidate.token}` }
-		: undefined;
+	return candidate?.token ? { Authorization: `Bearer ${candidate.token}` } : undefined;
 }
 
 function toChallengeSummary(dto: {
@@ -74,8 +66,7 @@ function toChallengeSummary(dto: {
 
 function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 	// TODO: Backend may return files as string content; normalize to { content, language } strictly.
-	const normalizedFiles: Record<string, { content: string; language: string }> =
-		{};
+	const normalizedFiles: Record<string, { content: string; language: string }> = {};
 	if (dto.files) {
 		for (const [path, value] of Object.entries(dto.files)) {
 			if (typeof value === "string") {
@@ -107,8 +98,7 @@ function toChallengeDetail(dto: ChallengeDetailDTO): Challenge {
 			// Normalize id to string for UI components.
 			id: String(q.id),
 			question: q.question,
-			options:
-				q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
+			options: q.options?.map((o) => ({ id: String(o.id), text: o.text })) || [],
 		})),
 	} as Challenge;
 }
@@ -117,7 +107,7 @@ export const apiService = {
 	async getAssessment(assessmentId: string): Promise<Assessment> {
 		const { data } = await get<AssessmentDetailResponseDTO>(
 			`/assessments/${encodeURIComponent(assessmentId)}`,
-			{ headers: authHeader() },
+			{ headers: authHeader() }
 		);
 		const detail = (
 			data as {
@@ -128,8 +118,8 @@ export const apiService = {
 		)?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(data as { response_schema?: { response_message?: string } })
-					?.response_schema?.response_message || "Failed to load assessment",
+				(data as { response_schema?: { response_message?: string } })?.response_schema
+					?.response_message || "Failed to load assessment"
 			);
 		}
 		return {
@@ -141,11 +131,12 @@ export const apiService = {
 	},
 
 	async getChallenges(assessmentId: string): Promise<ChallengeSummary[]> {
-		const { data } = await get<
-			ChallengeListResponseDTO | Record<string, unknown>
-		>(`/assessments/${encodeURIComponent(assessmentId)}/challenges`, {
-			headers: authHeader(),
-		});
+		const { data } = await get<ChallengeListResponseDTO | Record<string, unknown>>(
+			`/assessments/${encodeURIComponent(assessmentId)}/challenges`,
+			{
+				headers: authHeader(),
+			}
+		);
 		// Support both shapes:
 		// - { response_output: { content: [...] } }
 		// - { response_output: { list: { content: [...] } } }
@@ -164,8 +155,8 @@ export const apiService = {
 				: undefined;
 		if (!Array.isArray(content)) {
 			throw new Error(
-				(data as { response_schema?: { response_message?: string } })
-					?.response_schema?.response_message || "Failed to load challenges",
+				(data as { response_schema?: { response_message?: string } })?.response_schema
+					?.response_message || "Failed to load challenges"
 			);
 		}
 		return content.map((item) =>
@@ -176,29 +167,28 @@ export const apiService = {
 					type: "code" | "open-ended" | "multiple-choice";
 					description: string;
 					time_limit?: number;
-				},
-			),
+				}
+			)
 		);
 	},
 
 	async getChallengeDetails(challengeId: string): Promise<Challenge> {
 		const { data } = await get<ChallengeDetailResponseDTO>(
 			`/challenges/${encodeURIComponent(challengeId)}`,
-			{ headers: authHeader() },
+			{ headers: authHeader() }
 		);
-		const detail = (data as { response_output?: { detail?: unknown } })
-			?.response_output?.detail;
+		const detail = (data as { response_output?: { detail?: unknown } })?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(data as { response_schema?: { response_message?: string } })
-					?.response_schema?.response_message || "Failed to load challenge",
+				(data as { response_schema?: { response_message?: string } })?.response_schema
+					?.response_message || "Failed to load challenge"
 			);
 		}
 		return toChallengeDetail(detail as ChallengeDetailDTO);
 	},
 
 	async submitChallenge(
-		submission: CodeSubmission | OpenEndedSubmission | MultipleChoiceSubmission,
+		submission: CodeSubmission | OpenEndedSubmission | MultipleChoiceSubmission
 	): Promise<SubmissionResponse> {
 		// Transform per docs: POST /challenges/submissions
 		let body: Record<string, unknown> = {
@@ -216,14 +206,10 @@ export const apiService = {
 			const answers = submission.answers || {};
 			body = {
 				...body,
-				multiple_choice_answers: Object.entries(answers).map(
-					([questionId, optionId]) => ({
-						question_id: Number.isNaN(Number(questionId))
-							? questionId
-							: Number(questionId),
-						option_id: optionId,
-					}),
-				),
+				multiple_choice_answers: Object.entries(answers).map(([questionId, optionId]) => ({
+					question_id: Number.isNaN(Number(questionId)) ? questionId : Number(questionId),
+					option_id: optionId,
+				})),
 			};
 		}
 		const { data } = await post<
@@ -245,8 +231,8 @@ export const apiService = {
 		)?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(data as { response_schema?: { response_message?: string } })
-					?.response_schema?.response_message || "Failed to submit challenge",
+				(data as { response_schema?: { response_message?: string } })?.response_schema
+					?.response_message || "Failed to submit challenge"
 			);
 		}
 		return {
@@ -274,11 +260,7 @@ export const apiService = {
 				};
 				response_schema?: { response_message?: string };
 			}
-		>(
-			"/assessments/submissions",
-			{ assessment_id: data.assessmentId },
-			{ headers: authHeader() },
-		);
+		>("/assessments/submissions", { assessment_id: data.assessmentId }, { headers: authHeader() });
 		const detail = (
 			resp as {
 				response_output?: {
@@ -292,8 +274,8 @@ export const apiService = {
 		)?.response_output?.detail;
 		if (!detail) {
 			throw new Error(
-				(resp as { response_schema?: { response_message?: string } })
-					?.response_schema?.response_message || "Failed to submit assessment",
+				(resp as { response_schema?: { response_message?: string } })?.response_schema
+					?.response_message || "Failed to submit assessment"
 			);
 		}
 		return {
@@ -307,11 +289,7 @@ export const apiService = {
 		};
 	},
 
-	async authenticate(
-		name: string,
-		email: string,
-		assessmentId: string,
-	): Promise<AuthResponse> {
+	async authenticate(name: string, email: string, assessmentId: string): Promise<AuthResponse> {
 		if (!name || !email || !assessmentId) {
 			throw new Error("Name, email, and assessment ID are required");
 		}
@@ -319,19 +297,17 @@ export const apiService = {
 		if (!emailRegex.test(email)) {
 			throw new Error("Invalid email format");
 		}
-		const { data } = await post<
-			AuthenticateRequestDTO,
-			AuthenticateResponseDTO
-		>("/assessments/authenticate", {
-			name,
-			email,
-			assessment_id: assessmentId,
-		});
+		const { data } = await post<AuthenticateRequestDTO, AuthenticateResponseDTO>(
+			"/assessments/authenticate",
+			{
+				name,
+				email,
+				assessment_id: assessmentId,
+			}
+		);
 		// Support both shapes: response_output.detail or response_detail
-		const ro = (data as { response_output?: { detail?: unknown } })
-			?.response_output;
-		const rd = (data as { response_detail?: { detail?: unknown } | unknown })
-			?.response_detail;
+		const ro = (data as { response_output?: { detail?: unknown } })?.response_output;
+		const rd = (data as { response_detail?: { detail?: unknown } | unknown })?.response_detail;
 		const detail = ro?.detail ?? (rd as { detail?: unknown })?.detail ?? rd;
 		const detailTyped = detail as {
 			success?: boolean;
@@ -345,11 +321,11 @@ export const apiService = {
 		};
 		if (!detailTyped?.success) {
 			const code =
-				(data as { response_schema?: { response_code?: string } })
-					?.response_schema?.response_code || "UNKNOWN";
+				(data as { response_schema?: { response_code?: string } })?.response_schema
+					?.response_code || "UNKNOWN";
 			const msg =
-				(data as { response_schema?: { response_message?: string } })
-					?.response_schema?.response_message || "Authentication failed";
+				(data as { response_schema?: { response_message?: string } })?.response_schema
+					?.response_message || "Authentication failed";
 			throw new Error(`${code}: ${msg}`);
 		}
 		const resp: AuthResponse = {
@@ -365,22 +341,13 @@ export const apiService = {
 		return resp;
 	},
 
-	async getAssessmentSession(
-		assessmentId: string,
-		email: string,
-	): Promise<AssessmentSession> {
+	async getAssessmentSession(assessmentId: string, email: string): Promise<AssessmentSession> {
 		if (!assessmentId || !email) {
 			throw new Error("Assessment ID and email are required");
 		}
 		const candidate = sessionStore.getCandidate();
-		if (
-			!candidate ||
-			candidate.assessmentId !== assessmentId ||
-			candidate.email !== email
-		) {
-			throw new Error(
-				"No active assessment session found. Please login first.",
-			);
+		if (!candidate || candidate.assessmentId !== assessmentId || candidate.email !== email) {
+			throw new Error("No active assessment session found. Please login first.");
 		}
 		const timeLimit = candidate.timeLimit || 0;
 		const timeLimitMs = timeLimit * 60 * 1000;
@@ -404,7 +371,7 @@ export const apiService = {
 	authenticateCandidate: async (
 		name: string,
 		email: string,
-		assessmentId: string,
+		assessmentId: string
 	): Promise<AuthResponse> => {
 		return apiService.authenticate(name, email, assessmentId);
 	},

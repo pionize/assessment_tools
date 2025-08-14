@@ -25,8 +25,7 @@ const Badge: React.FC<BadgeProps> = ({
 	icon = null,
 	...props
 }) => {
-	const baseClasses =
-		"inline-flex items-center font-semibold transition-colors";
+	const baseClasses = "inline-flex items-center font-semibold transition-colors";
 
 	const variantClasses = {
 		default: "bg-gray-100 text-gray-800 border border-gray-200",

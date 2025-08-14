@@ -6,9 +6,7 @@ interface TableProps extends React.HTMLAttributes<HTMLElement> {
 const Table = ({ children, className = "", ...props }: TableProps) => {
 	return (
 		<div className={`overflow-x-auto ${className}`} {...props}>
-			<table className="w-full border-collapse bg-white rounded-lg shadow-sm">
-				{children}
-			</table>
+			<table className="w-full border-collapse bg-white rounded-lg shadow-sm">{children}</table>
 		</div>
 	);
 };
@@ -44,12 +42,7 @@ interface TableCellProps extends TableProps {
 	isHeader?: boolean;
 }
 
-const TableCell = ({
-	children,
-	className = "",
-	isHeader = false,
-	...props
-}: TableCellProps) => {
+const TableCell = ({ children, className = "", isHeader = false, ...props }: TableCellProps) => {
 	const Component = isHeader ? "th" : "td";
 	const baseClasses = isHeader
 		? "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"

@@ -1,12 +1,4 @@
-import {
-	CheckCircle,
-	Clock,
-	Code,
-	FileText,
-	HelpCircle,
-	Play,
-	User,
-} from "lucide-react";
+import { CheckCircle, Clock, Code, FileText, HelpCircle, Play, User } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssessment } from "../contexts/AssessmentContext";
@@ -18,9 +10,7 @@ import { Badge, Button, Card } from "./ui";
 function ChallengeList() {
 	const [localLoading, setLocalLoading] = useState(true);
 	const [currentTime, setCurrentTime] = useState(new Date());
-	const [sessionData, setSessionData] = useState<AssessmentSession | null>(
-		null,
-	);
+	const [sessionData, setSessionData] = useState<AssessmentSession | null>(null);
 	const [sessionLoading, setSessionLoading] = useState(true);
 	const { assessmentId } = useParams();
 	const navigate = useNavigate();
@@ -38,19 +28,14 @@ function ChallengeList() {
 
 			try {
 				setSessionLoading(true);
-				const session = await apiService.getAssessmentSession(
-					assessmentId,
-					state.candidate.email,
-				);
+				const session = await apiService.getAssessmentSession(assessmentId, state.candidate.email);
 
 				console.log("Assessment session loaded:", session);
 				setSessionData(session);
 
 				// Check if session is expired
 				if (session.isExpired) {
-					alert(
-						"⏰ Your assessment session has expired. Please contact the administrator.",
-					);
+					alert("⏰ Your assessment session has expired. Please contact the administrator.");
 					dispatch({ type: "RESET_ASSESSMENT" });
 					navigate(`/assessment/${assessmentId}`);
 					return;
@@ -113,9 +98,7 @@ function ChallengeList() {
 		return state.completedChallenges.has(challengeId);
 	};
 
-	const completedCount = state.challenges.filter((challenge) =>
-		isCompleted(challenge.id),
-	).length;
+	const completedCount = state.challenges.filter((challenge) => isCompleted(challenge.id)).length;
 
 	// Update current time every second
 	useEffect(() => {
@@ -127,9 +110,7 @@ function ChallengeList() {
 	}, []);
 
 	const handleAutoSubmitAssessment = useCallback(async () => {
-		const confirmed = confirm(
-			"⏰ Time's up! Your assessment will be automatically submitted now.",
-		);
+		const confirmed = confirm("⏰ Time's up! Your assessment will be automatically submitted now.");
 		if (confirmed && assessmentId && state.candidate) {
 			try {
 				await apiService.submitAssessment({
@@ -142,7 +123,7 @@ function ChallengeList() {
 				dispatch({ type: "RESET_ASSESSMENT" });
 
 				alert(
-					"⏰ Assessment automatically submitted due to time limit. Thank you for your participation.",
+					"⏰ Assessment automatically submitted due to time limit. Thank you for your participation."
 				);
 
 				setTimeout(() => {
@@ -235,16 +216,13 @@ function ChallengeList() {
 								<h1 className="text-3xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent">
 									{state.assessment?.title || "Assessment"}
 								</h1>
-								<p className="text-gray-600 font-medium mt-1">
-									Welcome, {state.candidate.name}
-								</p>
+								<p className="text-gray-600 font-medium mt-1">Welcome, {state.candidate.name}</p>
 								{/* Assessment Time Remaining Counter */}
 								{sessionData?.timeLimit && remainingTimeSeconds !== null && (
 									<div className="flex items-center mt-2 text-sm text-gray-500">
 										<Clock className="w-4 h-4 mr-2" />
 										<span className="font-mono">
-											Time Remaining:{" "}
-											{formatAssessmentTime(remainingTimeSeconds)}
+											Time Remaining: {formatAssessmentTime(remainingTimeSeconds)}
 										</span>
 									</div>
 								)}
@@ -253,9 +231,7 @@ function ChallengeList() {
 						<div className="flex items-center space-x-4">
 							<div className="hidden md:flex items-center bg-gradient-to-r from-blue-50 to-sky-50 px-4 py-2 rounded-full border border-blue-100">
 								<User className="w-4 h-4 mr-2 text-blue-600" />
-								<span className="text-sm text-gray-700 font-medium">
-									{state.candidate.email}
-								</span>
+								<span className="text-sm text-gray-700 font-medium">{state.candidate.email}</span>
 							</div>
 						</div>
 					</div>
@@ -270,9 +246,7 @@ function ChallengeList() {
 							<h2 className="text-2xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent mb-2">
 								Progress Overview
 							</h2>
-							<p className="text-gray-600">
-								Track your completion status across all challenges
-							</p>
+							<p className="text-gray-600">Track your completion status across all challenges</p>
 						</div>
 						<div className="flex items-center space-x-6">
 							<div className="text-right">
@@ -281,9 +255,7 @@ function ChallengeList() {
 								</div>
 								<div className="text-sm text-gray-500 font-medium">
 									{state.challenges.length > 0
-										? Math.round(
-												(completedCount / state.challenges.length) * 100,
-											)
+										? Math.round((completedCount / state.challenges.length) * 100)
 										: 0}
 									% Complete
 								</div>
@@ -313,7 +285,7 @@ function ChallengeList() {
 							<Button
 								onClick={async () => {
 									const confirmed = confirm(
-										"Are you sure you want to submit your assessment? This action cannot be undone.",
+										"Are you sure you want to submit your assessment? This action cannot be undone."
 									);
 									if (!confirmed || !assessmentId || !state.candidate) return;
 
@@ -328,9 +300,7 @@ function ChallengeList() {
 										sessionStorage.clearSession();
 										dispatch({ type: "RESET_ASSESSMENT" });
 
-										alert(
-											"Assessment submitted successfully! Thank you for your participation.",
-										);
+										alert("Assessment submitted successfully! Thank you for your participation.");
 
 										// Redirect to assessment start page
 										setTimeout(() => {
@@ -387,18 +357,12 @@ function ChallengeList() {
 												{index + 1}
 											</div>
 
-											<Badge
-												variant={challenge.type}
-												icon={getTypeIcon(challenge.type)}
-												size="md"
-											>
+											<Badge variant={challenge.type} icon={getTypeIcon(challenge.type)} size="md">
 												{challenge.type.replace("-", " ")}
 											</Badge>
 										</div>
 
-										<h3 className="text-2xl font-bold text-gray-800 mb-3">
-											{challenge.title}
-										</h3>
+										<h3 className="text-2xl font-bold text-gray-800 mb-3">{challenge.title}</h3>
 
 										<p className="text-gray-600 text-base leading-relaxed mb-6">
 											{challenge.description}
@@ -406,11 +370,7 @@ function ChallengeList() {
 
 										{/* Status indicator */}
 										{isCompleted(challenge.id) && (
-											<Badge
-												variant="success"
-												icon={<CheckCircle className="w-5 h-5" />}
-												size="lg"
-											>
+											<Badge variant="success" icon={<CheckCircle className="w-5 h-5" />} size="lg">
 												Completed
 											</Badge>
 										)}
@@ -419,18 +379,12 @@ function ChallengeList() {
 									<div className="ml-8 flex-shrink-0">
 										<Button
 											onClick={() => handleTakeChallenge(challenge.id)}
-											variant={
-												isCompleted(challenge.id) ? "secondary" : "primary"
-											}
+											variant={isCompleted(challenge.id) ? "secondary" : "primary"}
 											size="lg"
-											icon={
-												<Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-											}
+											icon={<Play className="w-5 h-5 group-hover:scale-110 transition-transform" />}
 											className="group"
 										>
-											{isCompleted(challenge.id)
-												? "Review Solution"
-												: "Start Challenge"}
+											{isCompleted(challenge.id) ? "Review Solution" : "Start Challenge"}
 										</Button>
 									</div>
 								</div>
@@ -443,12 +397,8 @@ function ChallengeList() {
 							<div className="text-gray-400 mb-4">
 								<FileText className="w-12 h-12 mx-auto" />
 							</div>
-							<h3 className="text-lg font-medium text-gray-900 mb-2">
-								No challenges available
-							</h3>
-							<p className="text-gray-600">
-								Please check back later or contact the administrator.
-							</p>
+							<h3 className="text-lg font-medium text-gray-900 mb-2">No challenges available</h3>
+							<p className="text-gray-600">Please check back later or contact the administrator.</p>
 						</div>
 					)}
 				</div>

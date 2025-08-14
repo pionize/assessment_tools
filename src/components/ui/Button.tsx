@@ -2,13 +2,7 @@ import type React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children: React.ReactNode;
-	variant?:
-		| "primary"
-		| "secondary"
-		| "success"
-		| "danger"
-		| "outline"
-		| "ghost";
+	variant?: "primary" | "secondary" | "success" | "danger" | "outline" | "ghost";
 	size?: "sm" | "md" | "lg";
 	icon?: React.ReactElement | null;
 }
@@ -30,16 +24,13 @@ const Button: React.FC<ButtonProps> = ({
 	const variantClasses = {
 		primary:
 			"bg-[#00487a] hover:bg-[#002957] text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5",
-		secondary:
-			"bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300",
+		secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300",
 		success:
 			"bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5",
 		danger:
 			"bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5",
-		outline:
-			"border-2 border-[#00487a] text-[#00487a] hover:bg-[#00487a] hover:text-white",
-		ghost:
-			"text-[#00487a] hover:bg-[#00487a] hover:text-white hover:bg-opacity-10",
+		outline: "border-2 border-[#00487a] text-[#00487a] hover:bg-[#00487a] hover:text-white",
+		ghost: "text-[#00487a] hover:bg-[#00487a] hover:text-white hover:bg-opacity-10",
 	};
 
 	const sizeClasses = {
@@ -51,13 +42,7 @@ const Button: React.FC<ButtonProps> = ({
 	const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
 	return (
-		<button
-			type={type}
-			onClick={onClick}
-			disabled={disabled}
-			className={classes}
-			{...props}
-		>
+		<button type={type} onClick={onClick} disabled={disabled} className={classes} {...props}>
 			<div className="flex items-center space-x-2">
 				{icon && <span className="flex-shrink-0">{icon}</span>}
 				<span>{children}</span>

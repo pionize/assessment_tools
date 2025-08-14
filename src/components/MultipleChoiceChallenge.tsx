@@ -68,10 +68,9 @@ function MultipleChoiceChallenge({
 		if (isSubmitting) return;
 
 		if (!autoSubmit && !isComplete()) {
-			const unanswered =
-				(challenge.questions?.length || 0) - getAnsweredCount();
+			const unanswered = (challenge.questions?.length || 0) - getAnsweredCount();
 			const confirm = window.confirm(
-				`You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Are you sure you want to submit?`,
+				`You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Are you sure you want to submit?`
 			);
 			if (!confirm) return;
 		}
@@ -101,18 +100,14 @@ function MultipleChoiceChallenge({
 		if (!showResults) return null;
 
 		const results = (challenge.questions || []).map(
-			(question: {
-				id: string;
-				question: string;
-				options: { id: string; text: string }[];
-			}) => {
+			(question: { id: string; question: string; options: { id: string; text: string }[] }) => {
 				const selectedAnswer = answers[question.id];
 
 				return {
 					...question,
 					selectedAnswer,
 				};
-			},
+			}
 		);
 
 		return {
@@ -130,11 +125,7 @@ function MultipleChoiceChallenge({
 				<div className="max-w-4xl mx-auto px-6 py-4">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-4">
-							<Button
-								onClick={onBack}
-								variant="ghost"
-								icon={<ArrowLeft className="w-5 h-5" />}
-							>
+							<Button onClick={onBack} variant="ghost" icon={<ArrowLeft className="w-5 h-5" />}>
 								Back to Challenges
 							</Button>
 
@@ -142,17 +133,14 @@ function MultipleChoiceChallenge({
 
 							<div className="flex items-center space-x-2">
 								<HelpCircle className="w-5 h-5 text-blue-600" />
-								<span className="font-semibold text-gray-800">
-									Multiple Choice
-								</span>
+								<span className="font-semibold text-gray-800">Multiple Choice</span>
 							</div>
 						</div>
 
 						<div className="flex items-center space-x-4">
 							{!showResults && (
 								<div className="text-sm text-gray-600">
-									{getAnsweredCount()}/{challenge.questions?.length || 0}{" "}
-									answered
+									{getAnsweredCount()}/{challenge.questions?.length || 0} answered
 								</div>
 							)}
 						</div>
@@ -163,9 +151,7 @@ function MultipleChoiceChallenge({
 			<div className="max-w-4xl mx-auto px-6 py-8">
 				{/* Challenge Info */}
 				<Card className="mb-8">
-					<h1 className="text-3xl font-bold text-gray-800 mb-4">
-						{challenge.title}
-					</h1>
+					<h1 className="text-3xl font-bold text-gray-800 mb-4">{challenge.title}</h1>
 					<p className="text-gray-600 text-lg mb-6">{challenge.description}</p>
 
 					{/* Assessment time display removed as not part of current state */}
@@ -187,12 +173,10 @@ function MultipleChoiceChallenge({
 									<CheckCircle className="w-6 h-6 text-white" />
 								</div>
 								<div>
-									<h3 className="text-2xl font-bold text-gray-800">
-										Quiz Complete!
-									</h3>
+									<h3 className="text-2xl font-bold text-gray-800">Quiz Complete!</h3>
 									<p className="text-gray-600">
-										You answered {Object.keys(answers).length} out of{" "}
-										{resultsData.totalQuestions} questions
+										You answered {Object.keys(answers).length} out of {resultsData.totalQuestions}{" "}
+										questions
 									</p>
 								</div>
 							</div>
@@ -213,7 +197,7 @@ function MultipleChoiceChallenge({
 								question: string;
 								options: { id: string; text: string }[];
 							},
-							index: number,
+							index: number
 						) => (
 							<Card key={question.id}>
 								<div className="flex items-start space-x-4 mb-6">
@@ -226,58 +210,49 @@ function MultipleChoiceChallenge({
 										</h3>
 
 										<div className="space-y-3">
-											{question.options.map(
-												(option: { id: string; text: string }) => {
-													const isSelected = answers[question.id] === option.id;
+											{question.options.map((option: { id: string; text: string }) => {
+												const isSelected = answers[question.id] === option.id;
 
-													return (
-														<label
-															key={option.id}
-															className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-																showResults
-																	? isSelected
-																		? "bg-blue-100 border-blue-300 text-blue-800"
-																		: "bg-gray-50 border-gray-200 text-gray-600"
-																	: isSelected
-																		? "bg-blue-100 border-blue-300 text-blue-800"
-																		: "bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+												return (
+													<label
+														key={option.id}
+														className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+															showResults
+																? isSelected
+																	? "bg-blue-100 border-blue-300 text-blue-800"
+																	: "bg-gray-50 border-gray-200 text-gray-600"
+																: isSelected
+																	? "bg-blue-100 border-blue-300 text-blue-800"
+																	: "bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+														}`}
+													>
+														<input
+															type="radio"
+															name={`question-${question.id}`}
+															value={option.id}
+															checked={isSelected}
+															onChange={() =>
+																!showResults && handleAnswerChange(question.id, option.id)
+															}
+															className="sr-only"
+															disabled={showResults}
+														/>
+														<div
+															className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
+																isSelected ? "border-blue-500 bg-blue-500" : "border-gray-400"
 															}`}
 														>
-															<input
-																type="radio"
-																name={`question-${question.id}`}
-																value={option.id}
-																checked={isSelected}
-																onChange={() =>
-																	!showResults &&
-																	handleAnswerChange(question.id, option.id)
-																}
-																className="sr-only"
-																disabled={showResults}
-															/>
-															<div
-																className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
-																	isSelected
-																		? "border-blue-500 bg-blue-500"
-																		: "border-gray-400"
-																}`}
-															>
-																{isSelected && (
-																	<div className="w-2 h-2 bg-white rounded-full"></div>
-																)}
-															</div>
-															<span className="flex-1 font-medium">
-																{option.text}
-															</span>
-														</label>
-													);
-												},
-											)}
+															{isSelected && <div className="w-2 h-2 bg-white rounded-full"></div>}
+														</div>
+														<span className="flex-1 font-medium">{option.text}</span>
+													</label>
+												);
+											})}
 										</div>
 									</div>
 								</div>
 							</Card>
-						),
+						)
 					)}
 				</div>
 
@@ -287,13 +262,12 @@ function MultipleChoiceChallenge({
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
 								<div className="text-sm text-gray-600">
-									Progress: {getAnsweredCount()}/
-									{challenge.questions?.length || 0} questions completed
+									Progress: {getAnsweredCount()}/{challenge.questions?.length || 0} questions
+									completed
 								</div>
 								{!isComplete() && (
 									<div className="text-sm text-orange-600">
-										{(challenge.questions?.length || 0) - getAnsweredCount()}{" "}
-										questions remaining
+										{(challenge.questions?.length || 0) - getAnsweredCount()} questions remaining
 									</div>
 								)}
 							</div>

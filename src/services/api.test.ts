@@ -17,7 +17,7 @@ describe("API Service", () => {
 			const result = await apiService.authenticateCandidate(
 				"John Doe",
 				"john@example.com",
-				"assessment-123",
+				"assessment-123"
 			);
 
 			expect(result).toHaveProperty("success", true);
@@ -33,7 +33,7 @@ describe("API Service", () => {
 			const result = await apiService.authenticateCandidate(
 				"John Doe",
 				"john@example.com",
-				"invalid-id",
+				"invalid-id"
 			);
 
 			expect(result).toHaveProperty("success", false);
@@ -42,17 +42,13 @@ describe("API Service", () => {
 
 		it("should resume existing session if valid", async () => {
 			// First authentication
-			await apiService.authenticateCandidate(
-				"John Doe",
-				"john@example.com",
-				"assessment-123",
-			);
+			await apiService.authenticateCandidate("John Doe", "john@example.com", "assessment-123");
 
 			// Second authentication should resume session
 			const result = await apiService.authenticateCandidate(
 				"John Doe",
 				"john@example.com",
-				"assessment-123",
+				"assessment-123"
 			);
 
 			expect(result).toBeDefined();
@@ -66,21 +62,13 @@ describe("API Service", () => {
 			const originalDate = Date.now;
 			Date.now = vi.fn(() => new Date("2023-01-01T10:00:00.000Z").getTime());
 
-			await apiService.authenticateCandidate(
-				"John Doe",
-				"john@example.com",
-				"assessment-123",
-			);
+			await apiService.authenticateCandidate("John Doe", "john@example.com", "assessment-123");
 
 			// Fast forward time beyond limit
 			Date.now = vi.fn(() => new Date("2023-01-01T13:01:00.000Z").getTime());
 
 			await expect(
-				apiService.authenticateCandidate(
-					"assessment-123",
-					"John Doe",
-					"john@example.com",
-				),
+				apiService.authenticateCandidate("assessment-123", "John Doe", "john@example.com")
 			).rejects.toThrow("Assessment session has expired");
 
 			// Restore original Date.now
@@ -91,16 +79,9 @@ describe("API Service", () => {
 	describe("getAssessmentSession", () => {
 		it("should return session data for authenticated candidate", async () => {
 			// First authenticate
-			await apiService.authenticateCandidate(
-				"John Doe",
-				"john@example.com",
-				"assessment-123",
-			);
+			await apiService.authenticateCandidate("John Doe", "john@example.com", "assessment-123");
 
-			const session = await apiService.getAssessmentSession(
-				"assessment-123",
-				"john@example.com",
-			);
+			const session = await apiService.getAssessmentSession("assessment-123", "john@example.com");
 
 			expect(session).toHaveProperty("assessmentId", "assessment-123");
 			expect(session).toHaveProperty("candidateId");
@@ -112,7 +93,7 @@ describe("API Service", () => {
 
 		it("should throw error for non-authenticated candidate", async () => {
 			await expect(
-				apiService.getAssessmentSession("assessment-123", "john@example.com"),
+				apiService.getAssessmentSession("assessment-123", "john@example.com")
 			).rejects.toThrow("No active session found");
 		});
 	});
@@ -129,9 +110,7 @@ describe("API Service", () => {
 		});
 
 		it("should throw error for invalid assessment ID", async () => {
-			await expect(apiService.getChallenges("invalid-id")).rejects.toThrow(
-				"Assessment not found",
-			);
+			await expect(apiService.getChallenges("invalid-id")).rejects.toThrow("Assessment not found");
 		});
 	});
 
@@ -147,9 +126,9 @@ describe("API Service", () => {
 		});
 
 		it("should throw error for invalid challenge ID", async () => {
-			await expect(
-				apiService.getChallengeDetails("invalid-id"),
-			).rejects.toThrow("Challenge not found");
+			await expect(apiService.getChallengeDetails("invalid-id")).rejects.toThrow(
+				"Challenge not found"
+			);
 		});
 
 		it("should return code challenge with files", async () => {
@@ -179,11 +158,7 @@ describe("API Service", () => {
 	describe("submitChallenge", () => {
 		beforeEach(async () => {
 			// Authenticate first
-			await apiService.authenticateCandidate(
-				"John Doe",
-				"john@example.com",
-				"assessment-123",
-			);
+			await apiService.authenticateCandidate("John Doe", "john@example.com", "assessment-123");
 		});
 
 		it("should submit code challenge", async () => {
@@ -200,9 +175,7 @@ describe("API Service", () => {
 				timestamp: new Date().toISOString(),
 			};
 
-			await expect(
-				apiService.submitChallenge(submission),
-			).resolves.not.toThrow();
+			await expect(apiService.submitChallenge(submission)).resolves.not.toThrow();
 		});
 
 		it("should submit multiple choice challenge", async () => {
@@ -220,9 +193,7 @@ describe("API Service", () => {
 				autoSubmit: false,
 			};
 
-			await expect(
-				apiService.submitChallenge(submission),
-			).resolves.not.toThrow();
+			await expect(apiService.submitChallenge(submission)).resolves.not.toThrow();
 		});
 
 		it("should submit open-ended challenge", async () => {
@@ -236,9 +207,7 @@ describe("API Service", () => {
 				timestamp: new Date().toISOString(),
 			};
 
-			await expect(
-				apiService.submitChallenge(submission),
-			).resolves.not.toThrow();
+			await expect(apiService.submitChallenge(submission)).resolves.not.toThrow();
 		});
 
 		it("should throw error for invalid challenge ID", async () => {
@@ -255,9 +224,7 @@ describe("API Service", () => {
 				timestamp: new Date().toISOString(),
 			};
 
-			await expect(apiService.submitChallenge(submission)).rejects.toThrow(
-				"Challenge not found",
-			);
+			await expect(apiService.submitChallenge(submission)).rejects.toThrow("Challenge not found");
 		});
 
 		it("should throw error when session expired", async () => {
@@ -279,7 +246,7 @@ describe("API Service", () => {
 			};
 
 			await expect(apiService.submitChallenge(submission)).rejects.toThrow(
-				"Assessment session has expired",
+				"Assessment session has expired"
 			);
 
 			Date.now = originalDate;
@@ -298,7 +265,7 @@ describe("API Service", () => {
 			} as unknown as CodeSubmission;
 
 			await expect(apiService.submitChallenge(submission)).rejects.toThrow(
-				"Code submission must include files",
+				"Code submission must include files"
 			);
 		});
 
@@ -315,7 +282,7 @@ describe("API Service", () => {
 			} as unknown as MultipleChoiceSubmission;
 
 			await expect(apiService.submitChallenge(submission)).rejects.toThrow(
-				"Multiple choice submission must include answers",
+				"Multiple choice submission must include answers"
 			);
 		});
 
@@ -331,7 +298,7 @@ describe("API Service", () => {
 			} as unknown as OpenEndedSubmission;
 
 			await expect(apiService.submitChallenge(submission)).rejects.toThrow(
-				"Open-ended submission must include an answer",
+				"Open-ended submission must include an answer"
 			);
 		});
 	});
@@ -339,11 +306,7 @@ describe("API Service", () => {
 	describe("finalize assessment", () => {
 		beforeEach(async () => {
 			// Authenticate first
-			await apiService.authenticateCandidate(
-				"John Doe",
-				"john@example.com",
-				"assessment-123",
-			);
+			await apiService.authenticateCandidate("John Doe", "john@example.com", "assessment-123");
 		});
 
 		it("should finalize assessment", async () => {
@@ -352,7 +315,7 @@ describe("API Service", () => {
 					assessmentId: "assessment-123",
 					candidateName: "John Doe",
 					candidateEmail: "john@example.com",
-				}),
+				})
 			).resolves.not.toThrow();
 		});
 
@@ -362,7 +325,7 @@ describe("API Service", () => {
 					assessmentId: "invalid-id",
 					candidateName: "John Doe",
 					candidateEmail: "john@example.com",
-				}),
+				})
 			).rejects.toThrow("No active session found");
 		});
 	});

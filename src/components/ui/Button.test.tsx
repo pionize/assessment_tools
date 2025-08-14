@@ -5,9 +5,7 @@ import Button from "./Button";
 describe("Button", () => {
 	it("should render button with text", () => {
 		render(<Button>Click me</Button>);
-		expect(
-			screen.getByRole("button", { name: /click me/i }),
-		).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: /click me/i })).toBeInTheDocument();
 	});
 
 	it("should handle click events", () => {
@@ -29,11 +27,7 @@ describe("Button", () => {
 		render(<Button variant="primary">Primary button</Button>);
 		const button = screen.getByRole("button");
 
-		expect(button).toHaveClass(
-			"bg-gradient-to-r",
-			"from-[#1578b9]",
-			"to-[#40b3ff]",
-		);
+		expect(button).toHaveClass("bg-gradient-to-r", "from-[#1578b9]", "to-[#40b3ff]");
 	});
 
 	it("should render with secondary variant class", () => {
@@ -76,9 +70,7 @@ describe("Button", () => {
 		render(<Button icon={<TestIcon />}>With icon</Button>);
 
 		expect(screen.getByTestId("test-icon")).toBeInTheDocument();
-		expect(
-			screen.getByRole("button", { name: /with icon/i }),
-		).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: /with icon/i })).toBeInTheDocument();
 	});
 
 	it("should render icon only when no children provided", () => {
@@ -101,7 +93,7 @@ describe("Button", () => {
 		render(
 			<Button onClick={handleClick} disabled>
 				Disabled button
-			</Button>,
+			</Button>
 		);
 
 		fireEvent.click(screen.getByRole("button"));

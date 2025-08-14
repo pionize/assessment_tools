@@ -17,11 +17,7 @@ function Login() {
 
 	// Check if there's an existing session and redirect
 	useEffect(() => {
-		if (
-			!state.loading &&
-			state.candidate &&
-			state.candidate.assessmentId === assessmentId
-		) {
+		if (!state.loading && state.candidate && state.candidate.assessmentId === assessmentId) {
 			navigate(`/assessment/${assessmentId}/challenges`, { replace: true });
 		}
 	}, [state.loading, state.candidate, assessmentId, navigate]);
@@ -88,10 +84,7 @@ function Login() {
 						<span className="font-medium">Error</span>
 					</div>
 					<p className="text-gray-700">{state.error}</p>
-					<Button
-						onClick={() => window.location.reload()}
-						className="mt-4 w-full"
-					>
+					<Button onClick={() => window.location.reload()} className="mt-4 w-full">
 						Retry
 					</Button>
 				</div>
@@ -116,18 +109,13 @@ function Login() {
 					<h1 className="text-3xl font-bold bg-gradient-to-r from-[#1578b9] to-[#40b3ff] bg-clip-text text-transparent mb-3">
 						Developer Assessment
 					</h1>
-					<p className="text-gray-600">
-						Enter your information to begin the challenge
-					</p>
+					<p className="text-gray-600">Enter your information to begin the challenge</p>
 				</div>
 
 				<form onSubmit={handleSubmit} className="space-y-6">
 					<div className="space-y-4">
 						<div className="group">
-							<label
-								htmlFor="name"
-								className="block text-sm font-semibold text-gray-700 mb-2"
-							>
+							<label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
 								Full Name
 							</label>
 							<div className="relative">
@@ -145,10 +133,7 @@ function Login() {
 						</div>
 
 						<div className="group">
-							<label
-								htmlFor="email"
-								className="block text-sm font-semibold text-gray-700 mb-2"
-							>
+							<label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
 								Email Address
 							</label>
 							<div className="relative">

@@ -75,10 +75,7 @@ export const sessionStorage = {
 	// Save challenge submissions
 	saveSubmissions(submissions: Submissions): void {
 		try {
-			localStorage.setItem(
-				SESSION_KEYS.SUBMISSIONS,
-				JSON.stringify(submissions),
-			);
+			localStorage.setItem(SESSION_KEYS.SUBMISSIONS, JSON.stringify(submissions));
 		} catch (error) {
 			console.error("Error saving submissions to localStorage:", error);
 		}
@@ -99,15 +96,9 @@ export const sessionStorage = {
 	saveCompletedChallenges(completedChallenges: Set<string>): void {
 		try {
 			const completedArray = Array.from(completedChallenges);
-			localStorage.setItem(
-				SESSION_KEYS.COMPLETED,
-				JSON.stringify(completedArray),
-			);
+			localStorage.setItem(SESSION_KEYS.COMPLETED, JSON.stringify(completedArray));
 		} catch (error) {
-			console.error(
-				"Error saving completed challenges to localStorage:",
-				error,
-			);
+			console.error("Error saving completed challenges to localStorage:", error);
 		}
 	},
 
@@ -117,10 +108,7 @@ export const sessionStorage = {
 			const completed = localStorage.getItem(SESSION_KEYS.COMPLETED);
 			return completed ? new Set(JSON.parse(completed)) : new Set();
 		} catch (error) {
-			console.error(
-				"Error getting completed challenges from localStorage:",
-				error,
-			);
+			console.error("Error getting completed challenges from localStorage:", error);
 			return new Set();
 		}
 	},
@@ -128,10 +116,7 @@ export const sessionStorage = {
 	// Save current challenge
 	saveCurrentChallenge(challenge: Challenge): void {
 		try {
-			localStorage.setItem(
-				SESSION_KEYS.CURRENT_CHALLENGE,
-				JSON.stringify(challenge),
-			);
+			localStorage.setItem(SESSION_KEYS.CURRENT_CHALLENGE, JSON.stringify(challenge));
 		} catch (error) {
 			console.error("Error saving current challenge to localStorage:", error);
 		}
@@ -143,10 +128,7 @@ export const sessionStorage = {
 			const challenge = localStorage.getItem(SESSION_KEYS.CURRENT_CHALLENGE);
 			return challenge ? JSON.parse(challenge) : null;
 		} catch (error) {
-			console.error(
-				"Error getting current challenge from localStorage:",
-				error,
-			);
+			console.error("Error getting current challenge from localStorage:", error);
 			return null;
 		}
 	},

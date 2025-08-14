@@ -1,9 +1,4 @@
-import {
-	Navigate,
-	Route,
-	BrowserRouter as Router,
-	Routes,
-} from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ChallengeDetail from "./components/ChallengeDetail";
 import ChallengeList from "./components/ChallengeList";
 import Login from "./components/Login";
@@ -16,19 +11,13 @@ function App() {
 				<div className="App">
 					<Routes>
 						{/* Redirect root to a sample assessment */}
-						<Route
-							path="/"
-							element={<Navigate to="/assessment/assessment-123" replace />}
-						/>
+						<Route path="/" element={<Navigate to="/assessment/assessment-123" replace />} />
 
 						{/* Login page */}
 						<Route path="/assessment/:assessmentId" element={<Login />} />
 
 						{/* Challenge list */}
-						<Route
-							path="/assessment/:assessmentId/challenges"
-							element={<ChallengeList />}
-						/>
+						<Route path="/assessment/:assessmentId/challenges" element={<ChallengeList />} />
 
 						{/* Challenge detail */}
 						<Route

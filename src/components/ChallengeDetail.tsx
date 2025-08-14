@@ -1,12 +1,4 @@
-import {
-	AlertCircle,
-	ArrowLeft,
-	CheckCircle,
-	Clock,
-	Code,
-	FileText,
-	Send,
-} from "lucide-react";
+import { AlertCircle, ArrowLeft, CheckCircle, Clock, Code, FileText, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssessment } from "../contexts/AssessmentContext";
@@ -44,9 +36,7 @@ function ChallengeDetail() {
 					if (challengeData.type === "code") {
 						setFiles(existingSubmission.files || challengeData.files || {});
 						setSelectedLanguage(
-							existingSubmission.language ||
-								challengeData.language ||
-								"javascript",
+							existingSubmission.language || challengeData.language || "javascript"
 						);
 					} else {
 						setAnswer(existingSubmission.answer || "");
@@ -83,19 +73,14 @@ function ChallengeDetail() {
 	}, []);
 
 	// Load session data from backend and calculate real-time remaining time
-	const [sessionData, setSessionData] = useState<AssessmentSession | null>(
-		null,
-	);
+	const [sessionData, setSessionData] = useState<AssessmentSession | null>(null);
 
 	useEffect(() => {
 		const loadSession = async () => {
 			if (!state.candidate?.email || !assessmentId) return;
 
 			try {
-				const session = await apiService.getAssessmentSession(
-					assessmentId,
-					state.candidate.email,
-				);
+				const session = await apiService.getAssessmentSession(assessmentId, state.candidate.email);
 				setSessionData(session);
 			} catch (error) {
 				console.error("Error loading session in ChallengeDetail:", error);
@@ -137,7 +122,7 @@ function ChallengeDetail() {
 	const handleSubmit = async (isAutoSubmit = false) => {
 		if (!isAutoSubmit) {
 			const confirmed = confirm(
-				"Are you sure you want to submit this challenge? You cannot modify your answer after submission.",
+				"Are you sure you want to submit this challenge? You cannot modify your answer after submission."
 			);
 			if (!confirmed) return;
 		}
@@ -208,7 +193,7 @@ function ChallengeDetail() {
 			alert(
 				isAutoSubmit
 					? "Time's up! Your challenge has been auto-submitted."
-					: "Challenge submitted successfully!",
+					: "Challenge submitted successfully!"
 			);
 			navigate(`/assessment/${assessmentId}/challenges`);
 		} catch (error) {
@@ -258,7 +243,7 @@ function ChallengeDetail() {
 			alert(
 				submissionData.autoSubmit
 					? "Time's up! Your challenge has been auto-submitted."
-					: "Challenge submitted successfully!",
+					: "Challenge submitted successfully!"
 			);
 
 			navigate(`/assessment/${assessmentId}/challenges`);
@@ -272,9 +257,7 @@ function ChallengeDetail() {
 		navigate(`/assessment/${assessmentId}/challenges`);
 	};
 
-	const isCompleted = challengeId
-		? state.completedChallenges.has(challengeId)
-		: false;
+	const isCompleted = challengeId ? state.completedChallenges.has(challengeId) : false;
 
 	if (loading) {
 		return (
@@ -289,12 +272,8 @@ function ChallengeDetail() {
 			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
 				<div className="text-center">
 					<AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
-					<h2 className="text-xl font-bold text-gray-900 mb-2">
-						Challenge not found
-					</h2>
-					<Button
-						onClick={() => navigate(`/assessment/${assessmentId}/challenges`)}
-					>
+					<h2 className="text-xl font-bold text-gray-900 mb-2">Challenge not found</h2>
+					<Button onClick={() => navigate(`/assessment/${assessmentId}/challenges`)}>
 						Back to Challenges
 					</Button>
 				</div>
@@ -322,9 +301,7 @@ function ChallengeDetail() {
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-6">
 							<Button
-								onClick={() =>
-									navigate(`/assessment/${assessmentId}/challenges`)
-								}
+								onClick={() => navigate(`/assessment/${assessmentId}/challenges`)}
 								variant="secondary"
 								icon={<ArrowLeft className="w-5 h-5" />}
 							>
@@ -344,29 +321,23 @@ function ChallengeDetail() {
 										{challenge.title}
 									</h1>
 									<div className="flex items-center mt-1 space-x-4">
-										<Badge variant={challenge.type}>
-											{challenge.type.replace("-", " ")}
-										</Badge>
+										<Badge variant={challenge.type}>{challenge.type.replace("-", " ")}</Badge>
 
 										{isCompleted && (
-											<Badge
-												variant="success"
-												icon={<CheckCircle className="w-4 h-4" />}
-											>
+											<Badge variant="success" icon={<CheckCircle className="w-4 h-4" />}>
 												Completed
 											</Badge>
 										)}
 
 										{/* Assessment Time Remaining Counter */}
-										{sessionData?.timeLimit &&
-											remainingTimeSeconds !== null && (
-												<div className="flex items-center text-sm text-gray-500">
-													<Clock className="w-4 h-4 mr-2" />
-													<span className="font-mono">
-														Time: {formatAssessmentTime(remainingTimeSeconds)}
-													</span>
-												</div>
-											)}
+										{sessionData?.timeLimit && remainingTimeSeconds !== null && (
+											<div className="flex items-center text-sm text-gray-500">
+												<Clock className="w-4 h-4 mr-2" />
+												<span className="font-mono">
+													Time: {formatAssessmentTime(remainingTimeSeconds)}
+												</span>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
@@ -413,10 +384,7 @@ function ChallengeDetail() {
 					</Card>
 
 					{/* Answer Panel */}
-					<Card
-						padding="none"
-						className="overflow-hidden flex flex-col lg:col-span-2"
-					>
+					<Card padding="none" className="overflow-hidden flex flex-col lg:col-span-2">
 						<div className="bg-gradient-to-r from-[#00487a] to-[#002957] p-4">
 							<h2 className="text-xl font-bold text-white flex items-center">
 								{challenge.type === "code" ? (
@@ -458,9 +426,7 @@ function ChallengeDetail() {
 								<CheckCircle className="w-6 h-6 text-white" />
 							</div>
 							<div>
-								<h3 className="text-lg font-bold text-green-800 mb-1">
-									✅ Challenge Completed!
-								</h3>
+								<h3 className="text-lg font-bold text-green-800 mb-1">✅ Challenge Completed!</h3>
 								<span className="text-green-700">
 									You can review your submission above. Great work!
 								</span>

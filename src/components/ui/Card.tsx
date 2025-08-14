@@ -12,15 +12,12 @@ const Card = ({
 	padding = "default",
 	...props
 }: CardProps) => {
-	const baseClasses =
-		"bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg";
+	const baseClasses = "bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg";
 
 	const variantClasses = {
 		default: "rounded-2xl",
-		success:
-			"rounded-2xl border-green-200 bg-gradient-to-r from-green-50/50 to-emerald-50/50",
-		danger:
-			"rounded-2xl border-red-200 bg-gradient-to-r from-red-50/50 to-red-100/50",
+		success: "rounded-2xl border-green-200 bg-gradient-to-r from-green-50/50 to-emerald-50/50",
+		danger: "rounded-2xl border-red-200 bg-gradient-to-r from-red-50/50 to-red-100/50",
 		info: "rounded-2xl border-blue-200 bg-gradient-to-r from-blue-50/50 to-sky-50/50",
 	};
 

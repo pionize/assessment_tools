@@ -50,6 +50,4 @@ export interface AssessmentContextType {
 }
 
 // Create the context with proper typing
-export const AssessmentContext = createContext<
-	AssessmentContextType | undefined
->(undefined);
+export const AssessmentContext = createContext<AssessmentContextType | undefined>(undefined);

@@ -6,5 +6,4 @@ export interface AssessmentDetailDTO {
 	description: string;
 }
 
-export type AssessmentDetailResponseDTO =
-	ApiResponseOutputDetail<AssessmentDetailDTO>;
+export type AssessmentDetailResponseDTO = ApiResponseOutputDetail<AssessmentDetailDTO>;

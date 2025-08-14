@@ -23,8 +23,7 @@ const mockChallenge: Challenge = {
 		},
 		{
 			id: "q2",
-			question:
-				"Which method is used to add an element to the end of an array?",
+			question: "Which method is used to add an element to the end of an array?",
 			options: [
 				{ id: "a", text: "append()" },
 				{ id: "b", text: "push()" },
@@ -49,17 +48,13 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
+		expect(screen.getByText("JavaScript Fundamentals Quiz")).toBeInTheDocument();
+		expect(screen.getByText("Test your knowledge of JavaScript fundamentals.")).toBeInTheDocument();
 		expect(
-			screen.getByText("JavaScript Fundamentals Quiz"),
-		).toBeInTheDocument();
-		expect(
-			screen.getByText("Test your knowledge of JavaScript fundamentals."),
-		).toBeInTheDocument();
-		expect(
-			screen.getByText("What is the output of `console.log(typeof null);`?"),
+			screen.getByText("What is the output of `console.log(typeof null);`?")
 		).toBeInTheDocument();
 		expect(screen.getByText('"null"')).toBeInTheDocument();
 		expect(screen.getByText('"object"')).toBeInTheDocument();
@@ -71,7 +66,7 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		const option = screen.getByLabelText('"object"');
@@ -86,13 +81,11 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		expect(screen.getByText("0/2 answered")).toBeInTheDocument();
-		expect(
-			screen.getByText("Progress: 0/2 questions completed"),
-		).toBeInTheDocument();
+		expect(screen.getByText("Progress: 0/2 questions completed")).toBeInTheDocument();
 	});
 
 	it("should update progress when answers are selected", () => {
@@ -101,16 +94,14 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		// Answer first question
 		fireEvent.click(screen.getByLabelText('"object"'));
 
 		expect(screen.getByText("1/2 answered")).toBeInTheDocument();
-		expect(
-			screen.getByText("Progress: 1/2 questions completed"),
-		).toBeInTheDocument();
+		expect(screen.getByText("Progress: 1/2 questions completed")).toBeInTheDocument();
 	});
 
 	it("should disable submit button when not all questions are answered", () => {
@@ -119,7 +110,7 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		const submitButton = screen.getByRole("button", {
@@ -134,7 +125,7 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		// Answer both questions
@@ -153,7 +144,7 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		// Answer both questions
@@ -185,7 +176,7 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		// Answer only first question
@@ -195,7 +186,7 @@ describe("MultipleChoiceChallenge", () => {
 		fireEvent.click(screen.getByRole("button", { name: /submit answers/i }));
 
 		expect(confirmSpy).toHaveBeenCalledWith(
-			"You have 1 unanswered question. Are you sure you want to submit?",
+			"You have 1 unanswered question. Are you sure you want to submit?"
 		);
 		expect(mockOnSubmit).not.toHaveBeenCalled();
 
@@ -211,7 +202,7 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
 		// Answer only first question
@@ -241,12 +232,10 @@ describe("MultipleChoiceChallenge", () => {
 				challenge={mockChallenge}
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
-			/>,
+			/>
 		);
 
-		fireEvent.click(
-			screen.getByRole("button", { name: /back to challenges/i }),
-		);
+		fireEvent.click(screen.getByRole("button", { name: /back to challenges/i }));
 
 		expect(mockOnBack).toHaveBeenCalledTimes(1);
 	});
@@ -263,7 +252,7 @@ describe("MultipleChoiceChallenge", () => {
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
 				savedAnswers={savedAnswers}
-			/>,
+			/>
 		);
 
 		// Check that saved answers are selected
@@ -283,12 +272,10 @@ describe("MultipleChoiceChallenge", () => {
 				onSubmit={mockOnSubmit}
 				onBack={mockOnBack}
 				savedAnswers={savedAnswers}
-			/>,
+			/>
 		);
 
 		expect(screen.getByText("Quiz Complete!")).toBeInTheDocument();
-		expect(
-			screen.getByText("You answered 2 out of 2 questions"),
-		).toBeInTheDocument();
+		expect(screen.getByText("You answered 2 out of 2 questions")).toBeInTheDocument();
 	});
 });

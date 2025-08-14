@@ -19,7 +19,7 @@ describe("Card", () => {
 		render(
 			<Card padding="sm" data-testid="card">
 				Card content
-			</Card>,
+			</Card>
 		);
 		const card = screen.getByTestId("card");
 
@@ -30,7 +30,7 @@ describe("Card", () => {
 		render(
 			<Card padding="none" data-testid="card">
 				Card content
-			</Card>,
+			</Card>
 		);
 		const card = screen.getByTestId("card");
 
@@ -41,35 +41,25 @@ describe("Card", () => {
 		render(<Card data-testid="card">Card content</Card>);
 		const card = screen.getByTestId("card");
 
-		expect(card).toHaveClass(
-			"bg-white",
-			"border",
-			"border-gray-200",
-			"rounded-xl",
-			"shadow-sm",
-		);
+		expect(card).toHaveClass("bg-white", "border", "border-gray-200", "rounded-xl", "shadow-sm");
 	});
 
 	it("should render with success variant styles", () => {
 		render(
 			<Card variant="success" data-testid="card">
 				Card content
-			</Card>,
+			</Card>
 		);
 		const card = screen.getByTestId("card");
 
-		expect(card).toHaveClass(
-			"bg-green-50",
-			"border-green-200",
-			"text-green-800",
-		);
+		expect(card).toHaveClass("bg-green-50", "border-green-200", "text-green-800");
 	});
 
 	it("should apply custom className", () => {
 		render(
 			<Card className="custom-class" data-testid="card">
 				Card content
-			</Card>,
+			</Card>
 		);
 		const card = screen.getByTestId("card");
 
@@ -88,7 +78,7 @@ describe("Card", () => {
 		render(
 			<Card data-testid="card" aria-label="Test card">
 				Card content
-			</Card>,
+			</Card>
 		);
 		const card = screen.getByTestId("card");
 

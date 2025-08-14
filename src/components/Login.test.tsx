@@ -36,14 +36,10 @@ describe("Login", () => {
 	it("should render login form", () => {
 		render(<Login />, { wrapper: LoginWrapper });
 
-		expect(
-			screen.getByRole("heading", { name: /developer assessment/i }),
-		).toBeInTheDocument();
+		expect(screen.getByRole("heading", { name: /developer assessment/i })).toBeInTheDocument();
 		expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
 		expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
-		expect(
-			screen.getByRole("button", { name: /start assessment/i }),
-		).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: /start assessment/i })).toBeInTheDocument();
 	});
 
 	it("should show validation errors for empty fields", async () => {
@@ -69,9 +65,7 @@ describe("Login", () => {
 		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
 
 		await waitFor(() => {
-			expect(
-				screen.getByText(/please enter a valid email address/i),
-			).toBeInTheDocument();
+			expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
 		});
 	});
 
@@ -88,9 +82,7 @@ describe("Login", () => {
 		};
 
 		const { apiService } = await import("../services/api");
-		vi.mocked(apiService.authenticateCandidate).mockResolvedValue(
-			mockAuthResponse,
-		);
+		vi.mocked(apiService.authenticateCandidate).mockResolvedValue(mockAuthResponse);
 
 		render(<Login />, { wrapper: LoginWrapper });
 
@@ -106,18 +98,16 @@ describe("Login", () => {
 			expect(apiService.authenticateCandidate).toHaveBeenCalledWith(
 				"assessment-123",
 				"John Doe",
-				"john@example.com",
+				"john@example.com"
 			);
-			expect(mockNavigate).toHaveBeenCalledWith(
-				"/assessment/assessment-123/challenges",
-			);
+			expect(mockNavigate).toHaveBeenCalledWith("/assessment/assessment-123/challenges");
 		});
 	});
 
 	it("should handle authentication error", async () => {
 		const { apiService } = await import("../services/api");
 		vi.mocked(apiService.authenticateCandidate).mockRejectedValue(
-			new Error("Authentication failed"),
+			new Error("Authentication failed")
 		);
 
 		render(<Login />, { wrapper: LoginWrapper });
@@ -138,7 +128,7 @@ describe("Login", () => {
 	it("should show loading state during authentication", async () => {
 		const { apiService } = await import("../services/api");
 		vi.mocked(apiService.authenticateCandidate).mockImplementation(
-			() => new Promise((resolve) => setTimeout(resolve, 1000)),
+			() => new Promise((resolve) => setTimeout(resolve, 1000))
 		);
 
 		render(<Login />, { wrapper: LoginWrapper });

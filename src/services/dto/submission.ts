@@ -43,8 +43,7 @@ export interface SubmitChallengeDetailDTO {
 	message: string;
 }
 
-export type SubmitChallengeResponseDTO =
-	ApiResponseOutputDetail<SubmitChallengeDetailDTO>;
+export type SubmitChallengeResponseDTO = ApiResponseOutputDetail<SubmitChallengeDetailDTO>;
 
 export interface SubmitAssessmentRequestDTO {
 	assessment_id: string;
@@ -62,5 +61,4 @@ export interface SubmitAssessmentDetailDTO {
 	message: string;
 }
 
-export type SubmitAssessmentResponseDTO =
-	ApiResponseOutputDetail<SubmitAssessmentDetailDTO>;
+export type SubmitAssessmentResponseDTO = ApiResponseOutputDetail<SubmitAssessmentDetailDTO>;

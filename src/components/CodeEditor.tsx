@@ -1,13 +1,5 @@
 import Editor from "@monaco-editor/react";
-import {
-	ChevronDown,
-	ChevronRight,
-	Code,
-	File,
-	FileText,
-	Folder,
-	Trash2,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Code, File, FileText, Folder, Trash2 } from "lucide-react";
 import type * as monaco from "monaco-editor";
 import { useEffect, useRef, useState } from "react";
 
@@ -20,9 +12,7 @@ interface FileTreeNode {
 
 interface CodeEditorProps {
 	files?: Record<string, { content: string; language: string }>;
-	onFilesChange?: (
-		files: Record<string, { content: string; language: string }>,
-	) => void;
+	onFilesChange?: (files: Record<string, { content: string; language: string }>) => void;
 	selectedLanguage?: string;
 	onLanguageChange?: (language: string) => void;
 }
@@ -35,9 +25,7 @@ function CodeEditor({
 }: CodeEditorProps) {
 	const [expandedFolders, setExpandedFolders] = useState(new Set());
 	const [selectedFile, setSelectedFile] = useState("");
-	const [fileStructure, setFileStructure] = useState<
-		Record<string, FileTreeNode>
-	>({});
+	const [fileStructure, setFileStructure] = useState<Record<string, FileTreeNode>>({});
 	const [showAddFile, setShowAddFile] = useState(false);
 	const [showAddFolder, setShowAddFolder] = useState(false);
 	const [newFileName, setNewFileName] = useState("");
@@ -102,9 +90,7 @@ function CodeEditor({
 		setExpandedFolders(newExpanded);
 	};
 
-	const handleEditorDidMount = (
-		editor: monaco.editor.IStandaloneCodeEditor,
-	) => {
+	const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
 		editorRef.current = editor;
 	};
 
@@ -124,9 +110,7 @@ function CodeEditor({
 	const addFile = () => {
 		if (!newFileName.trim()) return;
 
-		const fullPath = newFileParent
-			? `${newFileParent}/${newFileName}`
-			: newFileName;
+		const fullPath = newFileParent ? `${newFileParent}/${newFileName}` : newFileName;
 
 		if (files[fullPath]) {
 			alert("File already exists!");
@@ -154,13 +138,11 @@ function CodeEditor({
 	const addFolder = () => {
 		if (!newFolderName.trim()) return;
 
-		const fullPath = newFolderParent
-			? `${newFolderParent}/${newFolderName}`
-			: newFolderName;
+		const fullPath = newFolderParent ? `${newFolderParent}/${newFolderName}` : newFolderName;
 
 		// Check if folder already exists
 		const existingFolderFiles = Object.keys(files).filter((filePath) =>
-			filePath.startsWith(`${fullPath}/`),
+			filePath.startsWith(`${fullPath}/`)
 		);
 
 		if (existingFolderFiles.length > 0) {
@@ -270,9 +252,7 @@ function CodeEditor({
 
 	const deleteFolder = (folderPath: string) => {
 		if (
-			confirm(
-				`Are you sure you want to delete the folder "${folderPath}" and all its contents?`,
-			)
+			confirm(`Are you sure you want to delete the folder "${folderPath}" and all its contents?`)
 		) {
 			const updatedFiles = { ...files };
 
@@ -289,18 +269,13 @@ function CodeEditor({
 
 			// If selected file was in deleted folder, clear selection
 			if (selectedFile.startsWith(`${folderPath}/`)) {
-				const remainingFiles = Object.keys(updatedFiles).filter(
-					(f) => !f.endsWith("/.gitkeep"),
-				);
+				const remainingFiles = Object.keys(updatedFiles).filter((f) => !f.endsWith("/.gitkeep"));
 				setSelectedFile(remainingFiles.length > 0 ? remainingFiles[0] : "");
 			}
 		}
 	};
 
-	const renderFileTree = (
-		structure: Record<string, FileTreeNode>,
-		basePath = "",
-	) => {
+	const renderFileTree = (structure: Record<string, FileTreeNode>, basePath = "") => {
 		return Object.keys(structure)
 			.filter((name) => name !== ".gitkeep") // Hide .gitkeep files
 			.map((name) => {
@@ -369,9 +344,7 @@ function CodeEditor({
 								</div>
 							</button>
 							{isExpanded && (
-								<div className="ml-4">
-									{renderFileTree(item.children || {}, fullPath)}
-								</div>
+								<div className="ml-4">{renderFileTree(item.children || {}, fullPath)}</div>
 							)}
 						</div>
 					);
@@ -381,9 +354,7 @@ function CodeEditor({
 							key={fullPath}
 							type="button"
 							className={`flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left ${
-								selectedFile === fullPath
-									? "bg-blue-50 border-l-2 border-blue-500"
-									: ""
+								selectedFile === fullPath ? "bg-blue-50 border-l-2 border-blue-500" : ""
 							}`}
 							onClick={() => setSelectedFile(fullPath)}
 							onKeyDown={(e) => {
@@ -395,9 +366,7 @@ function CodeEditor({
 						>
 							<div className="flex items-center">
 								<File className="w-4 h-4 mr-2 text-gray-500" />
-								<span
-									className={`text-gray-700 ${selectedFile === fullPath ? "font-medium" : ""}`}
-								>
+								<span className={`text-gray-700 ${selectedFile === fullPath ? "font-medium" : ""}`}>
 									{name}
 								</span>
 							</div>
@@ -477,8 +446,7 @@ function CodeEditor({
 							<h3 className="text-lg font-medium mb-3">Add New File</h3>
 							{newFileParent && (
 								<div className="text-sm text-gray-600 mb-2">
-									Creating in:{" "}
-									<span className="font-medium">{newFileParent}/</span>
+									Creating in: <span className="font-medium">{newFileParent}/</span>
 								</div>
 							)}
 							<input
@@ -519,8 +487,7 @@ function CodeEditor({
 							<h3 className="text-lg font-medium mb-3">Add New Folder</h3>
 							{newFolderParent && (
 								<div className="text-sm text-gray-600 mb-2">
-									Creating in:{" "}
-									<span className="font-medium">{newFolderParent}/</span>
+									Creating in: <span className="font-medium">{newFolderParent}/</span>
 								</div>
 							)}
 							<input
@@ -615,9 +582,7 @@ function CodeEditor({
 					<>
 						<div className="bg-white border-b px-4 py-2 flex items-center">
 							<Code className="w-4 h-4 mr-2 text-gray-500" />
-							<span className="text-sm font-medium text-gray-700">
-								{selectedFile}
-							</span>
+							<span className="text-sm font-medium text-gray-700">{selectedFile}</span>
 						</div>
 						<div className="flex-1">
 							<Editor
@@ -643,12 +608,8 @@ function CodeEditor({
 					<div className="flex-1 flex items-center justify-center text-gray-500">
 						<div className="text-center">
 							<Code className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-							<p className="text-lg font-medium">
-								Select a file to start coding
-							</p>
-							<p className="text-sm">
-								Choose a file from the explorer or create a new one
-							</p>
+							<p className="text-lg font-medium">Select a file to start coding</p>
+							<p className="text-sm">Choose a file from the explorer or create a new one</p>
 						</div>
 					</div>
 				)}

@@ -31,9 +31,7 @@ const init = (initialState: AssessmentState): AssessmentState => {
 		// Convert sessionStorage submissions to AssessmentState format
 		const convertedSubmissions: Record<string, SubmissionData> = {};
 		if (loadedState.submissions) {
-			for (const [challengeId, value] of Object.entries(
-				loadedState.submissions,
-			)) {
+			for (const [challengeId, value] of Object.entries(loadedState.submissions)) {
 				if (value !== null) {
 					if (typeof value === "string") {
 						convertedSubmissions[challengeId] = {
@@ -51,7 +49,7 @@ const init = (initialState: AssessmentState): AssessmentState => {
 									acc[`file${idx}`] = file;
 									return acc;
 								},
-								{} as Record<string, string>,
+								{} as Record<string, string>
 							),
 							timestamp: new Date().toISOString(),
 						};
@@ -80,10 +78,7 @@ const init = (initialState: AssessmentState): AssessmentState => {
 	return { ...initialState, loading: false }; // Ensure loading is false if no session
 };
 
-function assessmentReducer(
-	state: AssessmentState,
-	action: AssessmentAction,
-): AssessmentState {
+function assessmentReducer(state: AssessmentState, action: AssessmentAction): AssessmentState {
 	switch (action.type) {
 		case "SET_LOADING":
 			return { ...state, loading: action.payload as boolean };
@@ -133,23 +128,16 @@ function assessmentReducer(
 	}
 }
 
-export function AssessmentProvider({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export function AssessmentProvider({ children }: { children: React.ReactNode }) {
 	const [state, dispatch] = useReducer(assessmentReducer, initialState, init);
 
 	// This effect synchronizes state changes back to session storage
 	useEffect(() => {
 		// We don't save loading/error states
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { loading: _loading, error: _error, ...stateToSave } = state;
 		// Convert AssessmentState submissions back to sessionStorage format
 		const convertedSubmissions: Submissions = {};
-		for (const [challengeId, submission] of Object.entries(
-			stateToSave.submissions,
-		)) {
+		for (const [challengeId, submission] of Object.entries(stateToSave.submissions)) {
 			if (submission.type === "open-ended" && submission.answer) {
 				convertedSubmissions[challengeId] = { answer: submission.answer };
 			} else if (submission.type === "multiple-choice" && submission.answers) {
@@ -165,9 +153,7 @@ export function AssessmentProvider({
 	}, [state]);
 
 	return (
-		<AssessmentContext.Provider value={{ state, dispatch }}>
-			{children}
-		</AssessmentContext.Provider>
+		<AssessmentContext.Provider value={{ state, dispatch }}>{children}</AssessmentContext.Provider>
 	);
 }
 

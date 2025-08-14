@@ -8,8 +8,7 @@ export interface ChallengeSummaryDTO {
 	time_limit?: number;
 }
 
-export type ChallengeListResponseDTO =
-	ApiResponseOutputList<ChallengeSummaryDTO>;
+export type ChallengeListResponseDTO = ApiResponseOutputList<ChallengeSummaryDTO>;
 
 export interface ChallengeDetailDTO {
 	id: string;
@@ -27,5 +26,4 @@ export interface ChallengeDetailDTO {
 	}>;
 }
 
-export type ChallengeDetailResponseDTO =
-	ApiResponseOutputDetail<ChallengeDetailDTO>;
+export type ChallengeDetailResponseDTO = ApiResponseOutputDetail<ChallengeDetailDTO>;

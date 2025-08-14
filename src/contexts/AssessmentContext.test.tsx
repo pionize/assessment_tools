@@ -1,12 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AssessmentProvider, useAssessment } from "./AssessmentContext";
-import type {
-	Assessment,
-	Candidate,
-	Challenge,
-	SubmissionData,
-} from "./context";
+import type { Assessment, Candidate, Challenge, SubmissionData } from "./context";
 
 // Mock sessionStorage
 vi.mock("../utils/sessionStorage", () => ({
@@ -191,9 +186,7 @@ describe("AssessmentContext", () => {
 			});
 		});
 
-		expect(result.current.state.submissions["challenge-1"]).toEqual(
-			submissionData,
-		);
+		expect(result.current.state.submissions["challenge-1"]).toEqual(submissionData);
 	});
 
 	it("should handle COMPLETE_CHALLENGE action", () => {
@@ -206,9 +199,7 @@ describe("AssessmentContext", () => {
 			});
 		});
 
-		expect(result.current.state.completedChallenges.has("challenge-1")).toBe(
-			true,
-		);
+		expect(result.current.state.completedChallenges.has("challenge-1")).toBe(true);
 	});
 
 	it("should handle SET_CURRENT_CHALLENGE action", () => {

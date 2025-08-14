@@ -133,12 +133,8 @@ describe("sessionStorage", () => {
 
 			sessionStorage.saveCandidate(mockCandidate);
 
-			expect(sessionStorage.hasSessionForAssessment("assessment-123")).toBe(
-				true,
-			);
-			expect(sessionStorage.hasSessionForAssessment("other-assessment")).toBe(
-				false,
-			);
+			expect(sessionStorage.hasSessionForAssessment("assessment-123")).toBe(true);
+			expect(sessionStorage.hasSessionForAssessment("other-assessment")).toBe(false);
 		});
 
 		it("should clear entire session", () => {
