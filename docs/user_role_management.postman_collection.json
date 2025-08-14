@@ -1,0 +1,2159 @@
+{
+	"info": {
+		"_postman_id": "43fe284d-2711-4bc6-9d42-6a742589b23e",
+		"name": "Standar User Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7577484",
+		"_collection_link": "https://lively-astronaut-804407.postman.co/workspace/Experiment~3bba6990-3683-4ed0-b131-12b82c97165d/collection/7577484-43fe284d-2711-4bc6-9d42-6a742589b23e?action=share&source=collection_link&creator=7577484"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Get User Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/user/profile",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"profile"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get User Profile",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/user/profile",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user",
+												"profile"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 06:58:41 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"name\": \"Super Admin\",\n            \"permissions\": [\n                \"MASTER_USER.DELETE\",\n                \"MASTER_USER.READ_LIST\",\n                \"MASTER_ROLE.READ_DETAIL\",\n                \"MASTER_USER.CREATE\",\n                \"MASTER_ROLE.UPDATE\",\n                \"MASTER_USER.UPDATE\",\n                \"MASTER_ROLE.READ_LIST\",\n                \"MENU_X.ACTION_A\",\n                \"MENU_X.ACTION_B\",\n                \"MASTER_ROLE.CREATE\",\n                \"MASTER_ROLE.DELETE\",\n                \"MASTER_USER.READ_DETAIL\"\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Create New Password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_password\":\"P@ssword!12\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/user/profile/create-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"profile",
+										"create-password"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create New Password",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"new_password\":\"P@ssword!12\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/user/profile/create-password",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user",
+												"profile",
+												"create-password"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:08:39 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": null\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Change Password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"old_password\":\"P@ssword12!!\",\r\n    \"new_password\":\"P@ssword33!!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/user/profile/change-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"profile",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json().response_output.detail;\r",
+									"pm.environment.set(\"access_token\", responseData.access_token);\r",
+									"pm.environment.set(\"refresh_token\", responseData.refresh_token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"super_admin\",\r\n    \"password\":\"P@ssword33!!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"super_admin\",\r\n    \"password\":\"P@ssword!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 06 Dec 2024 06:26:32 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"access_token\": \"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNUT09IiwidHlwZSI6IkFDQ0VTU19UT0tFTiIsInNlc3Npb25JZCI6ImYyNmQ5YzZjLTc4MDMtNGZlMC04ZWNmLWY2MGU1NzU4MDUzMSIsImF1dGhvcml0aWVzIjpbIk1BU1RFUl9VU0VSLkRFTEVURSIsIk1BU1RFUl9VU0VSLlJFQURfTElTVCIsIk1BU1RFUl9ST0xFLlJFQURfREVUQUlMIiwiTUFTVEVSX1VTRVIuQ1JFQVRFIiwiTUFTVEVSX1JPTEUuVVBEQVRFIiwiTUFTVEVSX1VTRVIuVVBEQVRFIiwiTUFTVEVSX1JPTEUuUkVBRF9MSVNUIiwiTUVOVV9YLkFDVElPTl9BIiwiTUVOVV9YLkFDVElPTl9CIiwiTUFTVEVSX1JPTEUuQ1JFQVRFIiwiTUFTVEVSX1JPTEUuREVMRVRFIiwiTUFTVEVSX1VTRVIuUkVBRF9ERVRBSUwiXSwiZXhwIjoxNzMzNDY5MzkyfQ.XZoGrgKbDJ1dgwOqZSZnCo8Sz9DWhrLNz_PE25RNBDVq2YI8BU5OEqshHG-5lWj1SMmyNTYj-c1XmD5JLi22zw\",\n            \"refresh_token\": \"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNUT09IiwidHlwZSI6IlJFRlJFU0hfVE9LRU4iLCJzZXNzaW9uSWQiOiJmMjZkOWM2Yy03ODAzLTRmZTAtOGVjZi1mNjBlNTc1ODA1MzEiLCJleHAiOjE3MzM0NzM1OTJ9.ahrDEYtFs0u2uubWkylLvdudDvAy-XRLLtzwgBP16OMUiXVaBb6aVceJrH-WnDp2gh2rnf4V5aMi5q8SAa2tyg\",\n            \"token_type\": \"Bearer\",\n            \"need_change_password\": false,\n            \"expires_in\": 3000000\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json().response_output.detail;\r",
+									"pm.environment.set(\"access_token\", responseData.access_token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\":\"{{refresh_token}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh-token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Refresh Token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refresh_token\":\"{{refresh_token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/refresh-token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"refresh-token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 06 Dec 2024 06:56:53 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"access_token\": \"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNUT09IiwidHlwZSI6IkFDQ0VTU19UT0tFTiIsInNlc3Npb25JZCI6ImYyNmQ5YzZjLTc4MDMtNGZlMC04ZWNmLWY2MGU1NzU4MDUzMSIsImF1dGhvcml0aWVzIjpbIk1BU1RFUl9VU0VSLkRFTEVURSIsIk1BU1RFUl9VU0VSLlJFQURfTElTVCIsIk1BU1RFUl9ST0xFLlJFQURfREVUQUlMIiwiTUFTVEVSX1VTRVIuQ1JFQVRFIiwiTUFTVEVSX1JPTEUuVVBEQVRFIiwiTUFTVEVSX1VTRVIuVVBEQVRFIiwiTUFTVEVSX1JPTEUuUkVBRF9MSVNUIiwiTUVOVV9YLkFDVElPTl9BIiwiTUVOVV9YLkFDVElPTl9CIiwiTUFTVEVSX1JPTEUuQ1JFQVRFIiwiTUFTVEVSX1JPTEUuREVMRVRFIiwiTUFTVEVSX1VTRVIuUkVBRF9ERVRBSUwiXSwiZXhwIjoxNzMzNDcxMjEzfQ.80ITrDqgEfALj6zBYIynsYv8a0kvzW3KFDgB7Ta4jHyAkfmrTBI-BNiZmdgJRw11f-ue5oIhB1x8MrGGmblneg\",\n            \"token_type\": \"Bearer\"\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Master User",
+					"item": [
+						{
+							"name": "Get All User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/user/all?search=&is-active=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"all"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": ""
+										},
+										{
+											"key": "is-active",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get All User",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/user/all?search=&is-active=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user",
+												"all"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": ""
+												},
+												{
+													"key": "is-active",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:10:48 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"list\": {\n            \"pagination\": null,\n            \"content\": [\n                {\n                    \"id\": 1,\n                    \"username\": \"super_admin\",\n                    \"name\": \"Super Admin\",\n                    \"is_active\": true,\n                    \"created_at\": \"2024-11-25T07:28:33.959202Z\",\n                    \"created_by\": null,\n                    \"last_modified_at\": \"2024-12-06T16:08:39.55261Z\",\n                    \"last_modified_by\": null\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get User Pagination",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/user?search=&is-active=true&page=0&size=10&sort=name,asc",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": ""
+										},
+										{
+											"key": "is-active",
+											"value": "true"
+										},
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "name,asc"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get User Pagination",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/user?search=&is-active=true&page=0&size=10&sort=name,asc",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": ""
+												},
+												{
+													"key": "is-active",
+													"value": "true"
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "10"
+												},
+												{
+													"key": "sort",
+													"value": "name,asc"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:12:48 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"list\": {\n            \"pagination\": {\n                \"page\": 0,\n                \"size\": 10,\n                \"total\": 1,\n                \"total_pages\": 1\n            },\n            \"content\": [\n                {\n                    \"id\": 1,\n                    \"username\": \"super_admin\",\n                    \"name\": \"Super Admin\",\n                    \"is_active\": true,\n                    \"created_at\": \"2024-11-25T07:28:33.959202Z\",\n                    \"created_by\": null,\n                    \"last_modified_at\": \"2024-12-06T16:08:39.55261Z\",\n                    \"last_modified_by\": null\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get User Detail",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/user/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get User Detail",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/user/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:14:33 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": 1,\n            \"username\": \"super_admin\",\n            \"name\": \"Super Admin\",\n            \"is_active\": true,\n            \"created_at\": \"2024-11-25T07:28:33.959202Z\",\n            \"created_by\": null,\n            \"last_modified_at\": \"2024-12-06T16:08:39.55261Z\",\n            \"last_modified_by\": null,\n            \"roles\": [\n                {\n                    \"id\": \"SUPER_ADMIN\",\n                    \"name\": \"Super Admin\",\n                    \"description\": \"Super Admin Role\",\n                    \"permissions\": [\n                        {\n                            \"id\": \"MENU_X\",\n                            \"name\": \"Menu X\",\n                            \"description\": \"Menu X description\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MENU_X.ACTION_A\",\n                                    \"description\": \"Action A on Menu X\"\n                                },\n                                {\n                                    \"id\": \"MENU_X.ACTION_B\",\n                                    \"description\": \"Action B on Menu X\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE\",\n                            \"name\": \"Master Role\",\n                            \"description\": \"Menu Master Role\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_ROLE.DELETE\",\n                                    \"description\": \"Master Role Delete\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.UPDATE\",\n                                    \"description\": \"Master Role Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.CREATE\",\n                                    \"description\": \"Master Role Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_LIST\",\n                                    \"description\": \"Master Role Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                                    \"description\": \"Master Role Read Detail\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_USER\",\n                            \"name\": \"Master User\",\n                            \"description\": \"Menu Master User\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_USER.UPDATE\",\n                                    \"description\": \"Master User Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.CREATE\",\n                                    \"description\": \"Master User Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_LIST\",\n                                    \"description\": \"Master User Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_DETAIL\",\n                                    \"description\": \"Master User Read Detail\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.DELETE\",\n                                    \"description\": \"Master User Delete\"\n                                }\n                            ]\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Post new User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"newusername\",\r\n    \"name\": \"New Username\",\r\n    \"role_ids\": [\r\n        \"SUPER_ADMIN\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/user",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Post new User",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"newusername\",\r\n    \"name\": \"New Username\",\r\n    \"role_ids\": [\r\n        \"SUPER_ADMIN\"\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/user",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:17:21 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": 17,\n            \"username\": \"newusername\",\n            \"name\": \"New Username\",\n            \"is_active\": false,\n            \"created_at\": null,\n            \"created_by\": null,\n            \"last_modified_at\": null,\n            \"last_modified_by\": null,\n            \"roles\": [\n                {\n                    \"id\": \"SUPER_ADMIN\",\n                    \"name\": \"Super Admin\",\n                    \"description\": \"Super Admin Role\",\n                    \"permissions\": [\n                        {\n                            \"id\": \"MENU_X\",\n                            \"name\": \"Menu X\",\n                            \"description\": \"Menu X description\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MENU_X.ACTION_B\",\n                                    \"description\": \"Action B on Menu X\"\n                                },\n                                {\n                                    \"id\": \"MENU_X.ACTION_A\",\n                                    \"description\": \"Action A on Menu X\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE\",\n                            \"name\": \"Master Role\",\n                            \"description\": \"Menu Master Role\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_ROLE.DELETE\",\n                                    \"description\": \"Master Role Delete\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.CREATE\",\n                                    \"description\": \"Master Role Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.UPDATE\",\n                                    \"description\": \"Master Role Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_LIST\",\n                                    \"description\": \"Master Role Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                                    \"description\": \"Master Role Read Detail\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_USER\",\n                            \"name\": \"Master User\",\n                            \"description\": \"Menu Master User\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_USER.UPDATE\",\n                                    \"description\": \"Master User Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.CREATE\",\n                                    \"description\": \"Master User Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_LIST\",\n                                    \"description\": \"Master User Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_DETAIL\",\n                                    \"description\": \"Master User Read Detail\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.DELETE\",\n                                    \"description\": \"Master User Delete\"\n                                }\n                            ]\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Put Update User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"newusername\",\r\n    \"name\": \"New 14\",\r\n    \"role_ids\": [\r\n        \"SUPER_ADMIN\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/user/17",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"17"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Put Update User",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"newusername\",\r\n    \"name\": \"New 14\",\r\n    \"role_ids\": [\r\n        \"SUPER_ADMIN\"\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/user/17",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user",
+												"17"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:18:38 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": 17,\n            \"username\": \"newusername\",\n            \"name\": \"New 14\",\n            \"is_active\": false,\n            \"created_at\": \"2024-12-06T16:17:21.525068Z\",\n            \"created_by\": null,\n            \"last_modified_at\": \"2024-12-06T16:17:21.525068Z\",\n            \"last_modified_by\": null,\n            \"roles\": [\n                {\n                    \"id\": \"SUPER_ADMIN\",\n                    \"name\": \"Super Admin\",\n                    \"description\": \"Super Admin Role\",\n                    \"permissions\": [\n                        {\n                            \"id\": \"MENU_X\",\n                            \"name\": \"Menu X\",\n                            \"description\": \"Menu X description\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MENU_X.ACTION_A\",\n                                    \"description\": \"Action A on Menu X\"\n                                },\n                                {\n                                    \"id\": \"MENU_X.ACTION_B\",\n                                    \"description\": \"Action B on Menu X\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE\",\n                            \"name\": \"Master Role\",\n                            \"description\": \"Menu Master Role\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_ROLE.DELETE\",\n                                    \"description\": \"Master Role Delete\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.CREATE\",\n                                    \"description\": \"Master Role Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.UPDATE\",\n                                    \"description\": \"Master Role Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_LIST\",\n                                    \"description\": \"Master Role Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                                    \"description\": \"Master Role Read Detail\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_USER\",\n                            \"name\": \"Master User\",\n                            \"description\": \"Menu Master User\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_USER.CREATE\",\n                                    \"description\": \"Master User Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.UPDATE\",\n                                    \"description\": \"Master User Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_LIST\",\n                                    \"description\": \"Master User Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_DETAIL\",\n                                    \"description\": \"Master User Read Detail\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.DELETE\",\n                                    \"description\": \"Master User Delete\"\n                                }\n                            ]\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/user/17",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"17"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Delete User",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/user/17",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"user",
+												"17"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:20:01 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": null\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Master Role",
+					"item": [
+						{
+							"name": "Get All Permission",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/permission",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"permission"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get All Permission",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/permission",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"permission"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:20:21 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"list\": {\n            \"pagination\": null,\n            \"content\": [\n                {\n                    \"id\": \"MASTER_USER\",\n                    \"name\": \"Master User\",\n                    \"description\": \"Menu Master User\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MASTER_USER.DELETE\",\n                            \"description\": \"Master User Delete\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.UPDATE\",\n                            \"description\": \"Master User Update\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.CREATE\",\n                            \"description\": \"Master User Create\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.READ_DETAIL\",\n                            \"description\": \"Master User Read Detail\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.READ_LIST\",\n                            \"description\": \"Master User Read List\"\n                        }\n                    ]\n                },\n                {\n                    \"id\": \"MASTER_ROLE\",\n                    \"name\": \"Master Role\",\n                    \"description\": \"Menu Master Role\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MASTER_ROLE.READ_LIST\",\n                            \"description\": \"Master Role Read List\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.CREATE\",\n                            \"description\": \"Master Role Create\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.DELETE\",\n                            \"description\": \"Master Role Delete\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.UPDATE\",\n                            \"description\": \"Master Role Update\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                            \"description\": \"Master Role Read Detail\"\n                        }\n                    ]\n                },\n                {\n                    \"id\": \"MENU_X\",\n                    \"name\": \"Menu X\",\n                    \"description\": \"Menu X description\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MENU_X.ACTION_B\",\n                            \"description\": \"Action B on Menu X\"\n                        },\n                        {\n                            \"id\": \"MENU_X.ACTION_A\",\n                            \"description\": \"Action A on Menu X\"\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get All Role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/role/all?search=",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"role",
+										"all"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get All Role",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/role/all?search=",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"role",
+												"all"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": ""
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:21:32 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"list\": {\n            \"pagination\": null,\n            \"content\": [\n                {\n                    \"id\": \"SUPER_ADMIN\",\n                    \"name\": \"Super Admin\",\n                    \"description\": \"Super Admin Role\",\n                    \"permissions\": [\n                        {\n                            \"id\": \"MENU_X\",\n                            \"name\": \"Menu X\",\n                            \"description\": \"Menu X description\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MENU_X.ACTION_A\",\n                                    \"description\": \"Action A on Menu X\"\n                                },\n                                {\n                                    \"id\": \"MENU_X.ACTION_B\",\n                                    \"description\": \"Action B on Menu X\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE\",\n                            \"name\": \"Master Role\",\n                            \"description\": \"Menu Master Role\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_ROLE.DELETE\",\n                                    \"description\": \"Master Role Delete\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.CREATE\",\n                                    \"description\": \"Master Role Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.UPDATE\",\n                                    \"description\": \"Master Role Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_LIST\",\n                                    \"description\": \"Master Role Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                                    \"description\": \"Master Role Read Detail\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_USER\",\n                            \"name\": \"Master User\",\n                            \"description\": \"Menu Master User\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_USER.UPDATE\",\n                                    \"description\": \"Master User Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.CREATE\",\n                                    \"description\": \"Master User Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_LIST\",\n                                    \"description\": \"Master User Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_DETAIL\",\n                                    \"description\": \"Master User Read Detail\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.DELETE\",\n                                    \"description\": \"Master User Delete\"\n                                }\n                            ]\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Role Pagination",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/role?search=&page=0&size=10&sort=name,asc",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"role"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": ""
+										},
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "name,asc"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Role Pagination",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/role?search=&page=0&size=10&sort=name,asc",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"role"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": ""
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "10"
+												},
+												{
+													"key": "sort",
+													"value": "name,asc"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:23:57 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"list\": {\n            \"pagination\": {\n                \"page\": 0,\n                \"size\": 10,\n                \"total\": 1,\n                \"total_pages\": 1\n            },\n            \"content\": [\n                {\n                    \"id\": \"SUPER_ADMIN\",\n                    \"name\": \"Super Admin\",\n                    \"description\": \"Super Admin Role\",\n                    \"permissions\": [\n                        {\n                            \"id\": \"MENU_X\",\n                            \"name\": \"Menu X\",\n                            \"description\": \"Menu X description\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MENU_X.ACTION_B\",\n                                    \"description\": \"Action B on Menu X\"\n                                },\n                                {\n                                    \"id\": \"MENU_X.ACTION_A\",\n                                    \"description\": \"Action A on Menu X\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE\",\n                            \"name\": \"Master Role\",\n                            \"description\": \"Menu Master Role\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_ROLE.DELETE\",\n                                    \"description\": \"Master Role Delete\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.UPDATE\",\n                                    \"description\": \"Master Role Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.CREATE\",\n                                    \"description\": \"Master Role Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_LIST\",\n                                    \"description\": \"Master Role Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                                    \"description\": \"Master Role Read Detail\"\n                                }\n                            ]\n                        },\n                        {\n                            \"id\": \"MASTER_USER\",\n                            \"name\": \"Master User\",\n                            \"description\": \"Menu Master User\",\n                            \"permission_actions\": [\n                                {\n                                    \"id\": \"MASTER_USER.UPDATE\",\n                                    \"description\": \"Master User Update\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.CREATE\",\n                                    \"description\": \"Master User Create\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_LIST\",\n                                    \"description\": \"Master User Read List\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.READ_DETAIL\",\n                                    \"description\": \"Master User Read Detail\"\n                                },\n                                {\n                                    \"id\": \"MASTER_USER.DELETE\",\n                                    \"description\": \"Master User Delete\"\n                                }\n                            ]\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Role Detail",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/role/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"role",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "SUPER_ADMIN"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Role Detail",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/role/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"role",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "SUPER_ADMIN"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:25:28 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": \"SUPER_ADMIN\",\n            \"name\": \"Super Admin\",\n            \"description\": \"Super Admin Role\",\n            \"permissions\": [\n                {\n                    \"id\": \"MENU_X\",\n                    \"name\": \"Menu X\",\n                    \"description\": \"Menu X description\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MENU_X.ACTION_B\",\n                            \"description\": \"Action B on Menu X\"\n                        },\n                        {\n                            \"id\": \"MENU_X.ACTION_A\",\n                            \"description\": \"Action A on Menu X\"\n                        }\n                    ]\n                },\n                {\n                    \"id\": \"MASTER_ROLE\",\n                    \"name\": \"Master Role\",\n                    \"description\": \"Menu Master Role\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MASTER_ROLE.DELETE\",\n                            \"description\": \"Master Role Delete\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.UPDATE\",\n                            \"description\": \"Master Role Update\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.CREATE\",\n                            \"description\": \"Master Role Create\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.READ_LIST\",\n                            \"description\": \"Master Role Read List\"\n                        },\n                        {\n                            \"id\": \"MASTER_ROLE.READ_DETAIL\",\n                            \"description\": \"Master Role Read Detail\"\n                        }\n                    ]\n                },\n                {\n                    \"id\": \"MASTER_USER\",\n                    \"name\": \"Master User\",\n                    \"description\": \"Menu Master User\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MASTER_USER.UPDATE\",\n                            \"description\": \"Master User Update\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.CREATE\",\n                            \"description\": \"Master User Create\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.READ_LIST\",\n                            \"description\": \"Master User Read List\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.READ_DETAIL\",\n                            \"description\": \"Master User Read Detail\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.DELETE\",\n                            \"description\": \"Master User Delete\"\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Post new Role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"NEW_ROLE4\",\r\n    \"role_name\": \"New Role4\",\r\n    \"description\": \"This is Demo for New Role\",\r\n    \"permission_actions_ids\": [\r\n        \"MASTER_USER.READ_LIST\",\"MASTER_USER.READ_DETAIL\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/role",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"role"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Post new Role",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"id\": \"NEW_ROLE4\",\r\n    \"role_name\": \"New Role4\",\r\n    \"description\": \"This is Demo for New Role\",\r\n    \"permission_actions_ids\": [\r\n        \"MASTER_USER.READ_LIST\",\"MASTER_USER.READ_DETAIL\"\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/role",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"role"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:27:11 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": \"NEW_ROLE4\",\n            \"name\": \"New Role4\",\n            \"description\": \"This is Demo for New Role\",\n            \"permissions\": [\n                {\n                    \"id\": \"MASTER_USER\",\n                    \"name\": \"Master User\",\n                    \"description\": \"Menu Master User\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MASTER_USER.READ_LIST\",\n                            \"description\": \"Master User Read List\"\n                        },\n                        {\n                            \"id\": \"MASTER_USER.READ_DETAIL\",\n                            \"description\": \"Master User Read Detail\"\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Put Update Role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"role_name\": \"Test Update\",\r\n    \"description\": \"This is Demo for New Role\",\r\n    \"permission_actions_ids\": [\r\n        \"MASTER_USER.READ_LIST\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/role/NEW_ROLE4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"role",
+										"NEW_ROLE4"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Put Update Role",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"role_name\": \"Test Update\",\r\n    \"description\": \"This is Demo for New Role\",\r\n    \"permission_actions_ids\": [\r\n        \"MASTER_USER.READ_LIST\"\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/role/NEW_ROLE4",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"role",
+												"NEW_ROLE4"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 06 Dec 2024 16:29:16 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"response_schema\": {\n        \"response_code\": \"PLUGINUSERMANAGEMENT-0000\",\n        \"response_message\": \"Success\"\n    },\n    \"response_output\": {\n        \"detail\": {\n            \"id\": \"NEW_ROLE4\",\n            \"name\": \"Test Update\",\n            \"description\": \"This is Demo for New Role\",\n            \"permissions\": [\n                {\n                    \"id\": \"MASTER_USER\",\n                    \"name\": \"Master User\",\n                    \"description\": \"Menu Master User\",\n                    \"permission_actions\": [\n                        {\n                            \"id\": \"MASTER_USER.READ_LIST\",\n                            \"description\": \"Master User Read List\"\n                        }\n                    ]\n                }\n            ]\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Role",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/role/NEW_ROLE4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"role",
+										"NEW_ROLE4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -5,20 +5,126 @@ Sebagai pengguna CMS, saya ingin sesi saya aman dan dapat diperpanjang tanpa ser
 
 ## API Contracts
 
-### POST /admin/auth/refresh
+### POST /api/auth/refresh-token
 **Request:**
 ```typescript
-// Refresh token sent via httpOnly cookie
-// No body required
+{
+  refresh_token: string;    // Required, the refresh token from login
+}
 ```
 
 **Success Response (200):**
 ```typescript
 {
-  success: true;
-  data: {
-    accessToken: string;   // New JWT, expires in 15 minutes
-    expiresIn: number;     // 900 seconds (15 minutes)
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      access_token: string;        // New JWT token
+      token_type: "Bearer";
+      expires_in: number;          // Token expiry in seconds
+      refresh_token?: string;      // Optional new refresh token (rotation)
+      session_info: {
+        session_id: string;
+        refreshed_at: string;
+        expires_at: string;
+      };
+    }
+  }
+}
+```
+
+### POST /api/auth/logout
+**Headers:**
+```
+Authorization: Bearer {access_token}
+```
+
+**Request:**
+```typescript
+{
+  refresh_token?: string;   // Optional, for revoking specific session
+  logout_all?: boolean;     // Optional, logout from all devices
+}
+```
+
+**Success Response (200):**
+```typescript
+{
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      message: "Logged out successfully";
+      sessions_revoked: number;    // Number of sessions terminated
+      logout_at: string;
+    }
+  }
+}
+```
+
+### GET /api/auth/sessions
+**Headers:**
+```
+Authorization: Bearer {access_token}
+```
+
+**Success Response (200):**
+```typescript
+{
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    list: {
+      content: [{
+        session_id: string;
+        device_info: {
+          user_agent: string;
+          ip_address: string;
+          device_type: 'desktop' | 'mobile' | 'tablet';
+          browser: string;
+          os: string;
+        };
+        login_at: string;
+        last_activity: string;
+        expires_at: string;
+        is_current: boolean;
+        location?: {
+          country: string;
+          city: string;
+        };
+      }];
+      pagination: null;
+    }
+  }
+}
+```
+
+### DELETE /api/auth/sessions/:sessionId
+**Headers:**
+```
+Authorization: Bearer {access_token}
+```
+
+**Success Response (200):**
+```typescript
+{
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0000";
+    response_message: "Success";
+  };
+  response_output: {
+    detail: {
+      message: "Session terminated successfully";
+      session_id: string;
+      terminated_at: string;
+    }
   }
 }
 ```
@@ -27,38 +133,38 @@ Sebagai pengguna CMS, saya ingin sesi saya aman dan dapat diperpanjang tanpa ser
 ```typescript
 // 401 - Invalid/expired refresh token
 {
-  success: false;
-  error: "Invalid or expired refresh token";
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0005";
+    response_message: "Invalid or expired refresh token";
+  };
+  response_output: null;
 }
 
 // 403 - Token revoked
 {
-  success: false;
-  error: "Token has been revoked";
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0006";
+    response_message: "Token has been revoked";
+  };
+  response_output: null;
 }
-```
 
-### POST /admin/auth/logout
-**Request:**
-```typescript
-// Both tokens needed: Authorization header + httpOnly cookie
-// No body required
-```
-
-**Success Response (200):**
-```typescript
+// 401 - Not authenticated
 {
-  success: true;
-  message: "Logged out successfully";
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0007";
+    response_message: "Not authenticated";
+  };
+  response_output: null;
 }
-```
 
-**Error Responses:**
-```typescript
-// 401 - No valid tokens
+// 404 - Session not found
 {
-  success: false;
-  error: "Not authenticated";
+  response_schema: {
+    response_code: "PLUGINUSERMANAGEMENT-0008";
+    response_message: "Session not found";
+  };
+  response_output: null;
 }
 ```
 

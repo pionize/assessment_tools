@@ -22,14 +22,9 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge Multiple 
       id: string;            // Option identifier (A, B, C, D)
       text: string;          // Option text, max 500 chars
     }[];                     // Min 2, max 6 options
-    correct_answers: string[];  // Array of correct option IDs
-    explanation?: string;     // Optional explanation, max 1000 chars
+    correct_answers: string;  // correct option ID
     points?: number;         // Optional per-question points
   }[];                       // Min 1 question required
-  randomize_questions?: boolean;  // Default: false
-  randomize_options?: boolean;    // Default: false
-  allow_multiple_selections?: boolean; // Default: false
-  tags?: string[];           // Optional categorization tags
 }
 ```
 
@@ -187,7 +182,7 @@ Sebagai Assessment Manager, saya ingin membuat dan mengelola challenge Multiple 
 {
   response_schema: {
     response_code: "CODE-0001";
-    response_message: "Question must have at least 2 options";
+    response_message: "Question must have 4 options";
   };
   response_output: null;
 }
