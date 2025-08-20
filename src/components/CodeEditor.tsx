@@ -606,11 +606,11 @@ function CodeEditor({
 						</div>
 					</div>
 
-					{/* Language Selector */}
+					{/* Language Selector - Hidden but functional */}
 					<select
 						value={selectedLanguage}
 						onChange={(e) => onLanguageChange?.(e.target.value)}
-						className="w-full text-xs border border-gray-300 rounded px-2 py-1"
+						className="w-full text-xs border border-gray-300 rounded px-2 py-1 hidden"
 					>
 						{languages.map((lang) => (
 							<option key={lang.value} value={lang.value}>
