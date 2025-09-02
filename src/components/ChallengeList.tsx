@@ -4,6 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAssessment } from "../contexts/AssessmentContext";
 import type { AssessmentSession } from "../contexts/context";
 import { apiService } from "../services/api";
+import {
+	showConfirmationPopup,
+	showErrorPopup,
+	showSuccessPopup,
+	showWarningPopup,
+} from "../utils/popup";
 import { sessionStorage } from "../utils/sessionStorage";
 import { Badge, Button, Card } from "./ui";
 
@@ -18,7 +24,7 @@ function ChallengeList() {
 
 	// Helper function to handle expired session
 	const handleExpiredSession = () => {
-		alert("⏰ Your assessment session has expired. Please contact the administrator.");
+		showWarningPopup("⏰ Your assessment session has expired. Please contact the administrator.");
 		dispatch({ type: "RESET_ASSESSMENT" });
 		navigate(`/assessment/${assessmentId}`);
 	};
@@ -118,8 +124,10 @@ function ChallengeList() {
 	}, []);
 
 	const handleAutoSubmitAssessment = useCallback(async () => {
-		const confirmed = confirm("⏰ Time's up! Your assessment will be automatically submitted now.");
-		if (confirmed && assessmentId && state.candidate) {
+		const result = await showConfirmationPopup(
+			"⏰ Time's up! Your assessment will be automatically submitted now."
+		);
+		if (result.isConfirmed && assessmentId && state.candidate) {
 			try {
 				await apiService.submitAssessment({
 					assessmentId,
@@ -130,7 +138,7 @@ function ChallengeList() {
 				sessionStorage.clearSession();
 				dispatch({ type: "RESET_ASSESSMENT" });
 
-				alert(
+				showSuccessPopup(
 					"⏰ Assessment automatically submitted due to time limit. Thank you for your participation."
 				);
 
@@ -138,7 +146,7 @@ function ChallengeList() {
 					navigate(`/assessment/${assessmentId}`);
 				}, 1000);
 			} catch (error) {
-				alert(`Error auto-submitting assessment: ${error.message}`);
+				showErrorPopup(`Error auto-submitting assessment: ${error.message}`);
 			}
 		}
 	}, [assessmentId, state.candidate, dispatch, navigate]);
@@ -292,10 +300,10 @@ function ChallengeList() {
 							{/* Submit Button */}
 							<Button
 								onClick={async () => {
-									const confirmed = confirm(
+									const result = await showConfirmationPopup(
 										"Are you sure you want to submit your assessment? This action cannot be undone."
 									);
-									if (!confirmed || !assessmentId || !state.candidate) return;
+									if (!result.isConfirmed || !assessmentId || !state.candidate) return;
 
 									try {
 										await apiService.submitAssessment({
@@ -308,14 +316,16 @@ function ChallengeList() {
 										sessionStorage.clearSession();
 										dispatch({ type: "RESET_ASSESSMENT" });
 
-										alert("Assessment submitted successfully! Thank you for your participation.");
+										showSuccessPopup(
+											"Assessment submitted successfully! Thank you for your participation."
+										);
 
 										// Redirect to assessment start page
 										setTimeout(() => {
 											navigate(`/assessment/${assessmentId}`);
 										}, 1000);
 									} catch (error) {
-										alert(`Error submitting assessment: ${error.message}`);
+										showErrorPopup(`Error submitting assessment: ${error.message}`);
 									}
 								}}
 								icon={<CheckCircle className="w-4 h-4" />}

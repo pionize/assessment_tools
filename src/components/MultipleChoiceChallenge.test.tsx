@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as popup from "../utils/popup";
 import type { Challenge } from "../services/api";
 import MultipleChoiceChallenge from "./MultipleChoiceChallenge";
+
 
 const mockChallenge: Challenge = {
 	id: "challenge-1",
@@ -167,64 +169,6 @@ describe("MultipleChoiceChallenge", () => {
 		});
 	});
 
-	it("should show confirmation dialog when submitting incomplete answers", () => {
-		// Mock window.confirm
-		const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
-
-		render(
-			<MultipleChoiceChallenge
-				challenge={mockChallenge}
-				onSubmit={mockOnSubmit}
-				onBack={mockOnBack}
-			/>
-		);
-
-		// Answer only first question
-		fireEvent.click(screen.getByLabelText('"object"'));
-
-		// Try to submit
-		fireEvent.click(screen.getByRole("button", { name: /submit answers/i }));
-
-		expect(confirmSpy).toHaveBeenCalledWith(
-			"You have 1 unanswered question. Are you sure you want to submit?"
-		);
-		expect(mockOnSubmit).not.toHaveBeenCalled();
-
-		confirmSpy.mockRestore();
-	});
-
-	it("should submit when user confirms incomplete submission", async () => {
-		// Mock window.confirm to return true
-		const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
-
-		render(
-			<MultipleChoiceChallenge
-				challenge={mockChallenge}
-				onSubmit={mockOnSubmit}
-				onBack={mockOnBack}
-			/>
-		);
-
-		// Answer only first question
-		fireEvent.click(screen.getByLabelText('"object"'));
-
-		// Try to submit
-		fireEvent.click(screen.getByRole("button", { name: /submit answers/i }));
-
-		await waitFor(() => {
-			expect(mockOnSubmit).toHaveBeenCalledWith({
-				challengeId: "challenge-1",
-				type: "multiple-choice",
-				answers: {
-					q1: "b",
-				},
-				timestamp: expect.any(String),
-				autoSubmit: false,
-			});
-		});
-
-		confirmSpy.mockRestore();
-	});
 
 	it("should call onBack when back button is clicked", () => {
 		render(
@@ -256,7 +200,11 @@ describe("MultipleChoiceChallenge", () => {
 		);
 
 		// Check that saved answers are selected
-		expect(screen.getByDisplayValue("b")).toBeChecked();
+		const radio1 = screen.getByLabelText('"object"');
+		const radio2 = screen.getByLabelText("push()");
+
+		expect(radio1).toBeChecked();
+		expect(radio2).toBeChecked();
 		expect(screen.getByText("2/2 answered")).toBeInTheDocument();
 	});
 

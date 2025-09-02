@@ -7,7 +7,8 @@ import Login from "./Login";
 // Mock the API service
 vi.mock("../services/api", () => ({
 	apiService: {
-		authenticateCandidate: vi.fn(),
+		authenticate: vi.fn(),
+		getAssessment: vi.fn(),
 	},
 }));
 
@@ -42,47 +43,36 @@ describe("Login", () => {
 		expect(screen.getByRole("button", { name: /start assessment/i })).toBeInTheDocument();
 	});
 
-	it("should show validation errors for empty fields", async () => {
+	it("should disable button when fields are empty", async () => {
 		render(<Login />, { wrapper: LoginWrapper });
-
-		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
-
-		await waitFor(() => {
-			expect(screen.getByText(/name is required/i)).toBeInTheDocument();
-			expect(screen.getByText(/email is required/i)).toBeInTheDocument();
-		});
+		expect(screen.getByRole("button", { name: /start assessment/i })).toBeDisabled();
 	});
 
-	it("should show validation error for invalid email", async () => {
+	it("should enable button when fields are filled", async () => {
 		render(<Login />, { wrapper: LoginWrapper });
 
 		fireEvent.change(screen.getByLabelText(/full name/i), {
 			target: { value: "John Doe" },
 		});
 		fireEvent.change(screen.getByLabelText(/email address/i), {
-			target: { value: "invalid-email" },
+			target: { value: "john@example.com" },
 		});
-		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
 
-		await waitFor(() => {
-			expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
-		});
+		expect(screen.getByRole("button", { name: /start assessment/i })).toBeEnabled();
 	});
 
 	it("should submit form with valid data", async () => {
 		const mockAuthResponse = {
-			success: true,
 			candidateId: "candidate-123",
-			name: "John Doe",
-			email: "john@example.com",
-			assessmentId: "assessment-123",
 			token: "mock-token",
 			timeLimit: 60,
 			startedAt: "2023-01-01T10:00:00.000Z",
 		};
+		const mockAssessment = { id: "assessment-123", title: "Test Assessment" };
 
 		const { apiService } = await import("../services/api");
-		vi.mocked(apiService.authenticateCandidate).mockResolvedValue(mockAuthResponse);
+		vi.mocked(apiService.authenticate).mockResolvedValue(mockAuthResponse);
+		vi.mocked(apiService.getAssessment).mockResolvedValue(mockAssessment);
 
 		render(<Login />, { wrapper: LoginWrapper });
 
@@ -95,20 +85,21 @@ describe("Login", () => {
 		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
 
 		await waitFor(() => {
-			expect(apiService.authenticateCandidate).toHaveBeenCalledWith(
-				"assessment-123",
+			expect(apiService.authenticate).toHaveBeenCalledWith(
 				"John Doe",
-				"john@example.com"
+				"john@example.com",
+				"assessment-123"
 			);
+			expect(apiService.getAssessment).toHaveBeenCalledWith("assessment-123");
 			expect(mockNavigate).toHaveBeenCalledWith("/assessment/assessment-123/challenges");
 		});
 	});
 
 	it("should handle authentication error", async () => {
 		const { apiService } = await import("../services/api");
-		vi.mocked(apiService.authenticateCandidate).mockRejectedValue(
-			new Error("Authentication failed")
-		);
+		vi.mocked(apiService.authenticate).mockRejectedValue({
+			body: { response_schema: { response_code: "AUTH-001" } },
+		});
 
 		render(<Login />, { wrapper: LoginWrapper });
 
@@ -121,14 +112,14 @@ describe("Login", () => {
 		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
 
 		await waitFor(() => {
-			expect(screen.getByText(/authentication failed/i)).toBeInTheDocument();
+			expect(screen.getByText(/assessment not found/i)).toBeInTheDocument();
 		});
 	});
 
 	it("should show loading state during authentication", async () => {
 		const { apiService } = await import("../services/api");
-		vi.mocked(apiService.authenticateCandidate).mockImplementation(
-			() => new Promise((resolve) => setTimeout(resolve, 1000))
+		vi.mocked(apiService.authenticate).mockImplementation(
+			() => new Promise((resolve) => setTimeout(() => resolve({} as never), 1000))
 		);
 
 		render(<Login />, { wrapper: LoginWrapper });
@@ -141,7 +132,7 @@ describe("Login", () => {
 		});
 		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
 
-		expect(screen.getByText(/starting assessment/i)).toBeInTheDocument();
+		expect(screen.getByText(/starting/i)).toBeInTheDocument();
 		expect(screen.getByRole("button")).toBeDisabled();
 	});
 });

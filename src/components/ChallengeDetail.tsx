@@ -1,6 +1,7 @@
 import { AlertCircle, ArrowLeft, CheckCircle, Clock, Code, FileText, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { showErrorPopup, showSuccessPopup } from "../utils/popup";
 import { useAssessment } from "../contexts/AssessmentContext";
 import type { AssessmentSession, Challenge } from "../contexts/context";
 import type { SubmissionData } from "../contexts/models/SubmissionData";
@@ -200,7 +201,7 @@ function ChallengeDetail() {
 				payload: { challengeId },
 			});
 
-			alert(
+			showSuccessPopup(
 				isAutoSubmit
 					? "Time's up! Your challenge has been auto-submitted."
 					: "Challenge submitted successfully!"
@@ -208,7 +209,7 @@ function ChallengeDetail() {
 			navigate(`/assessment/${assessmentId}/challenges`);
 		} catch (error) {
 			console.error("Error submitting challenge:", error);
-			alert("Error submitting challenge. Please try again.");
+			showErrorPopup("Error submitting challenge. Please try again.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -250,7 +251,7 @@ function ChallengeDetail() {
 			});
 
 			// Show success message and navigate back immediately
-			alert(
+			showSuccessPopup(
 				submissionData.autoSubmit
 					? "Time's up! Your challenge has been auto-submitted."
 					: "Challenge submitted successfully!"

@@ -1,5 +1,6 @@
 import { ArrowLeft, CheckCircle, HelpCircle, Send } from "lucide-react";
 import { useEffect, useState } from "react";
+import { showConfirmationPopup, showErrorPopup } from "../utils/popup";
 import type { Challenge } from "../services/api";
 import { Button, Card } from "./ui";
 
@@ -69,10 +70,10 @@ function MultipleChoiceChallenge({
 
 		if (!autoSubmit && !isComplete()) {
 			const unanswered = (challenge.questions?.length || 0) - getAnsweredCount();
-			const confirm = window.confirm(
+			const result = await showConfirmationPopup(
 				`You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Are you sure you want to submit?`
 			);
-			if (!confirm) return;
+			if (!result.isConfirmed) return;
 		}
 
 		setIsSubmitting(true);
@@ -90,7 +91,7 @@ function MultipleChoiceChallenge({
 			setShowResults(true);
 		} catch (error) {
 			console.error("Submission error:", error);
-			alert("Error submitting answers. Please try again.");
+			showErrorPopup("Error submitting answers. Please try again.");
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -284,6 +285,7 @@ function MultipleChoiceChallenge({
 										<Send className="w-5 h-5" />
 									)
 								}
+								data-testid="submit-button"
 							>
 								{isSubmitting ? "Submitting..." : "Submit Answers"}
 							</Button>

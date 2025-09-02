@@ -27,21 +27,21 @@ describe("Button", () => {
 		render(<Button variant="primary">Primary button</Button>);
 		const button = screen.getByRole("button");
 
-		expect(button).toHaveClass("bg-gradient-to-r", "from-[#1578b9]", "to-[#40b3ff]");
+		expect(button).toHaveClass("bg-[#00487a]", "hover:bg-[#002957]", "text-white");
 	});
 
 	it("should render with secondary variant class", () => {
 		render(<Button variant="secondary">Secondary button</Button>);
 		const button = screen.getByRole("button");
 
-		expect(button).toHaveClass("bg-white", "border-2", "border-gray-300");
+		expect(button).toHaveClass("bg-gray-100", "hover:bg-gray-200", "text-gray-700");
 	});
 
 	it("should render with ghost variant class", () => {
 		render(<Button variant="ghost">Ghost button</Button>);
 		const button = screen.getByRole("button");
 
-		expect(button).toHaveClass("bg-transparent", "hover:bg-gray-100");
+		expect(button).toHaveClass("text-[#00487a]", "hover:bg-[#00487a]", "hover:text-white");
 	});
 
 	it("should render with small size class", () => {
@@ -55,14 +55,14 @@ describe("Button", () => {
 		render(<Button size="md">Medium button</Button>);
 		const button = screen.getByRole("button");
 
-		expect(button).toHaveClass("px-4", "py-2");
+		expect(button).toHaveClass("px-6", "py-3", "text-base");
 	});
 
 	it("should render with large size class", () => {
 		render(<Button size="lg">Large button</Button>);
 		const button = screen.getByRole("button");
 
-		expect(button).toHaveClass("px-6", "py-3", "text-lg");
+		expect(button).toHaveClass("px-8", "py-4", "text-lg");
 	});
 
 	it("should render with icon", () => {

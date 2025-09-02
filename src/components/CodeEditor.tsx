@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type * as monaco from "monaco-editor";
 import { useEffect, useRef, useState } from "react";
+import { showConfirmationPopup, showErrorPopup, showWarningPopup } from "../utils/popup";
 
 interface FileTreeNode {
 	type: "file" | "folder";
@@ -127,14 +128,16 @@ function CodeEditor({
 
 		// Validate file name
 		if (!/^[a-zA-Z0-9-_.]+$/.test(newFileName)) {
-			alert("File name can only contain letters, numbers, hyphens, underscores, and dots");
+			showWarningPopup(
+				"File name can only contain letters, numbers, hyphens, underscores, and dots"
+			);
 			return;
 		}
 
 		const fullPath = newFileParent ? `${newFileParent}/${newFileName}` : newFileName;
 
 		if (files[fullPath]) {
-			alert("File already exists!");
+			showErrorPopup("File already exists!");
 			return;
 		}
 
@@ -174,7 +177,7 @@ function CodeEditor({
 
 		// Validate folder name
 		if (!/^[a-zA-Z0-9-_]+$/.test(newFolderName)) {
-			alert("Folder name can only contain letters, numbers, hyphens, and underscores");
+			showWarningPopup("Folder name can only contain letters, numbers, hyphens, and underscores");
 			return;
 		}
 
@@ -186,7 +189,7 @@ function CodeEditor({
 		);
 
 		if (existingFolderFiles.length > 0) {
-			alert("Folder already exists!");
+			showErrorPopup("Folder already exists!");
 			return;
 		}
 
@@ -222,8 +225,9 @@ function CodeEditor({
 		setContextMenu(null);
 	};
 
-	const deleteFile = (filePath: string) => {
-		if (confirm(`Are you sure you want to delete ${filePath}?`)) {
+	const deleteFile = async (filePath: string) => {
+		const result = await showConfirmationPopup(`Are you sure you want to delete ${filePath}?`);
+		if (result.isConfirmed) {
 			const updatedFiles = { ...files };
 			delete updatedFiles[filePath];
 
@@ -300,10 +304,11 @@ function CodeEditor({
 		setContextMenu(null);
 	};
 
-	const deleteFolder = (folderPath: string) => {
-		if (
-			confirm(`Are you sure you want to delete the folder "${folderPath}" and all its contents?`)
-		) {
+	const deleteFolder = async (folderPath: string) => {
+		const result = await showConfirmationPopup(
+			`Are you sure you want to delete the folder "${folderPath}" and all its contents?`
+		);
+		if (result.isConfirmed) {
 			const updatedFiles = { ...files };
 
 			// Delete all files in the folder
@@ -336,7 +341,7 @@ function CodeEditor({
 		const namePattern = type === "file" ? /^[a-zA-Z0-9-_.]+$/ : /^[a-zA-Z0-9-_]+$/;
 
 		if (!namePattern.test(name)) {
-			alert(
+			showWarningPopup(
 				`${type === "file" ? "File" : "Folder"} name can only contain letters, numbers, hyphens, underscores${type === "file" ? ", and dots" : ""}`
 			);
 			return false;
@@ -347,7 +352,7 @@ function CodeEditor({
 	// Helper function to rename a file
 	const renameFile = (oldPath: string, newPath: string) => {
 		if (files[newPath] && newPath !== oldPath) {
-			alert("A file with this name already exists!");
+			showErrorPopup("A file with this name already exists!");
 			return false;
 		}
 
@@ -373,7 +378,7 @@ function CodeEditor({
 		);
 
 		if (existingFiles.length > 0) {
-			alert("A folder with this name already exists!");
+			showErrorPopup("A folder with this name already exists!");
 			return false;
 		}
 
