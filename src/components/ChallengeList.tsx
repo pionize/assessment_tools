@@ -16,6 +16,22 @@ function ChallengeList() {
 	const navigate = useNavigate();
 	const { state, dispatch } = useAssessment();
 
+	// Helper function to handle expired session
+	const handleExpiredSession = () => {
+		alert("⏰ Your assessment session has expired. Please contact the administrator.");
+		dispatch({ type: "RESET_ASSESSMENT" });
+		navigate(`/assessment/${assessmentId}`);
+	};
+
+	// Helper function to handle session error
+	const handleSessionError = (error: Error) => {
+		console.error("Error loading assessment session:", error);
+		if (error.message.includes("No active assessment session")) {
+			dispatch({ type: "RESET_ASSESSMENT" });
+			navigate(`/assessment/${assessmentId}`);
+		}
+	};
+
 	// Load assessment session from backend
 	useEffect(() => {
 		const loadAssessmentSession = async () => {
@@ -33,20 +49,12 @@ function ChallengeList() {
 				console.log("Assessment session loaded:", session);
 				setSessionData(session);
 
-				// Check if session is expired
 				if (session.isExpired) {
-					alert("⏰ Your assessment session has expired. Please contact the administrator.");
-					dispatch({ type: "RESET_ASSESSMENT" });
-					navigate(`/assessment/${assessmentId}`);
+					handleExpiredSession();
 					return;
 				}
 			} catch (error) {
-				console.error("Error loading assessment session:", error);
-				// If no session found, redirect to login
-				if (error.message.includes("No active assessment session")) {
-					dispatch({ type: "RESET_ASSESSMENT" });
-					navigate(`/assessment/${assessmentId}`);
-				}
+				handleSessionError(error);
 			} finally {
 				setSessionLoading(false);
 			}

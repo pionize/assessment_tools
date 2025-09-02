@@ -24,58 +24,82 @@ const initialState: AssessmentState = {
 	completedChallenges: new Set(),
 };
 
+// Helper function to convert string submission
+const convertStringSubmission = (challengeId: string, value: string): SubmissionData => ({
+	challengeId,
+	type: "open-ended",
+	answer: value,
+	timestamp: new Date().toISOString(),
+});
+
+// Helper function to convert array submission
+const convertArraySubmission = (challengeId: string, value: string[]): SubmissionData => ({
+	challengeId,
+	type: "code",
+	files: value.reduce(
+		(acc, file, idx) => {
+			acc[`file${idx}`] = file;
+			return acc;
+		},
+		{} as Record<string, string>
+	),
+	timestamp: new Date().toISOString(),
+});
+
+// Helper function to convert object submission
+const convertObjectSubmission = (
+	challengeId: string,
+	value: { answer: unknown }
+): SubmissionData => ({
+	challengeId,
+	type: "open-ended",
+	answer: String(value.answer || ""),
+	timestamp: new Date().toISOString(),
+});
+
+// Helper function to convert all submissions
+const convertSubmissions = (
+	submissions: Record<string, unknown>
+): Record<string, SubmissionData> => {
+	const convertedSubmissions: Record<string, SubmissionData> = {};
+
+	for (const [challengeId, value] of Object.entries(submissions)) {
+		if (value === null) continue;
+
+		if (typeof value === "string") {
+			convertedSubmissions[challengeId] = convertStringSubmission(challengeId, value);
+		} else if (Array.isArray(value)) {
+			convertedSubmissions[challengeId] = convertArraySubmission(challengeId, value);
+		} else if (typeof value === "object" && "answer" in value) {
+			convertedSubmissions[challengeId] = convertObjectSubmission(challengeId, value);
+		}
+	}
+
+	return convertedSubmissions;
+};
+
 // This function runs only once to initialize the state
 const init = (initialState: AssessmentState): AssessmentState => {
 	const loadedState = sessionStorage.loadAppState();
-	if (loadedState?.candidate) {
-		// Convert sessionStorage submissions to AssessmentState format
-		const convertedSubmissions: Record<string, SubmissionData> = {};
-		if (loadedState.submissions) {
-			for (const [challengeId, value] of Object.entries(loadedState.submissions)) {
-				if (value !== null) {
-					if (typeof value === "string") {
-						convertedSubmissions[challengeId] = {
-							challengeId,
-							type: "open-ended",
-							answer: value,
-							timestamp: new Date().toISOString(),
-						};
-					} else if (Array.isArray(value)) {
-						convertedSubmissions[challengeId] = {
-							challengeId,
-							type: "code",
-							files: value.reduce(
-								(acc, file, idx) => {
-									acc[`file${idx}`] = file;
-									return acc;
-								},
-								{} as Record<string, string>
-							),
-							timestamp: new Date().toISOString(),
-						};
-					} else if (typeof value === "object" && "answer" in value) {
-						convertedSubmissions[challengeId] = {
-							challengeId,
-							type: "open-ended",
-							answer: value.answer,
-							timestamp: new Date().toISOString(),
-						};
-					}
-				}
-			}
-		}
-		return {
-			...initialState,
-			candidate: loadedState.candidate,
-			assessment: loadedState.assessment,
-			challenges: loadedState.challenges || [],
-			currentChallenge: loadedState.currentChallenge,
-			submissions: convertedSubmissions,
-			completedChallenges: loadedState.completedChallenges,
-			loading: false,
-		};
+
+	if (!loadedState?.candidate) {
+		return { ...initialState, loading: false };
 	}
-	return { ...initialState, loading: false }; // Ensure loading is false if no session
+
+	const convertedSubmissions = loadedState.submissions
+		? convertSubmissions(loadedState.submissions)
+		: {};
+
+	return {
+		...initialState,
+		candidate: loadedState.candidate,
+		assessment: loadedState.assessment,
+		challenges: loadedState.challenges || [],
+		currentChallenge: loadedState.currentChallenge,
+		submissions: convertedSubmissions,
+		completedChallenges: loadedState.completedChallenges,
+		loading: false,
+	};
 };
 
 function assessmentReducer(state: AssessmentState, action: AssessmentAction): AssessmentState {

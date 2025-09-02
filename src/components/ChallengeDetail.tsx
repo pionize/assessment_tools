@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssessment } from "../contexts/AssessmentContext";
 import type { AssessmentSession, Challenge } from "../contexts/context";
+import type { SubmissionData } from "../contexts/models/SubmissionData";
 import { apiService } from "../services/api";
 import CodeEditor from "./CodeEditor";
 import MultipleChoiceChallenge from "./MultipleChoiceChallenge";
@@ -21,6 +22,27 @@ function ChallengeDetail() {
 	const navigate = useNavigate();
 	const { state, dispatch } = useAssessment();
 
+	// Helper function to setup existing submission data
+	const setupExistingSubmission = (
+		challengeData: Challenge,
+		existingSubmission: Partial<SubmissionData>
+	) => {
+		if (challengeData.type === "code") {
+			setFiles(existingSubmission.files || challengeData.files || {});
+			setSelectedLanguage(existingSubmission.language || challengeData.language || "javascript");
+		} else {
+			setAnswer(existingSubmission.answer || "");
+		}
+	};
+
+	// Helper function to setup new challenge data
+	const setupNewChallenge = (challengeData: Challenge) => {
+		if (challengeData.type === "code") {
+			setFiles(challengeData.files || {});
+			setSelectedLanguage(challengeData.language || "javascript");
+		}
+	};
+
 	useEffect(() => {
 		const loadChallenge = async () => {
 			if (!challengeId) return;
@@ -30,23 +52,11 @@ function ChallengeDetail() {
 				const challengeData = await apiService.getChallengeDetails(challengeId);
 				setChallenge(challengeData);
 
-				// Load existing submission if available
 				const existingSubmission = state.submissions[challengeId];
 				if (existingSubmission) {
-					if (challengeData.type === "code") {
-						setFiles(existingSubmission.files || challengeData.files || {});
-						setSelectedLanguage(
-							existingSubmission.language || challengeData.language || "javascript"
-						);
-					} else {
-						setAnswer(existingSubmission.answer || "");
-					}
+					setupExistingSubmission(challengeData, existingSubmission);
 				} else {
-					// Set initial data for new challenge
-					if (challengeData.type === "code") {
-						setFiles(challengeData.files || {});
-						setSelectedLanguage(challengeData.language || "javascript");
-					}
+					setupNewChallenge(challengeData);
 				}
 
 				dispatch({ type: "SET_CURRENT_CHALLENGE", payload: challengeData });

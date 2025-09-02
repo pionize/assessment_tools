@@ -195,13 +195,13 @@ export const apiService = {
 			challenge_id: submission.challengeId,
 		};
 		if (submission.type === "code") {
-				const filesObj: Record<string, { content: string; language: string }> = {};
-				for (const [path, content] of Object.entries(submission.files)) {
-					filesObj[path] = {
-						content,
-						language: submission.language || "javascript",
-					};
-				}
+			const filesObj: Record<string, { content: string; language: string }> = {};
+			for (const [path, content] of Object.entries(submission.files)) {
+				filesObj[path] = {
+					content,
+					language: submission.language || "javascript",
+				};
+			}
 			body = {
 				...body,
 				files: filesObj,

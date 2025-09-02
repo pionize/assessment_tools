@@ -331,95 +331,258 @@ function CodeEditor({
 		setContextMenu(null);
 	};
 
+	// Helper function to validate rename name
+	const validateRenameName = (name: string, type: "file" | "folder"): boolean => {
+		const namePattern = type === "file" ? /^[a-zA-Z0-9-_.]+$/ : /^[a-zA-Z0-9-_]+$/;
+
+		if (!namePattern.test(name)) {
+			alert(
+				`${type === "file" ? "File" : "Folder"} name can only contain letters, numbers, hyphens, underscores${type === "file" ? ", and dots" : ""}`
+			);
+			return false;
+		}
+		return true;
+	};
+
+	// Helper function to rename a file
+	const renameFile = (oldPath: string, newPath: string) => {
+		if (files[newPath] && newPath !== oldPath) {
+			alert("A file with this name already exists!");
+			return false;
+		}
+
+		const updatedFiles = { ...files };
+		const fileData = updatedFiles[oldPath];
+		delete updatedFiles[oldPath];
+		updatedFiles[newPath] = fileData;
+
+		if (onFilesChange) {
+			onFilesChange(updatedFiles);
+		}
+
+		if (selectedFile === oldPath) {
+			setSelectedFile(newPath);
+		}
+		return true;
+	};
+
+	// Helper function to rename a folder
+	const renameFolder = (oldPath: string, newPath: string) => {
+		const existingFiles = Object.keys(files).filter(
+			(filePath) => filePath.startsWith(`${newPath}/`) && newPath !== oldPath
+		);
+
+		if (existingFiles.length > 0) {
+			alert("A folder with this name already exists!");
+			return false;
+		}
+
+		const updatedFiles = { ...files };
+		const filesToRename = Object.keys(updatedFiles).filter((filePath) =>
+			filePath.startsWith(`${oldPath}/`)
+		);
+
+		filesToRename.forEach((oldFilePath) => {
+			const relativePath = oldFilePath.substring(oldPath.length + 1);
+			const newFilePath = `${newPath}/${relativePath}`;
+			updatedFiles[newFilePath] = updatedFiles[oldFilePath];
+			delete updatedFiles[oldFilePath];
+		});
+
+		if (onFilesChange) {
+			onFilesChange(updatedFiles);
+		}
+
+		if (selectedFile.startsWith(`${oldPath}/`)) {
+			const relativePath = selectedFile.substring(oldPath.length + 1);
+			setSelectedFile(`${newPath}/${relativePath}`);
+		}
+
+		updateExpandedFoldersAfterRename(oldPath, newPath);
+		return true;
+	};
+
+	// Helper function to update expanded folders after rename
+	const updateExpandedFoldersAfterRename = (oldPath: string, newPath: string) => {
+		setExpandedFolders((prev) => {
+			const newExpanded = new Set<string>();
+			for (const folderPath of prev as Set<string>) {
+				if (folderPath === oldPath) {
+					newExpanded.add(newPath);
+				} else if (folderPath.startsWith(`${oldPath}/`)) {
+					const relativePath = folderPath.substring(oldPath.length + 1);
+					newExpanded.add(`${newPath}/${relativePath}`);
+				} else {
+					newExpanded.add(folderPath);
+				}
+			}
+			return newExpanded;
+		});
+	};
+
 	const confirmRename = () => {
 		if (!renameItem?.newName.trim()) return;
 
-		// Validate new name
-		const namePattern = renameItem.type === "file" ? /^[a-zA-Z0-9-_.]+$/ : /^[a-zA-Z0-9-_]+$/;
-
-		if (!namePattern.test(renameItem.newName)) {
-			alert(
-				`${renameItem.type === "file" ? "File" : "Folder"} name can only contain letters, numbers, hyphens, underscores${renameItem.type === "file" ? ", and dots" : ""}`
-			);
+		if (!validateRenameName(renameItem.newName, renameItem.type)) {
 			return;
 		}
 
 		const pathParts = renameItem.path.split("/");
 		const newPath = [...pathParts.slice(0, -1), renameItem.newName].join("/");
 
-		if (renameItem.type === "file") {
-			// Check if new file name already exists
-			if (files[newPath] && newPath !== renameItem.path) {
-				alert("A file with this name already exists!");
-				return;
-			}
+		const success =
+			renameItem.type === "file"
+				? renameFile(renameItem.path, newPath)
+				: renameFolder(renameItem.path, newPath);
 
-			// Rename file
-			const updatedFiles = { ...files };
-			const fileData = updatedFiles[renameItem.path];
-			delete updatedFiles[renameItem.path];
-			updatedFiles[newPath] = fileData;
-
-			if (onFilesChange) {
-				onFilesChange(updatedFiles);
-			}
-
-			// Update selected file if it was the renamed file
-			if (selectedFile === renameItem.path) {
-				setSelectedFile(newPath);
-			}
-		} else {
-			// Check if new folder name already exists
-			const existingFiles = Object.keys(files).filter(
-				(filePath) => filePath.startsWith(`${newPath}/`) && newPath !== renameItem.path
-			);
-
-			if (existingFiles.length > 0) {
-				alert("A folder with this name already exists!");
-				return;
-			}
-
-			// Rename folder and all its contents
-			const updatedFiles = { ...files };
-			const filesToRename = Object.keys(updatedFiles).filter((filePath) =>
-				filePath.startsWith(`${renameItem.path}/`)
-			);
-
-			filesToRename.forEach((oldFilePath) => {
-				const relativePath = oldFilePath.substring(renameItem.path.length + 1);
-				const newFilePath = `${newPath}/${relativePath}`;
-				updatedFiles[newFilePath] = updatedFiles[oldFilePath];
-				delete updatedFiles[oldFilePath];
-			});
-
-			if (onFilesChange) {
-				onFilesChange(updatedFiles);
-			}
-
-			// Update selected file if it was in the renamed folder
-			if (selectedFile.startsWith(`${renameItem.path}/`)) {
-				const relativePath = selectedFile.substring(renameItem.path.length + 1);
-				setSelectedFile(`${newPath}/${relativePath}`);
-			}
-
-			// Update expanded folders
-			setExpandedFolders((prev) => {
-				const newExpanded = new Set<string>();
-				for (const folderPath of prev as Set<string>) {
-					if (folderPath === renameItem.path) {
-						newExpanded.add(newPath);
-					} else if (folderPath.startsWith(`${renameItem.path}/`)) {
-						const relativePath = folderPath.substring(renameItem.path.length + 1);
-						newExpanded.add(`${newPath}/${relativePath}`);
-					} else {
-						newExpanded.add(folderPath);
-					}
-				}
-				return newExpanded;
-			});
+		if (success) {
+			setRenameItem(null);
 		}
+	};
 
-		setRenameItem(null);
+	// Helper function to render rename input
+	const renderRenameInput = (isRenaming: boolean, name: string) => {
+		if (isRenaming && renameItem) {
+			return (
+				<input
+					type="text"
+					value={renameItem.newName}
+					onChange={(e) => setRenameItem({ ...renameItem, newName: e.target.value })}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							e.preventDefault();
+							confirmRename();
+						} else if (e.key === "Escape") {
+							e.preventDefault();
+							setRenameItem(null);
+						}
+					}}
+					onBlur={confirmRename}
+					className="bg-white border border-blue-500 rounded px-1 py-0 text-sm flex-1 min-w-0"
+					onClick={(e) => e.stopPropagation()}
+				/>
+			);
+		}
+		return <span className="text-gray-700">{name}</span>;
+	};
+
+	// Helper function to render folder actions
+	const renderFolderActions = (fullPath: string) => (
+		<div className="opacity-0 group-hover:opacity-100 flex">
+			<button
+				type="button"
+				onClick={(e) => {
+					e.stopPropagation();
+					handleAddFileToFolder(fullPath);
+				}}
+				className="p-1 hover:bg-gray-200 rounded mr-1"
+				title="Add file"
+			>
+				<File className="w-3 h-3 text-gray-600" />
+			</button>
+			<button
+				type="button"
+				onClick={(e) => {
+					e.stopPropagation();
+					handleAddFolderToFolder(fullPath);
+				}}
+				className="p-1 hover:bg-gray-200 rounded mr-1"
+				title="Add folder"
+			>
+				<Folder className="w-3 h-3 text-gray-600" />
+			</button>
+			<button
+				type="button"
+				onClick={(e) => {
+					e.stopPropagation();
+					deleteFolder(fullPath);
+				}}
+				className="p-1 hover:bg-gray-200 rounded"
+				title="Delete folder"
+			>
+				<Trash2 className="w-3 h-3 text-red-600" />
+			</button>
+		</div>
+	);
+
+	// Helper function to render folder item
+	const renderFolderItem = (
+		name: string,
+		fullPath: string,
+		item: FileTreeNode,
+		isRenaming: boolean
+	) => {
+		const isExpanded = expandedFolders.has(fullPath);
+		return (
+			<div key={fullPath}>
+				<button
+					type="button"
+					className="flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left"
+					onClick={() => toggleFolder(fullPath)}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							toggleFolder(fullPath);
+						}
+					}}
+					onContextMenu={(e) => handleContextMenu(e, fullPath, "folder")}
+				>
+					<div className="flex items-center">
+						{isExpanded ? (
+							<ChevronDown className="w-4 h-4 mr-1" />
+						) : (
+							<ChevronRight className="w-4 h-4 mr-1" />
+						)}
+						<Folder className="w-4 h-4 mr-2 text-blue-500" />
+						{renderRenameInput(isRenaming, name)}
+					</div>
+					{renderFolderActions(fullPath)}
+				</button>
+				{isExpanded && <div className="ml-4">{renderFileTree(item.children || {}, fullPath)}</div>}
+			</div>
+		);
+	};
+
+	// Helper function to render file item
+	const renderFileItem = (name: string, fullPath: string, isRenaming: boolean) => {
+		return (
+			<button
+				key={fullPath}
+				type="button"
+				className={`flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left ${
+					selectedFile === fullPath ? "bg-blue-50 border-l-2 border-blue-500" : ""
+				}`}
+				onClick={() => setSelectedFile(fullPath)}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						setSelectedFile(fullPath);
+					}
+				}}
+				onContextMenu={(e) => handleContextMenu(e, fullPath, "file")}
+			>
+				<div className="flex items-center">
+					<File className="w-4 h-4 mr-2 text-gray-500" />
+					{isRenaming ? (
+						renderRenameInput(isRenaming, name)
+					) : (
+						<span className={`text-gray-700 ${selectedFile === fullPath ? "font-medium" : ""}`}>
+							{name}
+						</span>
+					)}
+				</div>
+				<button
+					type="button"
+					onClick={(e) => {
+						e.stopPropagation();
+						deleteFile(fullPath);
+					}}
+					className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 p-1"
+				>
+					<Trash2 className="w-3 h-3" />
+				</button>
+			</button>
+		);
 	};
 
 	const renderFileTree = (structure: Record<string, FileTreeNode>, basePath = "") => {
@@ -430,152 +593,9 @@ function CodeEditor({
 				const fullPath = basePath ? `${basePath}/${name}` : name;
 				const isRenaming = renameItem?.path === fullPath;
 
-				if (item.type === "folder") {
-					const isExpanded = expandedFolders.has(fullPath);
-					return (
-						<div key={fullPath}>
-							<button
-								type="button"
-								className="flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left"
-								onClick={() => toggleFolder(fullPath)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										toggleFolder(fullPath);
-									}
-								}}
-								onContextMenu={(e) => handleContextMenu(e, fullPath, "folder")}
-							>
-								<div className="flex items-center">
-									{isExpanded ? (
-										<ChevronDown className="w-4 h-4 mr-1" />
-									) : (
-										<ChevronRight className="w-4 h-4 mr-1" />
-									)}
-									<Folder className="w-4 h-4 mr-2 text-blue-500" />
-									{isRenaming ? (
-										<input
-											type="text"
-											value={renameItem.newName}
-											onChange={(e) => setRenameItem({ ...renameItem, newName: e.target.value })}
-											onKeyDown={(e) => {
-												if (e.key === "Enter") {
-													e.preventDefault();
-													confirmRename();
-												} else if (e.key === "Escape") {
-													e.preventDefault();
-													setRenameItem(null);
-												}
-											}}
-											onBlur={confirmRename}
-											autoFocus
-											className="bg-white border border-blue-500 rounded px-1 py-0 text-sm flex-1 min-w-0"
-											onClick={(e) => e.stopPropagation()}
-										/>
-									) : (
-										<span className="text-gray-700">{name}</span>
-									)}
-								</div>
-								<div className="opacity-0 group-hover:opacity-100 flex">
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleAddFileToFolder(fullPath);
-										}}
-										className="p-1 hover:bg-gray-200 rounded mr-1"
-										title="Add file"
-									>
-										<File className="w-3 h-3 text-gray-600" />
-									</button>
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleAddFolderToFolder(fullPath);
-										}}
-										className="p-1 hover:bg-gray-200 rounded mr-1"
-										title="Add folder"
-									>
-										<Folder className="w-3 h-3 text-gray-600" />
-									</button>
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											deleteFolder(fullPath);
-										}}
-										className="p-1 hover:bg-gray-200 rounded"
-										title="Delete folder"
-									>
-										<Trash2 className="w-3 h-3 text-red-600" />
-									</button>
-								</div>
-							</button>
-							{isExpanded && (
-								<div className="ml-4">{renderFileTree(item.children || {}, fullPath)}</div>
-							)}
-						</div>
-					);
-				} else {
-					return (
-						<button
-							key={fullPath}
-							type="button"
-							className={`flex items-center justify-between py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm group border-none bg-transparent w-full text-left ${
-								selectedFile === fullPath ? "bg-blue-50 border-l-2 border-blue-500" : ""
-							}`}
-							onClick={() => setSelectedFile(fullPath)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter" || e.key === " ") {
-									e.preventDefault();
-									setSelectedFile(fullPath);
-								}
-							}}
-							onContextMenu={(e) => handleContextMenu(e, fullPath, "file")}
-						>
-							<div className="flex items-center">
-								<File className="w-4 h-4 mr-2 text-gray-500" />
-								{isRenaming ? (
-									<input
-										type="text"
-										value={renameItem.newName}
-										onChange={(e) => setRenameItem({ ...renameItem, newName: e.target.value })}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												e.preventDefault();
-												confirmRename();
-											} else if (e.key === "Escape") {
-												e.preventDefault();
-												setRenameItem(null);
-											}
-										}}
-										onBlur={confirmRename}
-										autoFocus
-										className="bg-white border border-blue-500 rounded px-1 py-0 text-sm flex-1 min-w-0"
-										onClick={(e) => e.stopPropagation()}
-									/>
-								) : (
-									<span
-										className={`text-gray-700 ${selectedFile === fullPath ? "font-medium" : ""}`}
-									>
-										{name}
-									</span>
-								)}
-							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									deleteFile(fullPath);
-								}}
-								className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 p-1"
-							>
-								<Trash2 className="w-3 h-3" />
-							</button>
-						</button>
-					);
-				}
+				return item.type === "folder"
+					? renderFolderItem(name, fullPath, item, isRenaming)
+					: renderFileItem(name, fullPath, isRenaming);
 			});
 	};
 
