@@ -31,9 +31,20 @@ describe("sessionStorage", () => {
 		});
 
 		it("should handle invalid JSON in localStorage", () => {
+			// Mock console.error to suppress expected error message
+			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+			
 			localStorage.setItem("candidate_session", "invalid json");
 			const retrieved = sessionStorage.getCandidate();
 			expect(retrieved).toBeNull();
+			
+			// Verify that console.error was called
+			expect(consoleSpy).toHaveBeenCalledWith(
+				"Error getting candidate from localStorage:", 
+				expect.any(SyntaxError)
+			);
+			
+			consoleSpy.mockRestore();
 		});
 	});
 

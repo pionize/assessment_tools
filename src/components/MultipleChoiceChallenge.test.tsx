@@ -104,21 +104,6 @@ describe("MultipleChoiceChallenge", () => {
 		expect(screen.getByText("Progress: 1/2 questions completed")).toBeInTheDocument();
 	});
 
-	it("should disable submit button when not all questions are answered", () => {
-		render(
-			<MultipleChoiceChallenge
-				challenge={mockChallenge}
-				onSubmit={mockOnSubmit}
-				onBack={mockOnBack}
-			/>
-		);
-
-		const submitButton = screen.getByRole("button", {
-			name: /submit answers/i,
-		});
-		expect(submitButton).toBeDisabled();
-	});
-
 	it("should enable submit button when all questions are answered", () => {
 		render(
 			<MultipleChoiceChallenge
@@ -167,10 +152,7 @@ describe("MultipleChoiceChallenge", () => {
 		});
 	});
 
-	it("should show confirmation dialog when submitting incomplete answers", () => {
-		// Mock window.confirm
-		const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
-
+	it("should disable submit button when not all questions are answered", () => {
 		render(
 			<MultipleChoiceChallenge
 				challenge={mockChallenge}
@@ -179,24 +161,18 @@ describe("MultipleChoiceChallenge", () => {
 			/>
 		);
 
+		// Initially, no questions are answered, so button should be disabled
+		const submitButton = screen.getByRole("button", { name: /submit answers/i });
+		expect(submitButton).toBeDisabled();
+
 		// Answer only first question
 		fireEvent.click(screen.getByLabelText('"object"'));
 
-		// Try to submit
-		fireEvent.click(screen.getByRole("button", { name: /submit answers/i }));
-
-		expect(confirmSpy).toHaveBeenCalledWith(
-			"You have 1 unanswered question. Are you sure you want to submit?"
-		);
-		expect(mockOnSubmit).not.toHaveBeenCalled();
-
-		confirmSpy.mockRestore();
+		// Button should still be disabled with only 1 of 2 questions answered
+		expect(submitButton).toBeDisabled();
 	});
 
-	it("should submit when user confirms incomplete submission", async () => {
-		// Mock window.confirm to return true
-		const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
-
+	it("should enable submit button only when all questions are answered", () => {
 		render(
 			<MultipleChoiceChallenge
 				challenge={mockChallenge}
@@ -205,25 +181,18 @@ describe("MultipleChoiceChallenge", () => {
 			/>
 		);
 
-		// Answer only first question
+		const submitButton = screen.getByRole("button", { name: /submit answers/i });
+		
+		// Initially disabled
+		expect(submitButton).toBeDisabled();
+
+		// Answer first question - still disabled
 		fireEvent.click(screen.getByLabelText('"object"'));
+		expect(submitButton).toBeDisabled();
 
-		// Try to submit
-		fireEvent.click(screen.getByRole("button", { name: /submit answers/i }));
-
-		await waitFor(() => {
-			expect(mockOnSubmit).toHaveBeenCalledWith({
-				challengeId: "challenge-1",
-				type: "multiple-choice",
-				answers: {
-					q1: "b",
-				},
-				timestamp: expect.any(String),
-				autoSubmit: false,
-			});
-		});
-
-		confirmSpy.mockRestore();
+		// Answer second question - now enabled
+		fireEvent.click(screen.getByLabelText("push()"));
+		expect(submitButton).not.toBeDisabled();
 	});
 
 	it("should call onBack when back button is clicked", () => {
@@ -255,8 +224,12 @@ describe("MultipleChoiceChallenge", () => {
 			/>
 		);
 
-		// Check that saved answers are selected
-		expect(screen.getByDisplayValue("b")).toBeChecked();
+		// Check that saved answers are selected - use more specific selectors
+		const q1Option = screen.getByRole("radio", { name: /"object"/ }); // First question option b: "object"  
+		const q2Option = screen.getByRole("radio", { name: /push\(\)/ }); // Second question option b: "push()"
+		
+		expect(q1Option).toBeChecked();
+		expect(q2Option).toBeChecked();
 		expect(screen.getByText("2/2 answered")).toBeInTheDocument();
 	});
 
